@@ -1,5 +1,5 @@
 /* AppNest Service Worker — ספריית הכושר */
-const VERSION = 'fitlib-v5';
+const VERSION = 'fitlib-v6';
 const CORE = ['./index.html', './exercises.js', './names-he.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {

@@ -1096,7 +1096,16 @@
       backdrop-filter: blur(3px);
     }
     .an-overlay.open { display: flex; }
-    /* התנאים וההסכמה תמיד מעל כל חלון אחר (מודאל התרגיל = 100, DB = 200) */
+    /* ────────────────────────────────────────────────
+       סולם השכבות של האפליקציה — כל חלון חדש חייב מקום כאן:
+         60   חלונות בסיס (הגדרות, אודות, מדריך, אימון חי)
+        100   חלון התרגיל (.modal-overlay)
+        200   מסך מסד הנתונים (#db-overlay)
+        250   בחירת אימון — נפתח מעל חלון התרגיל
+        300   הסכמה ותנאי שימוש
+        400   הודעות טוסט
+       ──────────────────────────────────────────────── */
+    #wo-picker { z-index: 250; }
     #disc-overlay, #consent-overlay { z-index: 300; }
     .an-panel {
       background: var(--bg-surface); border: 1px solid var(--border);
@@ -3313,7 +3322,11 @@
       if (e.target === modalOverlay) closeModal();
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key !== 'Escape') return;
+      // סוגרים קודם את החלון העליון ביותר
+      const picker = document.getElementById('wo-picker');
+      if (picker.classList.contains('open')) { picker.classList.remove('open'); return; }
+      closeModal();
     });
 
     // Infinite scroll
