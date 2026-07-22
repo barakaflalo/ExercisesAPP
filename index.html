@@ -1,0 +1,3557 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-theme="gold" data-mode="dark">
+<script>try{var d=document.documentElement;d.dataset.theme=localStorage.getItem("appnest-palette")||"gold";d.dataset.mode=localStorage.getItem("appnest-mode")||"dark";var L=localStorage.getItem("appnest-lang")||"he";d.lang=L;d.dir=L==="he"?"rtl":"ltr";}catch(e){}</script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ספריית התרגילים</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <style>
+    /* ── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    img { display: block; max-width: 100%; }
+    input { font: inherit; }
+    ol, ul { list-style: none; }
+    summary { list-style: none; cursor: pointer; }
+    summary::-webkit-details-marker { display: none; }
+
+    /* ── Design Tokens ──────────────────────────────── */
+    :root {
+      --radius-sm:      6px;
+      --radius-md:      10px;
+      --radius-lg:      14px;
+      --radius-xl:      18px;
+      --sidebar-w:      270px;
+    }
+
+    /* ── AppNest palettes ── */
+    html[data-theme="gold"] {
+      --accent: #d4a437; --accent-muted: rgba(212,164,55,0.12);
+    }
+    html[data-theme="blue"] {
+      --accent: #4f8ef7; --accent-muted: rgba(79,142,247,0.12);
+    }
+    html[data-theme="green"] {
+      --accent: #3ecf8e; --accent-muted: rgba(62,207,142,0.12);
+    }
+    html[data-theme="red"] {
+      --accent: #e5533d; --accent-muted: rgba(229,83,61,0.12);
+    }
+    html[data-theme="purple"] {
+      --accent: #a06ef7; --accent-muted: rgba(160,110,247,0.12);
+    }
+
+    /* dark (default AppNest look) */
+    html[data-mode="dark"] {
+      --bg-base:        #0a0a0a;
+      --bg-surface:     #141414;
+      --bg-elevated:    #1d1d1f;
+      --bg-input:       #1a1a1c;
+      --border:         #2a2a2e;
+      --border-hover:   #4a4a50;
+      --text-primary:   #f5f5f4;
+      --text-secondary: #a1a1aa;
+      --text-tertiary:  #71717a;
+      --sk-a: #1d1d1f; --sk-b: #26262a;
+      --scroll: #3a3a40; --scroll-h: #55555c;
+    }
+    /* light */
+    html[data-mode="light"] {
+      --bg-base:        #f4f4f5;
+      --bg-surface:     #ffffff;
+      --bg-elevated:    #f0f0f1;
+      --bg-input:       #f4f4f5;
+      --border:         #e4e4e7;
+      --border-hover:   #c4c4c7;
+      --text-primary:   #111111;
+      --text-secondary: #71717a;
+      --text-tertiary:  #a1a1aa;
+      --sk-a: #f0f0f1; --sk-b: #e6e6e8;
+      --scroll: #d4d4d8; --scroll-h: #a1a1aa;
+    }
+
+    /* ── Base ───────────────────────────────────────── */
+    html, body { height: 100%; }
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Scrollbar ──────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--scroll-h); }
+
+    /* ── App Shell ──────────────────────────────────── */
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ────────────────────────────────────── */
+    .sidebar {
+      background: var(--bg-surface);
+      border-inline-end: 1px solid var(--border);
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg-surface);
+      z-index: 1;
+    }
+
+    .sidebar-logo {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-primary);
+    }
+
+    .sidebar-logo span {
+      color: var(--accent);
+    }
+
+    .sidebar-body {
+      padding: 12px 12px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* ── Search ─────────────────────────────────────── */
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .search-icon {
+      position: absolute;
+      inset-inline-start: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      pointer-events: none;
+      width: 14px;
+      height: 14px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 8px 32px 8px 32px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-box::placeholder { color: var(--text-tertiary); }
+    .search-box:focus { border-color: var(--accent); }
+
+    .search-clear {
+      position: absolute;
+      inset-inline-end: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 16px;
+      line-height: 1;
+      display: none;
+      padding: 2px 4px;
+    }
+
+    .search-clear:hover { color: var(--text-primary); }
+    .search-clear.visible { display: block; }
+
+    /* ── Filter Sections ────────────────────────────── */
+    .filter-section {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .filter-summary {
+      display: flex;
+      align-items: center;
+      padding: 8px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+
+    .filter-options {
+      padding: 4px 2px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .filter-show-more {
+      font-size: 11px;
+      color: var(--text-secondary);
+      padding: 3px 6px;
+      border-radius: 20px;
+      border: 1px dashed var(--border-hover);
+      transition: all 0.1s;
+    }
+
+    .filter-show-more:hover {
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+    }
+
+    /* ── Chips ──────────────────────────────────────── */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all 0.1s;
+      white-space: nowrap;
+      text-transform: capitalize;
+    }
+
+    .chip:hover {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    .chip.active {
+      background: var(--accent-muted);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Main Content ───────────────────────────────── */
+    .main-content {
+      overflow-y: auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Results Bar ────────────────────────────────── */
+    .results-bar {
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      background: var(--bg-base);
+      z-index: 2;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-inline-end: auto;
+    }
+
+    .active-filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .active-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px 3px 10px;
+      background: var(--accent-muted);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
+
+    .active-badge-remove {
+      font-size: 13px;
+      line-height: 1;
+      color: var(--accent);
+      opacity: 0.7;
+      transition: opacity 0.1s;
+    }
+
+    .active-badge-remove:hover { opacity: 1; }
+
+    .clear-all {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .clear-all:hover { color: var(--text-primary); }
+
+    /* ── Exercise Grid ──────────────────────────────── */
+    .grid-wrapper {
+      padding: 16px 20px 32px;
+      flex: 1;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    /* ── Skeleton ───────────────────────────────────── */
+    .skeleton-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .skeleton-media {
+      aspect-ratio: 3/4;
+      background: var(--bg-elevated);
+    }
+
+    .skeleton-body { padding: 10px 12px 12px; }
+
+    .skeleton-line {
+      height: 10px;
+      border-radius: 5px;
+      background: var(--bg-elevated);
+      margin-bottom: 7px;
+    }
+
+    .skeleton-line.short { width: 60%; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ── Exercise Card ──────────────────────────────── */
+    .exercise-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .exercise-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .card-media {
+      aspect-ratio: 3/4;
+      background: var(--bg-elevated);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-thumb,
+    .card-gif {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.2s;
+    }
+
+    .card-gif { opacity: 0; }
+    .exercise-card:hover .card-thumb { opacity: 0; }
+    .exercise-card:hover .card-gif { opacity: 1; }
+
+    .card-body {
+      padding: 9px 11px 11px;
+    }
+
+    .card-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 5px;
+      text-transform: capitalize;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: capitalize;
+      letter-spacing: 0.01em;
+    }
+
+    .tag-cat  { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+    .tag-equip { background: rgba(34, 197, 94, 0.10); color: #4ade80; }
+
+    /* ── Load Sentinel ──────────────────────────────── */
+    .load-sentinel {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .load-spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .load-spinner.visible { display: block; }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Empty State ────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-state p:first-child {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    /* ── Modal ──────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      width: min(660px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      transform: translateY(10px) scale(0.98);
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-overlay.open .modal-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 18px 0;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+      text-transform: capitalize;
+    }
+
+    .modal-close {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s;
+      margin-top: 2px;
+    }
+
+    .modal-close:hover {
+      background: var(--accent-muted);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .modal-media {
+      padding: 14px 18px 0;
+    }
+
+    .modal-gif {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      background: var(--bg-elevated);
+    }
+
+    .modal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 14px 18px 0;
+    }
+
+    .meta-chip {
+      display: inline-flex;
+      flex-direction: column;
+      padding: 6px 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      gap: 1px;
+    }
+
+    .meta-chip-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-tertiary);
+    }
+
+    .meta-chip-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-transform: capitalize;
+    }
+
+    .modal-muscles {
+      padding: 14px 18px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-muscles-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+
+    .muscles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .muscles-group {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+
+    .muscles-group-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-tertiary);
+      margin-bottom: 7px;
+    }
+
+    .muscle-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .muscle-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 5px;
+      text-transform: capitalize;
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .muscle-tag.primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .modal-instructions {
+      padding: 0 18px 22px;
+    }
+
+    .modal-instructions-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      padding: 14px 0 0;
+      display: block;
+    }
+
+    .lang-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      margin: 10px 0 14px;
+    }
+
+    .lang-tab {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 24px;
+      border: none;
+      background: none;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .lang-tab:hover { color: var(--text-secondary); }
+
+    .lang-tab.active { color: var(--text-primary); font-weight: 600; }
+
+    .lang-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      inset-inline-start: 0;
+      inset-inline-end: 0;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px 2px 0 0;
+    }
+
+    .instructions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      counter-reset: steps;
+    }
+
+    .instruction-step {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      counter-increment: steps;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 768px) {
+      /* Layout */
+      .app-shell {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        height: 100dvh;
+      }
+
+      /* Sidebar → top panel */
+      .sidebar {
+        height: auto;
+        max-height: 45vh;
+        border-inline-end: none;
+        border-bottom: 1px solid var(--border);
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 14px 14px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .sidebar-body {
+        padding: 10px 12px 16px;
+        gap: 10px;
+      }
+
+      .search-wrapper { margin-bottom: 4px; }
+
+      .filter-section { width: 100%; }
+
+      .filter-options {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+      }
+      .filter-options::-webkit-scrollbar { display: none; }
+
+      /* Main */
+      .main-content { height: auto; flex: 1; overflow-y: auto; }
+
+      .results-bar { padding: 10px 14px 8px; }
+
+      .grid-wrapper { padding: 12px 12px 28px; }
+
+      .exercise-grid {
+        grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+        gap: 10px;
+      }
+
+      /* Modal → bottom sheet */
+      .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      .modal-panel {
+        width: 100%;
+        max-height: 92dvh;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        border-bottom: none;
+      }
+
+      .modal-gif { max-height: 240px; }
+
+      /* Muscles grid → single col on small */
+      .muscles-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .exercise-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .grid-wrapper { padding: 10px 10px 24px; }
+
+      .modal-panel { max-height: 95dvh; }
+
+      .modal-header { padding: 16px 16px 0; }
+      .modal-media  { padding: 12px 16px 0; }
+      .modal-meta   { padding: 12px 16px 0; }
+      .modal-muscles      { padding: 12px 16px 14px; }
+      .modal-instructions { padding: 0 16px 20px; }
+
+      .lang-tab { padding: 8px 18px; }
+
+      .card-name { font-size: 11.5px; }
+    }
+    /* ── DB Setup Button ─────────────────────────────── */
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .db-setup-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--bg-elevated);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+
+    .db-setup-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .db-setup-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-muted); }
+
+    /* ── DB Setup Overlay ────────────────────────────── */
+    .db-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      padding: 16px;
+    }
+
+    .db-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .db-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      width: min(700px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      transform: translateY(10px) scale(0.98);
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .db-overlay.open .db-panel {
+      transform: translateY(0) scale(1);
+    }
+
+    .db-panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px 20px 0;
+    }
+
+    .db-panel-title {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .db-panel-subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .db-panel-close {
+      color: var(--text-tertiary);
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .db-panel-close:hover { color: var(--text-primary); }
+
+    /* ── DB Tabs ─────────────────────────────────────── */
+    .db-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 14px 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .db-tab {
+      padding: 7px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.15s;
+    }
+
+    .db-tab:hover { color: var(--text-primary); }
+    .db-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* ── DB Steps ────────────────────────────────────── */
+    .db-steps-wrap {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .db-step {
+      display: flex;
+      gap: 14px;
+    }
+
+    .db-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .db-step-body { flex: 1; min-width: 0; }
+
+    .db-step-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .db-step-desc {
+      color: var(--text-secondary);
+      font-size: 13px;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .db-step-desc code {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 4px;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Mono', 'Menlo', monospace;
+    }
+
+    /* ── Code Block ──────────────────────────────────── */
+    .code-block {
+      position: relative;
+      background: #1a1a1a;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .code-pre {
+      color: #e4e4e7;
+      font-family: 'SF Mono', 'Fira Mono', 'Menlo', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      padding: 14px 16px;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 0;
+    }
+
+    .media-layout-block .code-pre { padding-top: 12px; padding-bottom: 12px; }
+
+    .copy-btn {
+      position: absolute;
+      top: 8px;
+      inset-inline-end: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #a1a1aa;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-sm);
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      z-index: 1;
+    }
+
+    .copy-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+
+    /* ── Generate Button ─────────────────────────────── */
+    .generate-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+
+    .generate-btn:hover { opacity: 0.88; }
+    .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .generate-status {
+      margin-inline-start: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+
+
+    /* ── AppNest toolbar (theme + language) ── */
+    .appnest-tools {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      background: var(--bg-surface); position: sticky; top: 64px; z-index: 4;
+    }
+    .palette-dot {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid var(--border); flex: none;
+    }
+    .palette-dot.active { border-color: var(--text-primary); box-shadow: 0 0 0 2px var(--accent-muted); }
+    .mode-btn, .lang-btn {
+      padding: 4px 10px; border: 1px solid var(--border); border-radius: var(--radius-md);
+      color: var(--text-secondary); font-size: 12px; background: var(--bg-elevated);
+    }
+    .mode-btn:hover, .lang-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+    .lang-btn.active { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .attribution {
+      margin-top: auto; padding: 12px 16px; font-size: 11px;
+      color: var(--text-tertiary); border-top: 1px solid var(--border);
+      line-height: 1.6;
+    }
+    .attribution a { color: var(--accent); text-decoration: none; }
+    .generate-status { margin-inline-start: 10px; margin-left: 0; }
+
+    /* ── AppNest panels (settings / about / onboarding) ── */
+    .an-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      display: none; align-items: center; justify-content: center; z-index: 60;
+      backdrop-filter: blur(3px);
+    }
+    .an-overlay.open { display: flex; }
+    /* התנאים וההסכמה תמיד מעל כל חלון אחר (מודאל התרגיל = 100, DB = 200) */
+    #disc-overlay, #consent-overlay { z-index: 300; }
+    .an-panel {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); width: min(440px, 92vw);
+      max-height: 86vh; overflow-y: auto; padding: 24px;
+    }
+    .an-panel h2 { font-size: 17px; margin-bottom: 4px; }
+    .an-panel .an-sub { color: var(--text-secondary); font-size: 12.5px; margin-bottom: 18px; }
+    .an-row { margin-bottom: 16px; }
+    .an-row label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+    .an-input {
+      width: 100%; padding: 9px 12px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary);
+    }
+    .an-input:focus { outline: none; border-color: var(--accent); }
+    .an-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .an-btn {
+      padding: 9px 18px; border-radius: var(--radius-md); font-size: 13px; font-weight: 600;
+      border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-primary);
+    }
+    .an-btn.primary { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+    .an-btn:hover { border-color: var(--accent); }
+    .an-btn.wide { width: 100%; text-align: center; }
+    .an-btn.danger { color: #e5533d; border-color: rgba(229,83,61,0.35); }
+    .an-btn.danger:hover { border-color: #e5533d; }
+
+    /* ── כרטיסי הגדרות (סגנון AppNest אחיד) ── */
+    .an-cards { display: flex; flex-direction: column; gap: 10px; }
+    .an-card {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 13px 14px;
+    }
+    .an-card-label {
+      font-size: 11.5px; color: var(--text-secondary);
+      font-weight: 600; margin-bottom: 9px;
+    }
+    .an-card-hint { font-size: 11px; color: var(--text-tertiary); margin-top: 8px; line-height: 1.6; }
+    .an-card-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .an-card-row .an-btn { flex: 1 1 auto; text-align: center; }
+    .an-swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+    .an-swatch {
+      width: 28px; height: 28px; border-radius: 50%; flex: none;
+      border: 2px solid var(--border); transition: transform .15s, box-shadow .15s;
+    }
+    .an-swatch:hover { transform: scale(1.12); }
+    .an-swatch.active { border-color: var(--text-primary); box-shadow: 0 0 0 3px var(--accent-muted); }
+    .an-seg { display: flex; gap: 8px; }
+    .an-seg button {
+      flex: 1; padding: 8px 10px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-secondary); font-size: 12.5px; font-weight: 600;
+    }
+    .an-seg button:hover { border-color: var(--border-hover); }
+    .an-seg button.active { border-color: var(--accent); color: var(--accent); background: var(--accent-muted); }
+
+    /* ── מתג הפעלה ── */
+    .an-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .an-switch {
+      width: 44px; height: 25px; border-radius: 999px; flex: none;
+      background: var(--bg-input); border: 1px solid var(--border);
+      position: relative; transition: background .18s, border-color .18s;
+    }
+    .an-switch::after {
+      content: ''; position: absolute; inset-inline-start: 3px; top: 2px;
+      width: 19px; height: 19px; border-radius: 50%;
+      background: var(--text-tertiary); transition: transform .18s, background .18s;
+    }
+    .an-switch.on { background: var(--accent-muted); border-color: var(--accent); }
+    .an-switch.on::after { background: var(--accent); transform: translateX(var(--sw-x, 19px)); }
+    html[dir="rtl"] .an-switch.on::after { --sw-x: -19px; }
+
+    /* ── שבבי ימים ── */
+    .an-days { display: flex; gap: 6px; flex-wrap: wrap; }
+    .an-day {
+      width: 34px; height: 34px; flex: none; border-radius: 50%;
+      border: 1px solid var(--border); background: var(--bg-input);
+      color: var(--text-secondary); font-size: 12.5px; font-weight: 600;
+    }
+    .an-day:hover { border-color: var(--border-hover); }
+    .an-day.active { border-color: var(--accent); color: var(--accent); background: var(--accent-muted); }
+    .an-time {
+      font-size: 22px; font-weight: 600; letter-spacing: .04em;
+      text-align: center; font-variant-numeric: tabular-nums; padding: 8px 12px;
+    }
+    .an-status {
+      font-size: 11.5px; color: var(--text-secondary); margin-top: 10px;
+      padding: 8px 10px; border-radius: var(--radius-md);
+      background: var(--accent-muted); line-height: 1.6;
+    }
+    .an-status.warn { background: rgba(229,83,61,.1); color: #e5533d; }
+    .an-collapse { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
+    .an-collapse.open { max-height: 420px; }
+
+    /* ── אודות ── */
+    .an-hero { text-align: center; padding: 4px 0 16px; }
+    .an-hero-mark {
+      width: 62px; height: 62px; margin: 0 auto 12px; border-radius: 18px;
+      background: var(--accent-muted); border: 1.5px solid var(--accent);
+      display: flex; align-items: center; justify-content: center; font-size: 30px;
+    }
+    .an-rows { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 4px 14px; }
+    .an-rows > div {
+      display: flex; justify-content: space-between; gap: 12px;
+      padding: 9px 0; font-size: 12px; border-bottom: 1px solid var(--border);
+    }
+    .an-rows > div:last-child { border-bottom: none; }
+    .an-rows dt, .an-rows .k { color: var(--text-tertiary); }
+    .an-rows .v { color: var(--text-secondary); text-align: end; }
+    .an-rows .v a { color: var(--accent); text-decoration: none; }
+    .an-link-card {
+      display: flex; align-items: center; gap: 10px; width: 100%; text-align: start;
+      background: var(--accent-muted); border: 1px solid var(--accent);
+      border-radius: var(--radius-lg); padding: 12px 14px; color: var(--text-primary);
+    }
+    .an-link-card .ic { font-size: 20px; flex: none; }
+    .an-link-card .t { font-size: 13px; font-weight: 600; color: var(--accent); }
+    .an-link-card .d { font-size: 10.5px; color: var(--text-tertiary); margin-top: 1px; }
+    .an-note {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 13px 14px;
+    }
+    .an-note-h { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 7px; }
+    .an-note-b { font-size: 10.5px; color: var(--text-tertiary); line-height: 1.75; }
+    .an-foot { text-align: center; font-size: 10px; color: var(--text-tertiary); padding: 14px 0 2px; }
+
+    /* ── פס הסרת אחריות (מופיע בכל המסכים) ── */
+    .gd-bar {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(229,83,61,.07); border: 1px solid rgba(229,83,61,.2);
+      border-radius: var(--radius-md); padding: 8px 11px;
+      font-size: 10.5px; color: var(--text-tertiary); line-height: 1.6;
+    }
+    .gd-bar .gd-ic { flex: none; font-size: 12px; }
+    .gd-bar .gd-tx { flex: 1; }
+    .gd-more {
+      color: var(--accent); cursor: pointer; white-space: nowrap;
+      font-weight: 600; text-decoration: underline; text-underline-offset: 2px;
+    }
+    .gd-slim {
+      font-size: 10px; color: var(--text-tertiary); line-height: 1.6;
+      padding: 10px 20px 14px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    /* גוש התנאים במסך ההסכמה */
+    .gd-scroll {
+      max-height: 34vh; overflow-y: auto; background: var(--bg-input);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 12px 14px; font-size: 11.5px; color: var(--text-secondary); line-height: 1.85;
+    }
+    .gd-scroll p { margin-bottom: 9px; }
+    .gd-scroll p:last-child { margin-bottom: 0; }
+    .gd-scroll strong { color: var(--text-primary); }
+    .gd-agree {
+      display: flex; align-items: flex-start; gap: 9px; cursor: pointer;
+      font-size: 12.5px; color: var(--text-secondary); margin-top: 14px; line-height: 1.6;
+    }
+    .gd-agree input { width: 17px; height: 17px; accent-color: var(--accent); flex: none; margin-top: 1px; }
+    .an-btn[disabled] { opacity: .45; cursor: not-allowed; }
+    .an-btn[disabled]:hover { border-color: var(--accent); }
+
+    /* ── טוסט ── */
+    .toast-wrap {
+      position: fixed; inset-inline: 0; bottom: 22px; z-index: 400;
+      display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none;
+    }
+    .toast {
+      background: var(--bg-elevated); border: 1px solid var(--accent);
+      color: var(--text-primary); font-size: 13px; font-weight: 500;
+      padding: 10px 18px; border-radius: 999px; box-shadow: 0 6px 24px rgba(0,0,0,.35);
+      animation: toast-in .25s ease;
+    }
+    @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } }
+    /* שורת הפעולות נשארת נעוצה בתחתית פאנל ההגדרות הארוך */
+    #settings-overlay .an-actions {
+      position: sticky; bottom: -24px; margin-bottom: -24px;
+      padding: 14px 0; background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+    }
+    .an-about-logo { font-size: 26px; font-weight: 800; margin-bottom: 2px; }
+    .an-about-logo span { color: var(--accent); }
+    .an-kv { font-size: 13px; line-height: 2; color: var(--text-secondary); }
+    .an-kv strong { color: var(--text-primary); }
+    .onb-step { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
+    .onb-num {
+      width: 26px; height: 26px; flex: none; border-radius: 50%;
+      background: var(--accent-muted); color: var(--accent);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;
+    }
+    .onb-step p { font-size: 13.5px; color: var(--text-secondary); }
+    .onb-step p strong { color: var(--text-primary); }
+    .greeting { font-size: 12px; color: var(--text-secondary); padding: 0 16px 8px; }
+    .greeting strong { color: var(--accent); }
+
+    /* ── My Workouts ── */
+    .view-tabs {
+      display: flex; gap: 8px; padding: 12px 20px 0;
+    }
+    .view-tab {
+      padding: 8px 18px; border-radius: var(--radius-md) var(--radius-md) 0 0;
+      font-size: 13px; font-weight: 600; color: var(--text-secondary);
+      border: 1px solid transparent; border-bottom: none;
+    }
+    .view-tab.active {
+      color: var(--accent); background: var(--bg-surface);
+      border-color: var(--border);
+    }
+    .workouts-wrap { padding: 20px; overflow-y: auto; height: 100%; }
+    .workouts-toolbar { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+    .wo-card {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 14px;
+    }
+    .wo-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .wo-name { font-size: 15px; font-weight: 700; flex: 1; }
+    .wo-count { font-size: 12px; color: var(--text-tertiary); }
+    .wo-del { color: var(--text-tertiary); font-size: 16px; padding: 4px 8px; border-radius: var(--radius-sm); }
+    .wo-del:hover { color: #e5533d; background: var(--accent-muted); }
+    .wo-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-top: 1px solid var(--border);
+    }
+    .wo-item img { width: 44px; height: 44px; border-radius: var(--radius-sm); object-fit: cover; background: var(--bg-elevated); }
+    .wo-item-name { flex: 1; font-size: 13px; }
+    .wo-item-name small { display: block; color: var(--text-tertiary); font-size: 11px; }
+    .wo-sr { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+    .wo-sr input {
+      width: 44px; text-align: center; padding: 4px; border-radius: var(--radius-sm);
+      border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary);
+    }
+    .wo-item-remove { color: var(--text-tertiary); padding: 2px 8px; }
+    .wo-item-remove:hover { color: #e5533d; }
+    .wo-empty { color: var(--text-tertiary); font-size: 13px; text-align: center; padding: 40px 0; }
+    .modal-add-btn {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 4px;
+      padding: 8px 16px; border-radius: var(--radius-md);
+      background: var(--accent); color: #0a0a0a; font-size: 13px; font-weight: 700;
+    }
+    .modal-add-btn:hover { opacity: 0.9; }
+    .wo-picker-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .wo-picker-item {
+      text-align: start; padding: 10px 14px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); background: var(--bg-elevated);
+      color: var(--text-primary); font-size: 13px;
+    }
+    .wo-picker-item:hover { border-color: var(--accent); }
+
+    /* ── Active Workout Session ── */
+    .session-panel { width: min(560px, 94vw); }
+    .sess-progress-track {
+      height: 8px; background: var(--bg-elevated); border-radius: 5px;
+      overflow: hidden; margin: 10px 0 18px;
+    }
+    .sess-progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent));
+      transition: width .3s;
+    }
+    .sess-ex {
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 12px 14px; margin-bottom: 12px; background: var(--bg-elevated);
+    }
+    .sess-ex.done { opacity: 0.55; }
+    .sess-ex-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .sess-ex-head img { width: 52px; height: 52px; border-radius: var(--radius-md); object-fit: cover; }
+    .sess-ex-name { font-size: 13.5px; font-weight: 700; flex: 1; }
+    .sess-ex-name small { display: block; font-weight: 400; color: var(--text-tertiary); font-size: 11px; }
+    .sess-sets { display: flex; gap: 8px; flex-wrap: wrap; }
+    .set-btn {
+      min-width: 44px; padding: 8px 10px; border-radius: var(--radius-md);
+      border: 1px solid var(--border); background: var(--bg-surface);
+      color: var(--text-secondary); font-size: 12px; font-weight: 700;
+    }
+    .set-btn:hover { border-color: var(--accent); }
+    .set-btn.done { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+    .rest-bar {
+      position: sticky; bottom: 0; display: none; align-items: center; gap: 12px;
+      background: var(--bg-surface); border: 1px solid var(--accent);
+      border-radius: var(--radius-lg); padding: 12px 16px; margin-top: 14px;
+    }
+    .rest-bar.on { display: flex; }
+    .rest-time { font-size: 22px; font-weight: 800; color: var(--accent); min-width: 62px; font-variant-numeric: tabular-nums; }
+    .rest-label { flex: 1; font-size: 12.5px; color: var(--text-secondary); }
+    .sess-done-msg { text-align: center; padding: 24px 0 8px; }
+    .sess-done-msg .big { font-size: 34px; }
+    .sess-done-msg p { color: var(--text-secondary); font-size: 13.5px; margin-top: 6px; }
+    .wo-start {
+      background: var(--accent); color: #0a0a0a; border-color: var(--accent);
+      font-weight: 700; padding: 6px 14px; border-radius: var(--radius-md); font-size: 12.5px;
+    }
+    .wo-start:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo" data-i18n="appTitle">ספריית<span>כושר</span></div>
+      <button class="db-setup-btn" id="db-setup-open" title="חיבור למסד נתונים">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="8" cy="4" rx="6" ry="2.5"/>
+          <path d="M2 4v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V4"/>
+          <path d="M2 7v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V7"/>
+          <path d="M2 10v2c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5v-2"/>
+        </svg>
+        <span data-i18n="dbSetup">חיבור למסד נתונים</span>
+      </button>
+    </div>
+    <div class="appnest-tools">
+      <button class="mode-btn" id="mode-toggle" title="מצב יום / לילה">🌙</button>
+      <button class="mode-btn" id="open-settings" title="הגדרות">⚙️</button>
+      <button class="mode-btn" id="open-about" title="אודות">ℹ️</button>
+      <span style="flex:1"></span>
+      <button class="lang-btn" data-lang="he">עב</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <div class="greeting" id="greeting" hidden></div>
+    <div class="sidebar-body">
+      <!-- Search -->
+      <div class="search-wrapper">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="6.5" cy="6.5" r="4.5"/>
+          <path d="M10.5 10.5L14 14" stroke-linecap="round"/>
+        </svg>
+        <input type="search" class="search-box" id="search" data-i18n-ph="searchPh" placeholder="חיפוש תרגילים…" autocomplete="off" />
+        <button class="search-clear" id="search-clear" aria-label="ניקוי חיפוש">×</button>
+      </div>
+
+      <!-- Category filter -->
+      <div class="filter-section">
+        <div class="filter-summary" data-i18n="fCategory">קטגוריה</div>
+        <div class="filter-options" id="category-chips"></div>
+      </div>
+
+      <!-- Equipment filter -->
+      <div class="filter-section">
+        <div class="filter-summary" data-i18n="fEquipment">ציוד</div>
+        <div class="filter-options" id="equipment-chips"></div>
+      </div>
+
+      <!-- Target filter -->
+      <div class="filter-section">
+        <div class="filter-summary" data-i18n="fTarget">שריר מטרה</div>
+        <div class="filter-options" id="target-chips"></div>
+      </div>
+    </div>
+    <div class="attribution">
+      <span data-i18n="gdShort">אין ייעוץ רפואי. התייעצו עם רופא לפני אימון ובצעו בטכניקה נכונה ובהתאם ליכולתכם.</span>
+      <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span><br/><br/>
+      התמונות והאנימציות: © <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a><br/>
+      <span data-i18n="appnestBadge">אפליקציה מבית</span> <strong>AppNest</strong> © 2026<br/>
+      <span data-i18n="devBadge">פיתוח: ברק אפללו</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-library" data-i18n="tabLibrary">הספרייה</button>
+      <button class="view-tab" id="tab-workouts" data-i18n="tabWorkouts">האימונים שלי</button>
+    </div>
+    <div class="results-bar">
+      <div class="active-filters" id="active-filters"></div>
+      <span class="results-count" id="results-count"></span>
+    </div>
+    <div class="grid-wrapper">
+      <div class="exercise-grid" id="exercise-grid"></div>
+      <div class="load-sentinel" id="load-sentinel">
+        <div class="load-spinner" id="load-spinner"></div>
+      </div>
+    </div>
+    <div class="gd-slim">
+      <span>⚠️</span>
+      <span data-i18n="gdShort">אין ייעוץ רפואי. התייעצו עם רופא לפני אימון ובצעו בטכניקה נכונה ובהתאם ליכולתכם.</span>
+      <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+    </div>
+    <div class="workouts-wrap" id="workouts-view" hidden>
+      <div class="workouts-toolbar">
+        <button class="an-btn primary" id="wo-new" data-i18n="woNew">+ אימון חדש</button>
+      </div>
+      <div class="gd-bar" style="margin-bottom:16px">
+        <span class="gd-ic">⚠️</span>
+        <span class="gd-tx" data-i18n="gdShort">אין ייעוץ רפואי. התייעצו עם רופא לפני אימון ובצעו בטכניקה נכונה ובהתאם ליכולתכם.</span>
+        <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+      </div>
+      <div id="wo-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- DB Setup Overlay -->
+<div class="db-overlay" id="db-overlay" role="dialog" aria-modal="true" aria-labelledby="db-setup-title">
+  <div class="db-panel" id="db-panel">
+    <div class="db-panel-header">
+      <div>
+        <h2 class="db-panel-title" id="db-setup-title" data-i18n="dbTitle">חיבור למסד נתונים</h2>
+        <p class="db-panel-subtitle" data-i18n="dbSubtitle">ייבוא 1,324 תרגילים למסד הנתונים שלך ב-3 שלבים.</p>
+      </div>
+      <button class="db-panel-close" id="db-setup-close" aria-label="Close">✕</button>
+    </div>
+
+    <!-- DB Tabs -->
+    <div class="db-tabs" role="tablist">
+      <button class="db-tab active" data-db="mssql" role="tab">SQL Server</button>
+      <button class="db-tab" data-db="postgresql" role="tab">PostgreSQL</button>
+      <button class="db-tab" data-db="mysql" role="tab">MySQL</button>
+      <button class="db-tab" data-db="sqlite" role="tab">SQLite</button>
+    </div>
+
+    <div class="db-steps-wrap">
+      <!-- Step 1 -->
+      <div class="db-step">
+        <div class="db-step-num">1</div>
+        <div class="db-step-body">
+          <h3 class="db-step-title" data-i18n="dbStep1">יצירת טבלה</h3>
+          <p class="db-step-desc" data-i18n="dbStep1Desc">הריצו את זה בכלי ניהול מסד הנתונים שלכם (SSMS, DBeaver, pgAdmin וכו'):</p>
+          <div class="code-block">
+            <button class="copy-btn" id="copy-create-btn" data-i18n="copy">העתקה</button>
+            <pre class="code-pre" id="create-table-sql"></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="db-step">
+        <div class="db-step-num">2</div>
+        <div class="db-step-body">
+          <h3 class="db-step-title" data-i18n="dbStep2">ייבוא נתונים</h3>
+          <p class="db-step-desc" data-i18n="dbStep2Desc">יצירת קובץ <code>.sql</code> עם כל 1,324 פקודות INSERT — עובד בכל כלי ניהול. הקובץ נוצר כולו בדפדפן, שום דבר לא נשלח לשרת.</p>
+          <button class="generate-btn" id="generate-sql-btn">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+              <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+            </svg>
+            <span data-i18n="dbGenerate">יצירת קובץ SQL</span>
+          </button>
+          <span class="generate-status" id="generate-status"></span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="db-step">
+        <div class="db-step-num">3</div>
+        <div class="db-step-body">
+          <h3 class="db-step-title" data-i18n="dbStep3">קובצי מדיה</h3>
+          <p class="db-step-desc" data-i18n="dbStep3Desc">העתיקו את התיקיות <code>images/</code> ו-<code>videos/</code> לשרת שלכם (או ל-CDN). העמודות <code>image</code> ו-<code>gif_url</code> שומרות נתיבים יחסיים — הוסיפו את כתובת הבסיס שלכם באפליקציה במידת הצורך.</p>
+          <div class="code-block media-layout-block">
+            <pre class="code-pre">your-server.com/
+├── images/   ← 1,324 JPG thumbnails
+└── videos/   ← 1,324 GIF animations</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="an-overlay" id="settings-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="settingsTitle">הגדרות</h2>
+    <p class="an-sub" data-i18n="settingsSub">ההעדפות נשמרות במכשיר שלך בלבד.</p>
+    <div class="an-cards">
+
+      <!-- שם משתמש -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="username">שם משתמש</div>
+        <input class="an-input" id="set-username" maxlength="30" data-i18n-ph="usernamePh" placeholder="איך לקרוא לך?" />
+      </div>
+
+      <!-- שפת ממשק -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="langLabel">שפת ממשק</div>
+        <select class="an-input" id="set-lang">
+          <option value="he">עברית</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <!-- ערכת צבעים -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="themeLabel">ערכת צבעים</div>
+        <div class="an-swatches">
+          <button class="an-swatch palette-dot" data-palette="gold"   style="background:#d4a437" title="זהב"></button>
+          <button class="an-swatch palette-dot" data-palette="blue"   style="background:#4f8ef7" title="כחול"></button>
+          <button class="an-swatch palette-dot" data-palette="green"  style="background:#3ecf8e" title="ירוק"></button>
+          <button class="an-swatch palette-dot" data-palette="red"    style="background:#e5533d" title="אדום"></button>
+          <button class="an-swatch palette-dot" data-palette="purple" style="background:#a06ef7" title="סגול"></button>
+        </div>
+      </div>
+
+      <!-- מצב תצוגה -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="modeLabel">מצב תצוגה</div>
+        <div class="an-seg">
+          <button id="mode-dark"  data-mode-btn="dark"  data-i18n="modeDark">🌙 לילה</button>
+          <button id="mode-light" data-mode-btn="light" data-i18n="modeLight">☀️ יום</button>
+        </div>
+      </div>
+
+      <!-- גיבוי -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="backupLabel">גיבוי האימונים שלי</div>
+        <div class="an-card-row">
+          <button class="an-btn" id="wo-export" data-i18n="woExport">📥 ייצוא גיבוי</button>
+          <button class="an-btn" id="wo-import" data-i18n="woImport">📤 ייבוא גיבוי</button>
+          <input type="file" id="wo-import-file" accept=".json" hidden />
+        </div>
+        <div class="an-card-hint" data-i18n="backupHint">קובץ JSON שנשמר אצלכם במכשיר. שימושי למעבר בין מכשירים.</div>
+      </div>
+
+      <!-- תזכורת אימון -->
+      <div class="an-card">
+        <div class="an-switch-row">
+          <div>
+            <div class="an-card-label" style="margin:0" data-i18n="remLabel">תזכורת אימון</div>
+            <div class="an-card-hint" style="margin-top:3px" data-i18n="remSub">קבעו מתי להזכיר לכם להתאמן.</div>
+          </div>
+          <button class="an-switch" id="rem-toggle" role="switch" aria-checked="false" aria-label="תזכורת אימון"></button>
+        </div>
+        <div class="an-collapse" id="rem-body">
+          <div style="padding-top:13px">
+            <div class="an-card-label" data-i18n="remDays">ימים בשבוע</div>
+            <div class="an-days" id="rem-days"></div>
+            <div class="an-card-label" style="margin-top:13px" data-i18n="remTime">שעה</div>
+            <input type="time" class="an-input an-time" id="rem-time" value="18:00" />
+            <div class="an-card-label" style="margin-top:13px" data-i18n="remMsg">הודעה אישית</div>
+            <input class="an-input" id="rem-text" maxlength="80" data-i18n-ph="remMsgPh" placeholder="זמן להתאמן! 💪" />
+            <div class="an-status" id="rem-status"></div>
+            <div class="an-card-row" style="margin-top:10px">
+              <button class="an-btn" id="rem-test" data-i18n="remTest">🔔 בדיקת תזכורת</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- מדריך -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="helpLabel">עזרה</div>
+        <button class="an-btn wide" id="open-guide" data-i18n="guideBtn">📖 מדריך שימוש</button>
+        <button class="an-btn wide" data-gd-open style="margin-top:8px" data-i18n="gdOpenBtn">⚠️ הסרת אחריות ותנאי שימוש</button>
+      </div>
+
+      <!-- איפוס -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="resetLabel">איפוס</div>
+        <button class="an-btn wide danger" id="reset-all" data-i18n="resetBtn">🗑 מחיקת כל הנתונים</button>
+        <div class="an-card-hint" data-i18n="resetHint">מוחק אימונים, העדפות ושם משתמש מהמכשיר הזה.</div>
+      </div>
+
+    </div>
+    <div class="an-actions">
+      <button class="an-btn" id="settings-close" data-i18n="close">סגירה</button>
+      <button class="an-btn primary" id="settings-save" data-i18n="save">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<!-- About -->
+<div class="an-overlay" id="about-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <div class="an-hero">
+      <div class="an-hero-mark">🏋️</div>
+      <div class="an-about-logo">ספריית<span>כושר</span></div>
+      <p class="an-sub" style="margin:6px 0 0" data-i18n="aboutTag">ספריית תרגילים מלאה בעברית — 1,324 תרגילים עם אנימציות והוראות ביצוע.</p>
+    </div>
+
+    <div class="an-cards">
+      <div class="an-rows">
+        <div><span class="k" data-i18n="version">גרסה</span><span class="v">1.1.0</span></div>
+        <div><span class="k" data-i18n="developer">פיתוח</span><span class="v" style="color:var(--accent);font-weight:600" data-i18n="devName">ברק אפללו</span></div>
+        <div><span class="k" data-i18n="platform">פלטפורמה</span><span class="v">PWA · HTML5</span></div>
+        <div><span class="k" data-i18n="storage">אחסון נתונים</span><span class="v" data-i18n="storageVal">על המכשיר בלבד</span></div>
+        <div><span class="k" data-i18n="exCount">מאגר תרגילים</span><span class="v">1,324</span></div>
+        <div><span class="k" data-i18n="mediaCredit">מדיה</span><span class="v"><a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a></span></div>
+        <div><span class="k" data-i18n="dataCredit">נתונים</span><span class="v">MIT License</span></div>
+        <div><span class="k" data-i18n="licenseK">רישיון</span><span class="v">© AppNest 2026</span></div>
+      </div>
+
+      <button class="an-link-card" id="about-appnest">
+        <span class="ic">🧩</span>
+        <span style="flex:1">
+          <span class="t" style="display:block">AppNest</span>
+          <span class="d" style="display:block" data-i18n="moreApps">עוד אפליקציות של ברק אפללו</span>
+        </span>
+        <span style="color:var(--accent)">↗</span>
+      </button>
+
+      <div class="an-card-row">
+        <button class="an-btn" id="about-share" data-i18n="shareApp">📤 שיתוף</button>
+        <button class="an-btn" id="about-feedback" data-i18n="sendFeedback">✉️ משוב</button>
+      </div>
+
+      <div class="an-note">
+        <div class="an-note-h" data-i18n="disclaimerH">⚠️ הסרת אחריות</div>
+        <div class="an-note-b" data-i18n="disclaimerB">התכנים באפליקציה הם מידע כללי בלבד ואינם מהווים ייעוץ רפואי, אבחון או תוכנית אימונים אישית. התייעצו עם רופא או פיזיולוג מוסמך לפני תחילת פעילות גופנית, במיוחד אם יש לכם מצב רפואי, פציעה או הריון. בצעו כל תרגיל בטכניקה נכונה ובהתאם ליכולתכם — האפליקציה והמפתחים אינם אחראים לנזק או פציעה כתוצאה מהשימוש.</div>
+        <button class="an-btn wide" data-gd-open style="margin-top:11px" data-i18n="gdReadFull">קריאת התנאים המלאים</button>
+      </div>
+
+      <div class="an-foot">© 2026 <span data-i18n="devName">ברק אפללו</span> · AppNest</div>
+    </div>
+
+    <div class="an-actions">
+      <button class="an-btn primary" id="about-close" data-i18n="close">סגירה</button>
+    </div>
+  </div>
+</div>
+
+<!-- Disclaimer consent gate -->
+<div class="an-overlay" id="consent-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="gdConsentTitle">⚠️ לפני שמתחילים</h2>
+    <p class="an-sub" data-i18n="gdConsentSub">קראו את התנאים ואשרו כדי להמשיך.</p>
+    <div class="gd-scroll">
+      <p><strong data-i18n="gdT1">אין ייעוץ רפואי.</strong> <span data-i18n="gdB1">התכנים באפליקציה — תיאורי תרגילים, אנימציות והוראות ביצוע — הם מידע כללי בלבד. הם אינם ייעוץ רפואי, אבחון, טיפול או תוכנית אימונים אישית, ואינם תחליף להתייעצות עם איש מקצוע מוסמך.</span></p>
+      <p><strong data-i18n="gdT2">התייעצו לפני שמתחילים.</strong> <span data-i18n="gdB2">פנו לרופא או לפיזיולוג מוסמך לפני תחילת פעילות גופנית, ובמיוחד אם יש לכם מחלת לב, לחץ דם, סוכרת, בעיות גב או מפרקים, פציעה קיימת, ניתוח לאחרונה, הריון, או שאתם מעל גיל 40 ולא פעילים.</span></p>
+      <p><strong data-i18n="gdT3">אחריותכם לבצע נכון.</strong> <span data-i18n="gdB3">בצעו כל תרגיל בטכניקה תקינה, במשקל מתאים ובהתאם ליכולתכם. התחילו בהדרגה. אם אינכם בטוחים כיצד לבצע תרגיל — היעזרו במאמן מוסמך. אל תתאמנו לבד עם משקלים כבדים.</span></p>
+      <p><strong data-i18n="gdT4">עצרו מיד אם.</strong> <span data-i18n="gdB4">אתם חשים כאב חד, סחרחורת, בחילה, קוצר נשימה, כאב בחזה או חוסר תחושה — הפסיקו את הפעילות ופנו לקבלת טיפול רפואי.</span></p>
+      <p><strong data-i18n="gdT5">דיוק המידע.</strong> <span data-i18n="gdB5">הנתונים והמדיה מגיעים ממקורות חיצוניים (Gym visual, מאגר תרגילים ברישיון MIT) ומוצגים לנוחותכם. ייתכנו טעויות, אי-דיוקים בתרגום או חוסרים. אין הבטחה לשלמות או להתאמה לצורך מסוים.</span></p>
+      <p><strong data-i18n="gdT6">הגבלת אחריות.</strong> <span data-i18n="gdB6">השימוש באפליקציה הוא באחריותכם הבלעדית. המפתח, AppNest וכל מי מטעמם לא יישאו באחריות לכל נזק, פציעה, הפסד או החלטה שהתקבלה על סמך המידע באפליקציה, במידה המרבית המותרת בדין.</span></p>
+      <p><strong data-i18n="gdT7">פרטיות.</strong> <span data-i18n="gdB7">כל הנתונים שלכם — אימונים, העדפות, שם משתמש ותזכורות — נשמרים על המכשיר שלכם בלבד. שום מידע אישי אינו נשלח לשרת.</span></p>
+    </div>
+    <label class="gd-agree">
+      <input type="checkbox" id="consent-check" />
+      <span data-i18n="gdAgree">קראתי, הבנתי ואני מאשר/ת שאני מתאמן/ת על אחריותי בלבד.</span>
+    </label>
+    <div class="an-actions">
+      <button class="an-btn primary" id="consent-accept" disabled data-i18n="gdAccept">הבנתי, ממשיכים</button>
+    </div>
+  </div>
+</div>
+
+<!-- Full disclaimer (read-only) -->
+<div class="an-overlay" id="disc-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="disclaimerH">⚠️ הסרת אחריות</h2>
+    <p class="an-sub" data-i18n="gdFullSub">תנאי השימוש המלאים באפליקציה.</p>
+    <div class="gd-scroll" style="max-height:52vh">
+      <p><strong data-i18n="gdT1">אין ייעוץ רפואי.</strong> <span data-i18n="gdB1">התכנים באפליקציה — תיאורי תרגילים, אנימציות והוראות ביצוע — הם מידע כללי בלבד. הם אינם ייעוץ רפואי, אבחון, טיפול או תוכנית אימונים אישית, ואינם תחליף להתייעצות עם איש מקצוע מוסמך.</span></p>
+      <p><strong data-i18n="gdT2">התייעצו לפני שמתחילים.</strong> <span data-i18n="gdB2">פנו לרופא או לפיזיולוג מוסמך לפני תחילת פעילות גופנית, ובמיוחד אם יש לכם מחלת לב, לחץ דם, סוכרת, בעיות גב או מפרקים, פציעה קיימת, ניתוח לאחרונה, הריון, או שאתם מעל גיל 40 ולא פעילים.</span></p>
+      <p><strong data-i18n="gdT3">אחריותכם לבצע נכון.</strong> <span data-i18n="gdB3">בצעו כל תרגיל בטכניקה תקינה, במשקל מתאים ובהתאם ליכולתכם. התחילו בהדרגה. אם אינכם בטוחים כיצד לבצע תרגיל — היעזרו במאמן מוסמך. אל תתאמנו לבד עם משקלים כבדים.</span></p>
+      <p><strong data-i18n="gdT4">עצרו מיד אם.</strong> <span data-i18n="gdB4">אתם חשים כאב חד, סחרחורת, בחילה, קוצר נשימה, כאב בחזה או חוסר תחושה — הפסיקו את הפעילות ופנו לקבלת טיפול רפואי.</span></p>
+      <p><strong data-i18n="gdT5">דיוק המידע.</strong> <span data-i18n="gdB5">הנתונים והמדיה מגיעים ממקורות חיצוניים (Gym visual, מאגר תרגילים ברישיון MIT) ומוצגים לנוחותכם. ייתכנו טעויות, אי-דיוקים בתרגום או חוסרים. אין הבטחה לשלמות או להתאמה לצורך מסוים.</span></p>
+      <p><strong data-i18n="gdT6">הגבלת אחריות.</strong> <span data-i18n="gdB6">השימוש באפליקציה הוא באחריותכם הבלעדית. המפתח, AppNest וכל מי מטעמם לא יישאו באחריות לכל נזק, פציעה, הפסד או החלטה שהתקבלה על סמך המידע באפליקציה, במידה המרבית המותרת בדין.</span></p>
+      <p><strong data-i18n="gdT7">פרטיות.</strong> <span data-i18n="gdB7">כל הנתונים שלכם — אימונים, העדפות, שם משתמש ותזכורות — נשמרים על המכשיר שלכם בלבד. שום מידע אישי אינו נשלח לשרת.</span></p>
+    </div>
+    <div class="an-foot" id="disc-accepted"></div>
+    <div class="an-actions">
+      <button class="an-btn primary" id="disc-close" data-i18n="close">סגירה</button>
+    </div>
+  </div>
+</div>
+
+<!-- Onboarding -->
+<div class="an-overlay" id="onb-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="onbTitle">ברוכים הבאים לספריית הכושר! 💪</h2>
+    <p class="an-sub" data-i18n="onbSub">שלושה דברים ששווה להכיר:</p>
+    <div class="onb-step"><div class="onb-num">1</div><p data-i18n="onb1"><strong>חיפוש וסינון</strong> — חפשו בעברית או באנגלית, וסננו לפי קטגוריה, ציוד ושריר מטרה בסרגל הצדדי.</p></div>
+    <div class="onb-step"><div class="onb-num">2</div><p data-i18n="onb2"><strong>לחיצה על תרגיל</strong> פותחת אנימציה, פירוט שרירים והוראות ביצוע מלאות.</p></div>
+    <div class="onb-step"><div class="onb-num">3</div><p data-i18n="onb3"><strong>התאמה אישית</strong> — ערכת צבע, מצב יום/לילה, שפה וגיבוי נמצאים במסך ההגדרות ⚙️.</p></div>
+    <div class="an-actions">
+      <button class="an-btn primary" id="onb-close" data-i18n="onbGo">יאללה, מתחילים</button>
+    </div>
+  </div>
+</div>
+
+<!-- Active workout session -->
+<div class="an-overlay" id="session-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel session-panel">
+    <div style="display:flex;align-items:center;gap:10px">
+      <h2 id="sess-title" style="flex:1"></h2>
+      <span id="sess-clock" style="font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums"></span>
+      <button class="an-btn" id="sess-close" data-i18n="sessClose">יציאה</button>
+    </div>
+    <div class="sess-progress-track"><div class="sess-progress-fill" id="sess-fill"></div></div>
+    <div class="gd-bar" style="margin:12px 0">
+      <span class="gd-ic">⚠️</span>
+      <span class="gd-tx" data-i18n="gdSess">הקשיבו לגוף. כאב חד, סחרחורת או קוצר נשימה — עצרו מיד ופנו לרופא.</span>
+      <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+    </div>
+    <div id="sess-list"></div>
+    <div class="rest-bar" id="rest-bar">
+      <span class="rest-time" id="rest-time">1:00</span>
+      <span class="rest-label" data-i18n="restLabel">מנוחה — נשמו עמוק 💨</span>
+      <button class="an-btn" id="rest-add" title="+15 שניות">+15</button>
+      <button class="an-btn primary" id="rest-skip" data-i18n="restSkip">דילוג</button>
+    </div>
+    <div id="sess-finish" hidden>
+      <div class="sess-done-msg">
+        <div class="big">🏆</div>
+        <h2 data-i18n="sessDoneTitle">כל הכבוד, סיימת את האימון!</h2>
+        <p id="sess-summary"></p>
+      </div>
+      <div class="an-actions" style="justify-content:center">
+        <button class="an-btn primary" id="sess-finish-close" data-i18n="sessFinishClose">סגירה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Workout picker -->
+<div class="an-overlay" id="wo-picker" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="woPickTitle">הוספה לאימון</h2>
+    <p class="an-sub" data-i18n="woPickSub">בחרו אימון קיים או צרו חדש:</p>
+    <div class="wo-picker-list" id="wo-picker-list"></div>
+    <div class="an-row">
+      <input class="an-input" id="wo-picker-new" data-i18n-ph="woNamePh" placeholder="שם לאימון חדש… (למשל: חזה + טרייספס)" />
+    </div>
+    <div class="an-actions">
+      <button class="an-btn" id="wo-picker-close" data-i18n="close">סגירה</button>
+      <button class="an-btn primary" id="wo-picker-create" data-i18n="woCreateAdd">צור והוסף</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-panel" id="modal-panel">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title"></h2>
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-media">
+      <img class="modal-gif" id="modal-gif" alt="" />
+    </div>
+    <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-muscles" id="modal-muscles"></div>
+    <div class="modal-instructions" id="modal-instructions"></div>
+    <div style="padding:0 22px 14px">
+      <div class="gd-bar">
+        <span class="gd-ic">⚠️</span>
+        <span class="gd-tx" data-i18n="gdShort">אין ייעוץ רפואי. התייעצו עם רופא לפני אימון ובצעו בטכניקה נכונה ובהתאם ליכולתכם.</span>
+        <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+      </div>
+    </div>
+    <button class="modal-add-btn" id="modal-add-workout">＋ <span data-i18n="woAdd">הוספה לאימון</span></button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script src="exercises.js"></script>
+<script src="names-he.js"></script>
+<script>
+  // ══════════════════════════════════════════════════
+  //  AppNest i18n — עברית כברירת מחדל, נפילה לאנגלית
+  // ══════════════════════════════════════════════════
+  const UI = {
+    he: {
+      appTitle: 'ספריית<span>כושר</span>', dbSetup: 'חיבור למסד נתונים',
+      searchPh: 'חיפוש תרגילים…', fCategory: 'קטגוריה', fEquipment: 'ציוד', fTarget: 'שריר מטרה',
+      noResults: 'לא נמצאו תרגילים', clearAll: 'ניקוי הכול',
+      countAll: n => `${n} תרגילים`, countOf: (t, a) => `${t} מתוך ${a} תרגילים`,
+      bodyPart: 'חלק גוף', equipment: 'ציוד', target: 'שריר מטרה',
+      muscles: 'שרירים', primary: 'עיקריים', secondary: 'משניים', instructions: 'הוראות ביצוע',
+      showMore: n => `עוד ${n}`, showLess: 'פחות',
+      dbTitle: 'חיבור למסד נתונים', dbSubtitle: 'ייבוא 1,324 תרגילים למסד הנתונים שלך ב-3 שלבים.',
+      dbStep1: 'יצירת טבלה', dbStep1Desc: "הריצו את זה בכלי ניהול מסד הנתונים שלכם (SSMS, DBeaver, pgAdmin וכו'):",
+      copy: 'העתקה', copied: 'הועתק ✓',
+      dbStep2: 'ייבוא נתונים', dbStep2Desc: 'יצירת קובץ <code>.sql</code> עם כל 1,324 פקודות INSERT — עובד בכל כלי ניהול. הקובץ נוצר כולו בדפדפן, שום דבר לא נשלח לשרת.',
+      dbGenerate: 'יצירת קובץ SQL', dbStep3: 'קובצי מדיה',
+      dbStep3Desc: 'העתיקו את התיקיות <code>images/</code> ו-<code>videos/</code> לשרת שלכם (או ל-CDN). העמודות <code>image</code> ו-<code>gif_url</code> שומרות נתיבים יחסיים — הוסיפו את כתובת הבסיס שלכם באפליקציה במידת הצורך.',
+      generating: 'יוצר…', downloaded: 'הקובץ ירד ✓', appnestBadge: 'אפליקציה מבית',
+      settingsTitle: 'הגדרות', settingsSub: 'ההעדפות נשמרות במכשיר שלך בלבד.',
+      username: 'שם משתמש', usernamePh: 'איך לקרוא לך?', langLabel: 'שפת ממשק', close: 'סגירה', save: 'שמירה',
+      themeLabel: 'ערכת צבעים', modeLabel: 'מצב תצוגה', modeDark: '🌙 לילה', modeLight: '☀️ יום',
+      backupLabel: 'גיבוי האימונים שלי',
+      backupHint: 'קובץ JSON שנשמר אצלכם במכשיר. שימושי למעבר בין מכשירים.',
+      helpLabel: 'עזרה', guideBtn: '📖 מדריך שימוש',
+      resetLabel: 'איפוס', resetBtn: '🗑 מחיקת כל הנתונים',
+      resetConfirm: '⚠️ בטוחים? לחצו שוב', resetDone: 'נמחק ✓',
+      resetHint: 'מוחק אימונים, העדפות ושם משתמש מהמכשיר הזה.',
+      importOk: 'הגיבוי יובא ✓', importErr: 'קובץ לא תקין',
+      remLabel: 'תזכורת אימון', remSub: 'קבעו מתי להזכיר לכם להתאמן.',
+      remDays: 'ימים בשבוע', remTime: 'שעה', remMsg: 'הודעה אישית',
+      remMsgPh: 'זמן להתאמן! 💪', remTest: '🔔 בדיקת תזכורת',
+      remTitle: 'זמן להתאמן 💪', remDefault: 'האימון שלך מחכה — יאללה נזוז!',
+      remDayNames: ['א','ב','ג','ד','ה','ו','ש'],
+      remDayFull: ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'],
+      remOff: 'התזכורת כבויה.',
+      remNoDays: 'בחרו לפחות יום אחד בשבוע.',
+      remNext: (d, t) => `התזכורת הבאה: יום ${d} בשעה ${t}`,
+      remNextToday: t => `התזכורת הבאה: היום בשעה ${t}`,
+      remNextTomorrow: t => `התזכורת הבאה: מחר בשעה ${t}`,
+      remDenied: 'ההתראות חסומות בדפדפן. אפשרו אותן בהגדרות האתר כדי לקבל תזכורות.',
+      remInsecure: 'התראות עובדות רק בחיבור מאובטח (https) או כאפליקציה מותקנת.',
+      remUnsupported: 'הדפדפן הזה לא תומך בהתראות.',
+      remBgOn: 'התזכורות יגיעו גם כשהאפליקציה סגורה.',
+      remBgOff: 'התזכורת תגיע כשהאפליקציה פתוחה או ברקע. להתראות אמינות — התקינו את האפליקציה למסך הבית.',
+      remSaved: 'התזכורת נשמרה ✓', remTestSent: 'נשלחה תזכורת לדוגמה',
+      remMissed: 'פספסת תזכורת אימון — עוד לא מאוחר 💪',
+      platform: 'פלטפורמה', storage: 'אחסון נתונים', storageVal: 'על המכשיר בלבד',
+      exCount: 'מאגר תרגילים', licenseK: 'רישיון', moreApps: 'עוד אפליקציות של ברק אפללו',
+      shareApp: '📤 שיתוף', sendFeedback: '✉️ משוב',
+      shareTxt: 'ספריית הכושר — 1,324 תרגילים עם אנימציות והוראות בעברית',
+      shareCopied: 'הקישור הועתק ✓',
+      gdShort: 'אין ייעוץ רפואי. התייעצו עם רופא לפני אימון ובצעו בטכניקה נכונה ובהתאם ליכולתכם.',
+      gdSess: 'הקשיבו לגוף. כאב חד, סחרחורת או קוצר נשימה — עצרו מיד ופנו לרופא.',
+      gdMore: 'פרטים',
+      gdOpenBtn: '⚠️ הסרת אחריות ותנאי שימוש',
+      gdReadFull: 'קריאת התנאים המלאים',
+      gdFullSub: 'תנאי השימוש המלאים באפליקציה.',
+      gdConsentTitle: '⚠️ לפני שמתחילים',
+      gdConsentSub: 'קראו את התנאים ואשרו כדי להמשיך.',
+      gdAgree: 'קראתי, הבנתי ואני מאשר/ת שאני מתאמן/ת על אחריותי בלבד.',
+      gdAccept: 'הבנתי, ממשיכים',
+      gdAcceptedOn: d => `התנאים אושרו בתאריך ${d}`,
+      gdT1: 'אין ייעוץ רפואי.',
+      gdB1: 'התכנים באפליקציה — תיאורי תרגילים, אנימציות והוראות ביצוע — הם מידע כללי בלבד. הם אינם ייעוץ רפואי, אבחון, טיפול או תוכנית אימונים אישית, ואינם תחליף להתייעצות עם איש מקצוע מוסמך.',
+      gdT2: 'התייעצו לפני שמתחילים.',
+      gdB2: 'פנו לרופא או לפיזיולוג מוסמך לפני תחילת פעילות גופנית, ובמיוחד אם יש לכם מחלת לב, לחץ דם, סוכרת, בעיות גב או מפרקים, פציעה קיימת, ניתוח לאחרונה, הריון, או שאתם מעל גיל 40 ולא פעילים.',
+      gdT3: 'אחריותכם לבצע נכון.',
+      gdB3: 'בצעו כל תרגיל בטכניקה תקינה, במשקל מתאים ובהתאם ליכולתכם. התחילו בהדרגה. אם אינכם בטוחים כיצד לבצע תרגיל — היעזרו במאמן מוסמך. אל תתאמנו לבד עם משקלים כבדים.',
+      gdT4: 'עצרו מיד אם.',
+      gdB4: 'אתם חשים כאב חד, סחרחורת, בחילה, קוצר נשימה, כאב בחזה או חוסר תחושה — הפסיקו את הפעילות ופנו לקבלת טיפול רפואי.',
+      gdT5: 'דיוק המידע.',
+      gdB5: 'הנתונים והמדיה מגיעים ממקורות חיצוניים (Gym visual, מאגר תרגילים ברישיון MIT) ומוצגים לנוחותכם. ייתכנו טעויות, אי-דיוקים בתרגום או חוסרים. אין הבטחה לשלמות או להתאמה לצורך מסוים.',
+      gdT6: 'הגבלת אחריות.',
+      gdB6: 'השימוש באפליקציה הוא באחריותכם הבלעדית. המפתח, AppNest וכל מי מטעמם לא יישאו באחריות לכל נזק, פציעה, הפסד או החלטה שהתקבלה על סמך המידע באפליקציה, במידה המרבית המותרת בדין.',
+      gdT7: 'פרטיות.',
+      gdB7: 'כל הנתונים שלכם — אימונים, העדפות, שם משתמש ותזכורות — נשמרים על המכשיר שלכם בלבד. שום מידע אישי אינו נשלח לשרת.',
+      disclaimerH: '⚠️ הסרת אחריות',
+      disclaimerB: 'התכנים באפליקציה הם מידע כללי בלבד ואינם מהווים ייעוץ רפואי, אבחון או תוכנית אימונים אישית. התייעצו עם רופא או פיזיולוג מוסמך לפני תחילת פעילות גופנית, במיוחד אם יש לכם מצב רפואי, פציעה או הריון. בצעו כל תרגיל בטכניקה נכונה ובהתאם ליכולתכם — האפליקציה והמפתחים אינם אחראים לנזק או פציעה כתוצאה מהשימוש.',
+      aboutTag: 'ספריית תרגילים מלאה בעברית — 1,324 תרגילים עם אנימציות והוראות ביצוע.',
+      version: 'גרסה', developer: 'פיתוח', mediaCredit: 'מדיה', dataCredit: 'נתונים',
+      onbTitle: 'ברוכים הבאים לספריית הכושר! 💪', onbSub: 'שלושה דברים ששווה להכיר:',
+      onb1: '<strong>חיפוש וסינון</strong> — חפשו בעברית או באנגלית, וסננו לפי קטגוריה, ציוד ושריר מטרה בסרגל הצדדי.',
+      onb2: '<strong>לחיצה על תרגיל</strong> פותחת אנימציה, פירוט שרירים והוראות ביצוע מלאות.',
+      onb3: '<strong>התאמה אישית</strong> — ערכת צבע, מצב יום/לילה, שפה וגיבוי נמצאים במסך ההגדרות ⚙️.',
+      onbGo: 'יאללה, מתחילים', hello: 'שלום',
+      tabLibrary: 'הספרייה', tabWorkouts: 'האימונים שלי',
+      woNew: '+ אימון חדש', woExport: '📥 ייצוא גיבוי', woImport: '📤 ייבוא גיבוי',
+      woEmpty: 'עוד אין אימונים. פתחו תרגיל בספרייה ולחצו "הוספה לאימון", או צרו אימון חדש כאן.',
+      woNoItems: 'אימון ריק — הוסיפו תרגילים מהספרייה.',
+      woAdd: 'הוספה לאימון', woPickTitle: 'הוספה לאימון', woPickSub: 'בחרו אימון קיים או צרו חדש:',
+      woNamePh: 'שם לאימון חדש… (למשל: חזה + טרייספס)', woCreateAdd: 'צור והוסף',
+      woDefaultName: 'אימון חדש', sets: 'סטים', reps: 'חזרות',
+      woExercises: n => `${n} תרגילים`, woAdded: 'נוסף ✓',
+      woDeleteConfirm: 'למחוק את האימון הזה?',
+      devBadge: 'פיתוח: ברק אפללו', devName: 'ברק אפללו',
+      woStart: 'התחל אימון ▶', sessClose: 'יציאה',
+      sessExitConfirm: 'לצאת באמצע האימון? ההתקדמות תישמר.',
+      restLabel: 'מנוחה — נשמו עמוק 💨', restSkip: 'דילוג',
+      sessDoneTitle: 'כל הכבוד, סיימת את האימון!',
+      sessSummary: (sets, mins) => `${sets} סטים הושלמו · ${mins === 1 ? 'דקת אימון אחת' : mins + ' דקות אימון'}`,
+      sessFinishClose: 'סגירה', setWord: 'סט',
+    },
+    en: {
+      appTitle: 'Exercise<span>DB</span>', dbSetup: 'DB Setup',
+      searchPh: 'Search exercises…', fCategory: 'Category', fEquipment: 'Equipment', fTarget: 'Target Muscle',
+      noResults: 'No exercises found', clearAll: 'Clear all',
+      countAll: n => `${n} exercises`, countOf: (t, a) => `${t} of ${a} exercises`,
+      bodyPart: 'Body Part', equipment: 'Equipment', target: 'Target',
+      muscles: 'Muscles', primary: 'Primary', secondary: 'Secondary', instructions: 'Instructions',
+      showMore: n => `${n} more`, showLess: 'Show less',
+      dbTitle: 'Database Setup', dbSubtitle: 'Import 1,324 exercises into your database in 3 steps.',
+      dbStep1: 'Create Table', dbStep1Desc: 'Run this in your database client (SSMS, DBeaver, pgAdmin, etc.):',
+      copy: 'Copy', copied: 'Copied ✓',
+      dbStep2: 'Import Data', dbStep2Desc: 'Generate a <code>.sql</code> file with all 1,324 INSERT statements — runs in any DB client. The file is built entirely in your browser, nothing is uploaded.',
+      dbGenerate: 'Generate INSERT SQL', dbStep3: 'Media Files',
+      dbStep3Desc: 'Copy the <code>images/</code> and <code>videos/</code> folders to your web server root (or a CDN). The <code>image</code> and <code>gif_url</code> columns store relative paths — prepend your base URL in your app if needed.',
+      generating: 'Generating…', downloaded: 'Downloaded ✓', appnestBadge: 'An app by',
+      settingsTitle: 'Settings', settingsSub: 'Preferences are stored on your device only.',
+      username: 'Username', usernamePh: 'What should we call you?', langLabel: 'Interface language', close: 'Close', save: 'Save',
+      themeLabel: 'Color theme', modeLabel: 'Display mode', modeDark: '🌙 Night', modeLight: '☀️ Day',
+      backupLabel: 'My workouts backup',
+      backupHint: 'A JSON file kept on your device. Handy when moving between devices.',
+      helpLabel: 'Help', guideBtn: '📖 User guide',
+      resetLabel: 'Reset', resetBtn: '🗑 Delete all data',
+      resetConfirm: '⚠️ Are you sure? Tap again', resetDone: 'Deleted ✓',
+      resetHint: 'Clears workouts, preferences and username from this device.',
+      importOk: 'Backup imported ✓', importErr: 'Invalid file',
+      remLabel: 'Workout reminder', remSub: 'Choose when to be reminded to train.',
+      remDays: 'Days of the week', remTime: 'Time', remMsg: 'Custom message',
+      remMsgPh: 'Time to train! 💪', remTest: '🔔 Test reminder',
+      remTitle: 'Time to train 💪', remDefault: 'Your workout is waiting — let\'s go!',
+      remDayNames: ['S','M','T','W','T','F','S'],
+      remDayFull: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      remOff: 'Reminder is off.',
+      remNoDays: 'Pick at least one day of the week.',
+      remNext: (d, t) => `Next reminder: ${d} at ${t}`,
+      remNextToday: t => `Next reminder: today at ${t}`,
+      remNextTomorrow: t => `Next reminder: tomorrow at ${t}`,
+      remDenied: 'Notifications are blocked. Allow them in your site settings to get reminders.',
+      remInsecure: 'Notifications require a secure (https) connection or an installed app.',
+      remUnsupported: 'This browser does not support notifications.',
+      remBgOn: 'Reminders will arrive even when the app is closed.',
+      remBgOff: 'Reminders arrive while the app is open or in the background. For reliable alerts, install the app to your home screen.',
+      remSaved: 'Reminder saved ✓', remTestSent: 'Sample reminder sent',
+      remMissed: 'You missed a workout reminder — still not too late 💪',
+      platform: 'Platform', storage: 'Data storage', storageVal: 'On your device only',
+      exCount: 'Exercise database', licenseK: 'License', moreApps: 'More apps by Barak Aflalo',
+      shareApp: '📤 Share', sendFeedback: '✉️ Feedback',
+      shareTxt: 'Exercise Library — 1,324 exercises with animations and full instructions',
+      shareCopied: 'Link copied ✓',
+      gdShort: 'Not medical advice. Consult a doctor before training and use proper form within your ability.',
+      gdSess: 'Listen to your body. Sharp pain, dizziness or shortness of breath — stop immediately and see a doctor.',
+      gdMore: 'Details',
+      gdOpenBtn: '⚠️ Disclaimer & terms of use',
+      gdReadFull: 'Read the full terms',
+      gdFullSub: 'Full terms of use for this app.',
+      gdConsentTitle: '⚠️ Before you start',
+      gdConsentSub: 'Read the terms and accept to continue.',
+      gdAgree: 'I have read and understood, and I accept that I train at my own risk.',
+      gdAccept: 'I understand, continue',
+      gdAcceptedOn: d => `Terms accepted on ${d}`,
+      gdT1: 'Not medical advice.',
+      gdB1: 'The content in this app — exercise descriptions, animations and instructions — is general information only. It is not medical advice, diagnosis, treatment or a personal training program, and is no substitute for consulting a qualified professional.',
+      gdT2: 'Consult before you begin.',
+      gdB2: 'See a doctor or certified exercise physiologist before starting physical activity, especially with heart disease, blood pressure issues, diabetes, back or joint problems, an existing injury, recent surgery, pregnancy, or if you are over 40 and inactive.',
+      gdT3: 'Correct form is your responsibility.',
+      gdB3: 'Perform every exercise with proper technique, appropriate load and within your ability. Progress gradually. If you are unsure how to perform an exercise, work with a certified trainer. Do not train alone with heavy weights.',
+      gdT4: 'Stop immediately if.',
+      gdB4: 'You feel sharp pain, dizziness, nausea, shortness of breath, chest pain or numbness — stop the activity and seek medical attention.',
+      gdT5: 'Accuracy of information.',
+      gdB5: 'Data and media come from external sources (Gym visual, an MIT-licensed exercise database) and are shown for convenience. Errors, translation inaccuracies or omissions are possible. No guarantee of completeness or fitness for a particular purpose.',
+      gdT6: 'Limitation of liability.',
+      gdB6: 'Use of this app is at your sole risk. The developer, AppNest and anyone acting on their behalf accept no liability for any damage, injury, loss or decision made based on information in the app, to the fullest extent permitted by law.',
+      gdT7: 'Privacy.',
+      gdB7: 'All your data — workouts, preferences, username and reminders — is stored on your device only. No personal information is sent to any server.',
+      disclaimerH: '⚠️ Disclaimer',
+      disclaimerB: 'The content in this app is general information only and is not medical advice, a diagnosis, or a personal training program. Consult a doctor or certified exercise professional before starting any physical activity, especially with a medical condition, injury, or pregnancy. Perform every exercise with proper form and within your ability — the app and its developers are not liable for any injury or damage resulting from its use.',
+      aboutTag: 'A complete exercise library — 1,324 exercises with animations and full instructions.',
+      version: 'Version', developer: 'Developed by', mediaCredit: 'Media', dataCredit: 'Data',
+      onbTitle: 'Welcome to the Exercise Library! 💪', onbSub: 'Three things worth knowing:',
+      onb1: '<strong>Search & filter</strong> — search in Hebrew or English and filter by category, equipment and target muscle.',
+      onb2: '<strong>Tap any exercise</strong> to see the animation, muscles and full instructions.',
+      onb3: '<strong>Make it yours</strong> — color palette, day/night mode, language and backup all live in Settings ⚙️.',
+      onbGo: "Let's go", hello: 'Hello',
+      tabLibrary: 'Library', tabWorkouts: 'My Workouts',
+      woNew: '+ New workout', woExport: '📥 Export backup', woImport: '📤 Import backup',
+      woEmpty: 'No workouts yet. Open an exercise in the library and tap "Add to workout", or create one here.',
+      woNoItems: 'Empty workout — add exercises from the library.',
+      woAdd: 'Add to workout', woPickTitle: 'Add to workout', woPickSub: 'Pick an existing workout or create a new one:',
+      woNamePh: 'New workout name… (e.g. Chest + Triceps)', woCreateAdd: 'Create & add',
+      woDefaultName: 'New workout', sets: 'Sets', reps: 'Reps',
+      woExercises: n => `${n} exercises`, woAdded: 'Added ✓',
+      woDeleteConfirm: 'Delete this workout?',
+      devBadge: 'Developed by Barak Aflalo', devName: 'Barak Aflalo',
+      woStart: 'Start workout ▶', sessClose: 'Exit',
+      sessExitConfirm: 'Leave mid-workout? Your progress will be saved.',
+      restLabel: 'Rest — breathe deep 💨', restSkip: 'Skip',
+      sessDoneTitle: 'Well done, workout complete!',
+      sessSummary: (sets, mins) => `${sets} sets completed · ${mins} min workout`,
+      sessFinishClose: 'Close', setWord: 'Set',
+    },
+  };
+
+  // תרגום ערכי הנתונים (קטגוריות, ציוד, שרירים)
+  const VAL_HE = {
+    // categories / body parts
+    'back': 'גב', 'cardio': 'אירובי', 'chest': 'חזה', 'lower arms': 'אמות',
+    'lower legs': 'שוקיים', 'neck': 'צוואר', 'shoulders': 'כתפיים',
+    'upper arms': 'זרועות', 'upper legs': 'ירכיים', 'waist': 'בטן ומותניים',
+    // equipment
+    'assisted': 'בסיוע', 'band': 'גומייה', 'barbell': 'מוט', 'body weight': 'משקל גוף',
+    'bosu ball': 'כדור בוסו', 'cable': 'כבל (פולי)', 'dumbbell': 'משקולת יד',
+    'elliptical machine': 'מכשיר אליפטי', 'ez barbell': 'מוט EZ', 'hammer': 'פטיש',
+    'kettlebell': 'קטלבל', 'leverage machine': 'מכונת מנוף', 'medicine ball': 'כדור כוח',
+    'olympic barbell': 'מוט אולימפי', 'resistance band': 'גומיית התנגדות', 'roller': 'רולר',
+    'rope': 'חבל', 'skierg machine': 'מכשיר סקי-ארג', 'sled machine': 'מזחלת כוח',
+    'smith machine': "מכונת סמית'", 'stability ball': 'כדור פיזיו', 'stationary bike': 'אופני כושר',
+    'stepmill machine': 'מכשיר מדרגות', 'tire': 'צמיג', 'trap bar': 'מוט טראפ',
+    'upper body ergometer': 'ארגומטר פלג גוף עליון', 'weighted': 'עם משקל', 'wheel roller': 'גלגל בטן',
+    // targets + muscles
+    'abductors': 'מרחיקי ירך', 'abs': 'בטן', 'adductors': 'מקרבי ירך', 'biceps': 'בייספס',
+    'calves': 'תאומים', 'cardiovascular system': 'מערכת לב-ריאה', 'delts': 'דלתא',
+    'forearms': 'אמות', 'glutes': 'ישבן', 'hamstrings': 'ירך אחורית', 'lats': 'רחב גבי',
+    'levator scapulae': 'מרים השכם', 'pectorals': 'חזה', 'quads': 'ארבע ראשי',
+    'serratus anterior': 'משנן קדמי', 'spine': 'עמוד שדרה', 'traps': 'טרפז',
+    'triceps': 'טרייספס', 'upper back': 'גב עליון',
+    'abdominals': 'בטן', 'ankle stabilizers': 'מייצבי קרסול', 'ankles': 'קרסוליים',
+    'brachialis': 'ברכיאליס', 'core': 'ליבה', 'deltoids': 'דלתא', 'feet': 'כפות רגליים',
+    'grip muscles': 'שרירי אחיזה', 'groin': 'מפשעה', 'hands': 'כפות ידיים',
+    'hip flexors': 'כופפי ירך', 'inner thighs': 'ירך פנימית', 'latissimus dorsi': 'רחב גבי',
+    'lower abs': 'בטן תחתונה', 'lower back': 'גב תחתון', 'obliques': 'אלכסונים',
+    'quadriceps': 'ארבע ראשי', 'rear deltoids': 'דלתא אחורית', 'rhomboids': 'מעוינים',
+    'rotator cuff': 'שרוול מסובב', 'shins': 'שוקיים קדמיות', 'soleus': 'סולאוס',
+    'sternocleidomastoid': 'שריר צוואר עוקם', 'trapezius': 'טרפז', 'upper chest': 'חזה עליון',
+    'wrist extensors': 'פושטי שורש כף היד', 'wrist flexors': 'כופפי שורש כף היד', 'wrists': 'שורשי כף היד',
+  };
+
+  let LANG = localStorage.getItem('appnest-lang') || 'he';
+  const T = key => (UI[LANG] && UI[LANG][key] !== undefined) ? UI[LANG][key] : UI.en[key];
+
+  // ── שם התרגיל לפי שפת הממשק ──
+  const HE_NAMES = (typeof EXERCISE_NAMES_HE !== 'undefined') ? EXERCISE_NAMES_HE : {};
+  const heName = ex => (ex && HE_NAMES[ex.id]) || '';
+  const exName = ex => (LANG === 'he' && heName(ex)) ? heName(ex) : (ex ? ex.name : '');
+  const tv = v => (LANG === 'he' && VAL_HE[v]) ? VAL_HE[v] : v; // ערך מתורגם, נפילה למקור
+
+  function applyStaticI18n() {
+    document.documentElement.lang = LANG;
+    document.documentElement.dir = (LANG === 'he') ? 'rtl' : 'ltr';
+    document.title = (LANG === 'he') ? 'ספריית התרגילים' : 'Exercise Library';
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const val = T(el.dataset.i18n);
+      if (typeof val === 'string') el.innerHTML = val;
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      el.placeholder = T(el.dataset.i18nPh);
+    });
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lang === LANG));
+  }
+
+  function setLang(l) {
+    LANG = l;
+    localStorage.setItem('appnest-lang', l);
+    applyStaticI18n();
+    buildFilterOptions();
+    applyFilters();
+    // שמות התרגילים מתחלפים גם באימונים ובחלון הפתוח
+    if (typeof renderWorkouts === 'function') renderWorkouts();
+    if (typeof refreshOpenModal === 'function') refreshOpenModal();
+    if (typeof remRenderDays === 'function') { remRenderDays(); remStatus(); }
+  }
+
+  // ── AppNest theme (palette + day/night) ──
+  let PALETTE = localStorage.getItem('appnest-palette') || 'gold';
+  let MODE = localStorage.getItem('appnest-mode') || 'dark';
+  function applyTheme() {
+    document.documentElement.dataset.theme = PALETTE;
+    document.documentElement.dataset.mode = MODE;
+    const mt = document.getElementById('mode-toggle');
+    if (mt) mt.textContent = MODE === 'dark' ? '☀️' : '🌙';
+    document.querySelectorAll('.palette-dot').forEach(d =>
+      d.classList.toggle('active', d.dataset.palette === PALETTE));
+    document.querySelectorAll('[data-mode-btn]').forEach(b =>
+      b.classList.toggle('active', b.dataset.modeBtn === MODE));
+  }
+
+
+  // ── State ──────────────────────────────────────────
+  const state = {
+    exercises: [],
+    filtered: [],
+    search: '',
+    filters: {
+      category: new Set(),
+      equipment: new Set(),
+      target: new Set(),
+    },
+    page: 0,
+    pageSize: 60,
+  };
+
+  // Equipment items to show initially (rest behind "show more")
+  const EQUIP_INITIAL = 10;
+
+  // ── DOM Refs ───────────────────────────────────────
+  const gridEl        = document.getElementById('exercise-grid');
+  const sentinelEl    = document.getElementById('load-sentinel');
+  const spinnerEl     = document.getElementById('load-spinner');
+  const countEl       = document.getElementById('results-count');
+  const activeFilEl   = document.getElementById('active-filters');
+  const searchEl      = document.getElementById('search');
+  const searchClearEl = document.getElementById('search-clear');
+  const modalOverlay  = document.getElementById('modal-overlay');
+  const modalTitle    = document.getElementById('modal-title');
+  const modalGif      = document.getElementById('modal-gif');
+  const modalMeta     = document.getElementById('modal-meta');
+  const modalMuscles  = document.getElementById('modal-muscles');
+  const modalInstr    = document.getElementById('modal-instructions');
+  const modalClose    = document.getElementById('modal-close');
+
+  // ── Utility ────────────────────────────────────────
+  function debounce(fn, ms) {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  }
+
+  function capitalize(str) {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+  }
+
+  function uniqueSorted(arr) {
+    return [...new Set(arr)].sort();
+  }
+
+  // ── Data Loading ───────────────────────────────────
+  function init() {
+    state.exercises = EXERCISES;
+
+    // Pre-compute search index per exercise
+    state.exercises.forEach(ex => {
+      ex._idx = `${ex.name} ${ex.category} ${ex.target} ${ex.equipment} ${ex.muscle_group} ${VAL_HE[ex.category]||''} ${VAL_HE[ex.target]||''} ${VAL_HE[ex.equipment]||''} ${VAL_HE[ex.muscle_group]||''} ${heName(ex)}`.toLowerCase();
+    });
+
+    applyTheme();
+    applyStaticI18n();
+    buildFilterOptions();
+    applyFilters();
+    wireEvents();
+
+    document.querySelectorAll('.palette-dot').forEach(d =>
+      d.addEventListener('click', () => {
+        PALETTE = d.dataset.palette;
+        localStorage.setItem('appnest-palette', PALETTE);
+        applyTheme();
+      }));
+    function setMode(m) {
+      MODE = m;
+      localStorage.setItem('appnest-mode', MODE);
+      applyTheme();
+    }
+    document.getElementById('mode-toggle').addEventListener('click', () =>
+      setMode(MODE === 'dark' ? 'light' : 'dark'));
+    document.querySelectorAll('[data-mode-btn]').forEach(b =>
+      b.addEventListener('click', () => setMode(b.dataset.modeBtn)));
+    document.querySelectorAll('.lang-btn').forEach(b =>
+      b.addEventListener('click', () => setLang(b.dataset.lang)));
+
+    // ── AppNest: settings / about / onboarding ──
+    const settingsOv = document.getElementById('settings-overlay');
+    const aboutOv    = document.getElementById('about-overlay');
+    const onbOv      = document.getElementById('onb-overlay');
+    const userInput  = document.getElementById('set-username');
+    const langSelect = document.getElementById('set-lang');
+
+    function updateGreeting() {
+      const g = document.getElementById('greeting');
+      const name = localStorage.getItem('appnest-username') || '';
+      g.hidden = !name;
+      if (name) g.innerHTML = `${T('hello')}, <strong></strong>`,
+                g.querySelector('strong').textContent = name;
+    }
+    updateGreeting();
+
+    document.getElementById('open-settings').addEventListener('click', () => {
+      userInput.value = localStorage.getItem('appnest-username') || '';
+      langSelect.value = LANG;
+      applyStaticI18n();          // מאפס טקסטים זמניים (מחיקה / ייבוא)
+      applyTheme();               // מסמן ערכת צבע ומצב תצוגה נוכחיים
+      resetStep = 0;
+      settingsOv.classList.add('open');
+    });
+    document.getElementById('settings-close').addEventListener('click', () => settingsOv.classList.remove('open'));
+    document.getElementById('settings-save').addEventListener('click', () => {
+      localStorage.setItem('appnest-username', userInput.value.trim());
+      if (langSelect.value !== LANG) setLang(langSelect.value);
+      updateGreeting();
+      settingsOv.classList.remove('open');
+    });
+
+    document.getElementById('open-about').addEventListener('click', () => aboutOv.classList.add('open'));
+    document.getElementById('about-close').addEventListener('click', () => aboutOv.classList.remove('open'));
+    document.getElementById('about-share').addEventListener('click', shareApp);
+    document.getElementById('about-feedback').addEventListener('click', sendFeedback);
+    document.getElementById('about-appnest').addEventListener('click', () =>
+      window.open('https://barakaflalo.github.io/appnest', '_blank', 'noopener'));
+
+    // ── תזכורת אימון ──
+    remWire();
+
+    [settingsOv, aboutOv].forEach(ov =>
+      ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); }));
+
+    // ── הסרת אחריות: שער הסכמה + תנאים מלאים ──
+    const DISC_VERSION = '1';
+    const DISC_KEY = 'appnest-disclaimer';
+    const consentOv = document.getElementById('consent-overlay');
+    const discOv    = document.getElementById('disc-overlay');
+
+    const discRead = () => { try { return JSON.parse(localStorage.getItem(DISC_KEY)) || null; } catch { return null; } };
+    const discOk   = () => { const r = discRead(); return !!r && r.v === DISC_VERSION; };
+
+    function discStamp() {
+      const el = document.getElementById('disc-accepted');
+      const r = discRead();
+      el.textContent = (r && r.at) ? T('gdAcceptedOn')(new Date(r.at).toLocaleDateString()) : '';
+    }
+    function openDisc() {
+      discStamp();
+      discOv.classList.add('open');
+    }
+    // כל אלמנט עם data-gd-open פותח את התנאים המלאים
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-gd-open]');
+      if (!t) return;
+      e.preventDefault();
+      settingsOv.classList.remove('open');
+      aboutOv.classList.remove('open');
+      openDisc();
+    });
+    document.getElementById('disc-close').addEventListener('click', () => discOv.classList.remove('open'));
+    discOv.addEventListener('click', e => { if (e.target === discOv) discOv.classList.remove('open'); });
+
+    const consentChk = document.getElementById('consent-check');
+    const consentBtn = document.getElementById('consent-accept');
+    consentChk.addEventListener('change', () => { consentBtn.disabled = !consentChk.checked; });
+    consentBtn.addEventListener('click', () => {
+      if (!consentChk.checked) return;
+      try { localStorage.setItem(DISC_KEY, JSON.stringify({ v: DISC_VERSION, at: Date.now() })); } catch {}
+      consentOv.classList.remove('open');
+      if (!localStorage.getItem('appnest-onboarded')) onbOv.classList.add('open');
+    });
+
+    // מדריך הפעלה ראשונה — רק אחרי אישור התנאים
+    if (!discOk()) {
+      consentChk.checked = false;
+      consentBtn.disabled = true;
+      consentOv.classList.add('open');
+    } else if (!localStorage.getItem('appnest-onboarded')) {
+      onbOv.classList.add('open');
+    }
+    document.getElementById('onb-close').addEventListener('click', () => {
+      localStorage.setItem('appnest-onboarded', '1');
+      onbOv.classList.remove('open');
+    });
+    onbOv.addEventListener('click', e => { if (e.target === onbOv) onbOv.classList.remove('open'); });
+
+    // פתיחת המדריך מתוך ההגדרות
+    document.getElementById('open-guide').addEventListener('click', () => {
+      settingsOv.classList.remove('open');
+      onbOv.classList.add('open');
+    });
+
+    // מחיקת כל הנתונים — לחיצה כפולה לאישור
+    const resetBtn = document.getElementById('reset-all');
+    let resetStep = 0, resetTimer;
+    resetBtn.addEventListener('click', () => {
+      clearTimeout(resetTimer);
+      if (resetStep === 0) {
+        resetStep = 1;
+        resetBtn.textContent = T('resetConfirm');
+        resetTimer = setTimeout(() => { resetStep = 0; resetBtn.textContent = T('resetBtn'); }, 4000);
+        return;
+      }
+      ['appnest-workouts', 'appnest-session', 'appnest-username', 'appnest-palette', 'appnest-mode', 'appnest-onboarded', 'appnest-reminder', 'appnest-disclaimer']
+        .forEach(k => localStorage.removeItem(k));
+      resetStep = 0;
+      resetBtn.textContent = T('resetDone');
+      setTimeout(() => location.reload(), 700);
+    });
+
+    // ── My Workouts ──
+    initWorkouts();
+    wireSession();
+
+    // ── PWA: רישום Service Worker ──
+    if ('serviceWorker' in navigator && location.protocol === 'https:') {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  }
+
+
+  // ══════════════════════════════════════════════════
+  //  טוסט
+  // ══════════════════════════════════════════════════
+  function toast(msg) {
+    const wrap = document.getElementById('toast-wrap');
+    if (!wrap) return;
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  // ══════════════════════════════════════════════════
+  //  תזכורת אימון אישית
+  // ══════════════════════════════════════════════════
+  const REM_KEY = 'appnest-reminder';
+  const REM = { on: false, days: [0, 2, 4], time: '18:00', msg: '', last: 0 };
+
+  function remLoad() {
+    try { Object.assign(REM, JSON.parse(localStorage.getItem(REM_KEY)) || {}); } catch {}
+    if (!Array.isArray(REM.days)) REM.days = [0, 2, 4];
+  }
+  function remSave() { try { localStorage.setItem(REM_KEY, JSON.stringify(REM)); } catch {} }
+
+  const remSupported = () => 'Notification' in window;
+  const remSecure    = () => window.isSecureContext || location.protocol === 'https:' || location.hostname === 'localhost';
+
+  // מועד ההפעלה הבא אחרי נקודת זמן נתונה
+  function remNextAfter(from) {
+    if (!REM.on || !REM.days.length) return null;
+    const [h, m] = (REM.time || '18:00').split(':').map(Number);
+    for (let i = 0; i < 8; i++) {
+      const d = new Date(from);
+      d.setDate(d.getDate() + i);
+      d.setHours(h, m, 0, 0);
+      if (REM.days.includes(d.getDay()) && d.getTime() > from.getTime()) return d;
+    }
+    return null;
+  }
+
+  function remFire() {
+    const body = (REM.msg || '').trim() || T('remDefault');
+    REM.last = Date.now(); remSave();
+    if (!remSupported() || Notification.permission !== 'granted') {
+      toast(T('remTitle') + ' — ' + body);
+      return;
+    }
+    const opts = { body, icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', tag: 'appnest-workout', renotify: true, data: { url: './index.html' } };
+    const direct = () => { try { new Notification(T('remTitle'), opts); } catch { toast(T('remTitle') + ' — ' + body); } };
+    const sw = navigator.serviceWorker;
+    if (sw && typeof sw.getRegistration === 'function') {
+      Promise.resolve(sw.getRegistration())
+        .then(reg => { if (reg && reg.showNotification) reg.showNotification(T('remTitle'), opts); else direct(); })
+        .catch(direct);
+    } else direct();
+  }
+
+  // תזכורות ברקע (Notification Triggers — נתמך בעיקר בכרום/אנדרואיד)
+  async function remArmBackground() {
+    if (!remSupported() || !('showTrigger' in Notification.prototype)) return false;
+    if (Notification.permission !== 'granted') return false;
+    const reg = await navigator.serviceWorker?.getRegistration?.();
+    if (!reg) return false;
+    try {
+      const old = await reg.getNotifications({ includeTriggered: true });
+      old.filter(n => (n.tag || '').startsWith('appnest-rem-')).forEach(n => n.close());
+      let cur = new Date();
+      const body = (REM.msg || '').trim() || T('remDefault');
+      for (let i = 0; i < 8; i++) {
+        const when = remNextAfter(cur);
+        if (!when) break;
+        await reg.showNotification(T('remTitle'), {
+          body, tag: 'appnest-rem-' + when.getTime(),
+          icon: 'icons/icon-192.png', badge: 'icons/icon-192.png',
+          showTrigger: new TimestampTrigger(when.getTime()),
+          data: { url: './index.html' },
+        });
+        cur = when;
+      }
+      return true;
+    } catch { return false; }
+  }
+
+  function remRenderDays() {
+    const box = document.getElementById('rem-days');
+    if (!box) return;
+    const names = T('remDayNames');
+    box.innerHTML = '';
+    for (let d = 0; d < 7; d++) {
+      const b = document.createElement('button');
+      b.className = 'an-day' + (REM.days.includes(d) ? ' active' : '');
+      b.textContent = names[d];
+      b.title = T('remDayFull')[d];
+      b.addEventListener('click', () => {
+        const k = REM.days.indexOf(d);
+        if (k >= 0) REM.days.splice(k, 1); else REM.days.push(d);
+        REM.days.sort();
+        remSave(); remRenderDays(); remRefresh();
+      });
+      box.appendChild(b);
+    }
+  }
+
+  function remStatus() {
+    const el = document.getElementById('rem-status');
+    if (!el) return;
+    el.classList.remove('warn');
+    if (!REM.on)            { el.textContent = T('remOff'); return; }
+    if (!remSupported())    { el.textContent = T('remUnsupported'); el.classList.add('warn'); return; }
+    if (!remSecure())       { el.textContent = T('remInsecure');    el.classList.add('warn'); return; }
+    if (Notification.permission === 'denied') { el.textContent = T('remDenied'); el.classList.add('warn'); return; }
+    if (!REM.days.length)   { el.textContent = T('remNoDays');      el.classList.add('warn'); return; }
+
+    const nx = remNextAfter(new Date());
+    if (!nx) { el.textContent = T('remNoDays'); el.classList.add('warn'); return; }
+    const hhmm = nx.toTimeString().slice(0, 5);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const diff = Math.round((new Date(nx).setHours(0, 0, 0, 0) - today) / 864e5);
+    let line;
+    if (diff === 0)      line = T('remNextToday')(hhmm);
+    else if (diff === 1) line = T('remNextTomorrow')(hhmm);
+    else                 line = T('remNext')(T('remDayFull')[nx.getDay()], hhmm);
+    const bg = ('showTrigger' in (window.Notification?.prototype || {})) ? T('remBgOn') : T('remBgOff');
+    el.textContent = line + ' · ' + bg;
+  }
+
+  let remTimer = null, remNext = null;
+  function remRefresh() {
+    remNext = remNextAfter(new Date());
+    remStatus();
+    remArmBackground();
+    clearInterval(remTimer);
+    if (!REM.on || !remNext) return;
+    remTimer = setInterval(() => {
+      if (!REM.on) { clearInterval(remTimer); return; }
+      if (remNext && Date.now() >= remNext.getTime()) {
+        remFire();
+        remNext = remNextAfter(new Date());
+        remStatus();
+      }
+    }, 20000);
+  }
+
+  // תזכורת שפוספסה בזמן שהאפליקציה הייתה סגורה (עד 6 שעות אחורה)
+  function remCheckMissed() {
+    if (!REM.on || !REM.days.length) return;
+    const now = Date.now();
+    const since = Math.max(REM.last || 0, now - 6 * 3600e3);
+    let cur = new Date(since), hit = null;
+    for (let i = 0; i < 10; i++) {
+      const d = remNextAfter(cur);
+      if (!d || d.getTime() > now) break;
+      hit = d; cur = d;
+    }
+    if (hit) { REM.last = now; remSave(); toast(T('remMissed')); }
+  }
+
+  async function remSetOn(on) {
+    if (on && remSupported() && remSecure() && Notification.permission === 'default') {
+      try { await Notification.requestPermission(); } catch {}
+    }
+    REM.on = on; remSave();
+    document.getElementById('rem-toggle')?.classList.toggle('on', on);
+    document.getElementById('rem-toggle')?.setAttribute('aria-checked', String(on));
+    document.getElementById('rem-body')?.classList.toggle('open', on);
+    remRefresh();
+    if (on) toast(T('remSaved'));
+  }
+
+  function remWire() {
+    remLoad();
+    const tg = document.getElementById('rem-toggle');
+    const tm = document.getElementById('rem-time');
+    const tx = document.getElementById('rem-text');
+    if (!tg) return;
+    tg.classList.toggle('on', REM.on);
+    tg.setAttribute('aria-checked', String(REM.on));
+    document.getElementById('rem-body')?.classList.toggle('open', REM.on);
+    tm.value = REM.time || '18:00';
+    tx.value = REM.msg || '';
+    remRenderDays();
+
+    tg.addEventListener('click', () => remSetOn(!REM.on));
+    tm.addEventListener('change', () => { REM.time = tm.value || '18:00'; remSave(); remRefresh(); });
+    tx.addEventListener('change', () => { REM.msg = tx.value.trim(); remSave(); remRefresh(); });
+    document.getElementById('rem-test').addEventListener('click', async () => {
+      if (remSupported() && remSecure() && Notification.permission === 'default') {
+        try { await Notification.requestPermission(); } catch {}
+      }
+      remFire(); toast(T('remTestSent')); remStatus();
+    });
+
+    remRefresh();
+    remCheckMissed();
+  }
+
+  // ══════════════════════════════════════════════════
+  //  אודות — שיתוף ומשוב
+  // ══════════════════════════════════════════════════
+  function shareApp() {
+    const url = location.href.split('#')[0];
+    const txt = T('shareTxt') + ' | ' + url;
+    if (navigator.share) navigator.share({ title: 'AppNest', text: T('shareTxt'), url }).catch(() => {});
+    else navigator.clipboard?.writeText(txt).then(() => toast(T('shareCopied'))).catch(() => {});
+  }
+  function sendFeedback() {
+    window.open('mailto:appnest55@gmail.com?subject=' + encodeURIComponent('Exercise Library Feedback'), '_blank');
+  }
+
+  // ── Build Filter Chips ─────────────────────────────
+  function buildFilterOptions() {
+    const cats   = uniqueSorted(state.exercises.map(e => e.category));
+    const equips = uniqueSorted(state.exercises.map(e => e.equipment));
+    const targets = uniqueSorted(state.exercises.map(e => e.target));
+
+    renderChips('category-chips',  cats,   'category');
+    renderChips('equipment-chips', equips, 'equipment');
+    renderChips('target-chips',    targets,'target');
+  }
+
+  function renderChips(containerId, values, filterKey, initialLimit = null) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    const toShow = initialLimit ? values.slice(0, initialLimit) : values;
+    const rest   = initialLimit ? values.slice(initialLimit) : [];
+
+    toShow.forEach(val => {
+      container.appendChild(makeChip(val, filterKey));
+    });
+
+    if (rest.length > 0) {
+      // Hidden chips
+      const hiddenWrap = document.createElement('div');
+      hiddenWrap.style.cssText = 'display:none;flex-wrap:wrap;gap:5px;width:100%;';
+      rest.forEach(val => hiddenWrap.appendChild(makeChip(val, filterKey)));
+      container.appendChild(hiddenWrap);
+
+      // Show more button
+      const moreBtn = document.createElement('button');
+      moreBtn.className = 'chip filter-show-more';
+      moreBtn.textContent = `+${T('showMore')(rest.length)}`;
+      moreBtn.addEventListener('click', () => {
+        hiddenWrap.style.display = 'flex';
+        moreBtn.remove();
+      });
+      container.appendChild(moreBtn);
+    }
+  }
+
+  function makeChip(value, filterKey) {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = tv(value);
+    btn.dataset.filter = filterKey;
+    btn.dataset.value  = value;
+    return btn;
+  }
+
+  // ── Filter Logic ───────────────────────────────────
+  function toggleFilter(key, value) {
+    const set = state.filters[key];
+    if (set.has(value)) set.delete(value);
+    else set.add(value);
+  }
+
+  function applyFilters() {
+    const q = state.search.toLowerCase().trim();
+    const { category, equipment, target } = state.filters;
+
+    state.filtered = state.exercises.filter(ex => {
+      if (q && !ex._idx.includes(q)) return false;
+      if (category.size  && !category.has(ex.category))   return false;
+      if (equipment.size && !equipment.has(ex.equipment))  return false;
+      if (target.size    && !target.has(ex.target))        return false;
+      return true;
+    });
+
+    state.page = 0;
+    renderGrid();
+    updateResultsBar();
+    updateActiveBadges();
+  }
+
+  // ── Rendering ──────────────────────────────────────
+  function renderGrid() {
+    gridEl.innerHTML = '';
+    const slice = state.filtered.slice(0, state.pageSize);
+
+    if (slice.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = `<p>🔍</p><p>${T('noResults')}</p>`;
+      gridEl.appendChild(empty);
+      spinnerEl.classList.remove('visible');
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    slice.forEach(ex => frag.appendChild(createCard(ex)));
+    gridEl.appendChild(frag);
+
+    const hasMore = state.filtered.length > state.pageSize;
+    spinnerEl.classList.toggle('visible', hasMore);
+  }
+
+  function appendNextPage() {
+    state.page++;
+    const start = state.page * state.pageSize;
+    const end   = start + state.pageSize;
+    const slice = state.filtered.slice(start, end);
+    if (slice.length === 0) return;
+
+    const frag = document.createDocumentFragment();
+    slice.forEach(ex => frag.appendChild(createCard(ex)));
+    gridEl.appendChild(frag);
+
+    const hasMore = end < state.filtered.length;
+    spinnerEl.classList.toggle('visible', hasMore);
+  }
+
+  function createCard(ex) {
+    const article = document.createElement('article');
+    article.className = 'exercise-card';
+    article.dataset.id = ex.id;
+
+    // Media
+    const media = document.createElement('div');
+    media.className = 'card-media';
+
+    const thumb = document.createElement('img');
+    thumb.className = 'card-thumb';
+    thumb.src = ex.image;
+    thumb.alt = exName(ex);
+    thumb.loading = 'lazy';
+
+    const gif = document.createElement('img');
+    gif.className = 'card-gif';
+    gif.dataset.src = ex.gif_url;
+    gif.alt = '';
+
+    media.appendChild(thumb);
+    media.appendChild(gif);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const name = document.createElement('h3');
+    name.className = 'card-name';
+    name.textContent = exName(ex);
+
+    const tags = document.createElement('div');
+    tags.className = 'card-tags';
+
+    const catTag = document.createElement('span');
+    catTag.className = 'tag tag-cat';
+    catTag.textContent = tv(ex.category);
+
+    const equipTag = document.createElement('span');
+    equipTag.className = 'tag tag-equip';
+    equipTag.textContent = tv(ex.equipment);
+
+    tags.appendChild(catTag);
+    tags.appendChild(equipTag);
+    body.appendChild(name);
+    body.appendChild(tags);
+    article.appendChild(media);
+    article.appendChild(body);
+
+    return article;
+  }
+
+  function renderSkeletons(count) {
+    gridEl.innerHTML = '';
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const card = document.createElement('div');
+      card.className = 'skeleton-card';
+      card.innerHTML = `
+        <div class="skeleton-media"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>`;
+      frag.appendChild(card);
+    }
+    gridEl.appendChild(frag);
+  }
+
+  // ── Results Bar ────────────────────────────────────
+  function updateResultsBar() {
+    const total = state.filtered.length;
+    const all   = state.exercises.length;
+    countEl.textContent = total === all
+      ? T('countAll')(all.toLocaleString())
+      : T('countOf')(total.toLocaleString(), all.toLocaleString());
+  }
+
+  function updateActiveBadges() {
+    activeFilEl.innerHTML = '';
+    const { category, equipment, target } = state.filters;
+    let hasAny = false;
+
+    const addBadges = (set, key) => {
+      set.forEach(val => {
+        hasAny = true;
+        const badge = document.createElement('span');
+        badge.className = 'active-badge';
+        badge.innerHTML = `${tv(val)}<button class="active-badge-remove" data-filter="${key}" data-value="${val}" aria-label="Remove ${val}">×</button>`;
+        activeFilEl.appendChild(badge);
+      });
+    };
+
+    addBadges(category,  'category');
+    addBadges(equipment, 'equipment');
+    addBadges(target,    'target');
+
+    if (hasAny) {
+      const clearAll = document.createElement('button');
+      clearAll.className = 'clear-all';
+      clearAll.textContent = T('clearAll');
+      clearAll.addEventListener('click', clearAllFilters);
+      activeFilEl.appendChild(clearAll);
+    }
+  }
+
+  function clearAllFilters() {
+    state.filters.category.clear();
+    state.filters.equipment.clear();
+    state.filters.target.clear();
+    state.search = '';
+    searchEl.value = '';
+    searchClearEl.classList.remove('visible');
+
+    // Deactivate all chips
+    document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+    applyFilters();
+  }
+
+  // ── Modal ──────────────────────────────────────────
+  // רענון חלון פתוח אחרי החלפת שפה
+  function refreshOpenModal() {
+    if (!modalOverlay.classList.contains('open')) return;
+    const id = modalGif.dataset.exId;
+    if (id) openModal(id);
+  }
+
+  function openModal(id) {
+    const ex = state.exercises.find(e => e.id === id);
+    if (!ex) return;
+
+    modalTitle.textContent = exName(ex);
+    modalGif.src = ex.gif_url;
+    modalGif.alt = exName(ex);
+    modalGif.dataset.exId = ex.id;
+
+    // Meta chips
+    modalMeta.innerHTML = '';
+    const metaItems = [
+      { label: T('bodyPart'),  value: tv(ex.body_part || ex.category) },
+      { label: T('equipment'), value: tv(ex.equipment) },
+      { label: T('target'),    value: tv(ex.target) },
+    ];
+    metaItems.forEach(({ label, value }) => {
+      const chip = document.createElement('div');
+      chip.className = 'meta-chip';
+      chip.innerHTML = `<span class="meta-chip-label">${label}</span><span class="meta-chip-value">${value}</span>`;
+      modalMeta.appendChild(chip);
+    });
+
+    // Muscles
+    modalMuscles.innerHTML = '';
+    const primaryMuscles = ex.target ? [ex.target] : [];
+    const secondaryRaw = ex.secondary_muscles || (ex.muscle_group ? [ex.muscle_group] : []);
+    const secondaryMuscles = secondaryRaw.filter(m => m !== ex.target);
+
+    const musclesHeader = document.createElement('div');
+    musclesHeader.className = 'modal-muscles-label';
+    musclesHeader.textContent = T('muscles');
+    modalMuscles.appendChild(musclesHeader);
+
+    const musclesGrid = document.createElement('div');
+    musclesGrid.className = 'muscles-grid';
+
+    const makeMuscleGroup = (title, names, isPrimary) => {
+      const group = document.createElement('div');
+      group.className = 'muscles-group';
+      const lbl = document.createElement('div');
+      lbl.className = 'muscles-group-label';
+      lbl.textContent = title;
+      const row = document.createElement('div');
+      row.className = 'muscle-tags';
+      names.forEach(name => {
+        const t = document.createElement('span');
+        t.className = 'muscle-tag' + (isPrimary ? ' primary' : '');
+        t.textContent = tv(name);
+        row.appendChild(t);
+      });
+      group.appendChild(lbl);
+      group.appendChild(row);
+      return group;
+    };
+
+    if (primaryMuscles.length > 0)   musclesGrid.appendChild(makeMuscleGroup(T('primary'), primaryMuscles, true));
+    if (secondaryMuscles.length > 0)  musclesGrid.appendChild(makeMuscleGroup(T('secondary'), secondaryMuscles, false));
+    if (primaryMuscles.length > 0 || secondaryMuscles.length > 0) modalMuscles.appendChild(musclesGrid);
+
+    // Instructions — format is always keyed by language code
+    modalInstr.innerHTML = '';
+    const LANG_LABELS = { he: 'עברית', en: 'English', es: 'Español', it: 'Italiano', tr: 'Türkçe', ru: 'Русский', zh: '简体中文', hi: 'हिन्दी', pl: 'Polski', ko: '한국어', fr: 'Français' };
+    const langOrder = LANG === 'he'
+      ? ['he', 'en', 'es', 'it', 'tr', 'ru', 'zh', 'hi', 'pl', 'ko', 'fr']
+      : [LANG, 'he', 'en', 'es', 'it', 'tr', 'ru', 'zh', 'hi', 'pl', 'ko', 'fr'].filter((v, i, a) => a.indexOf(v) === i);
+    const langs = langOrder
+      .map(code => ({ code, steps: ex.instruction_steps?.[code] ?? [] }))
+      .filter(l => l.steps.length > 0);
+
+    if (langs.length > 0) {
+      const instrLabel = document.createElement('span');
+      instrLabel.className = 'modal-instructions-label';
+      instrLabel.textContent = T('instructions');
+      modalInstr.appendChild(instrLabel);
+
+      const list = document.createElement('ol');
+      list.className = 'instructions-list';
+
+      function renderSteps(steps) {
+        list.innerHTML = '';
+        steps.forEach((step, i) => {
+          const li = document.createElement('li');
+          li.className = 'instruction-step';
+          li.innerHTML = `<span class="step-num">${i + 1}</span><span class="step-text">${step}</span>`;
+          list.appendChild(li);
+        });
+      }
+
+      if (langs.length > 1) {
+        const tabs = document.createElement('div');
+        tabs.className = 'lang-tabs';
+        const tabButtons = langs.map((l, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'lang-tab' + (i === 0 ? ' active' : '');
+          btn.textContent = LANG_LABELS[l.code] ?? l.code;
+          tabs.appendChild(btn);
+          return btn;
+        });
+        modalInstr.appendChild(tabs);
+
+        tabButtons.forEach((btn, i) => {
+          btn.addEventListener('click', () => {
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderSteps(langs[i].steps);
+          });
+        });
+      }
+
+      renderSteps(langs[0].steps);
+      modalInstr.appendChild(list);
+    }
+
+    modalOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    modalClose.focus();
+  }
+
+  // ═══════ My Workouts ═══════
+  const WO_KEY = 'appnest-workouts';
+  let pendingExId = null;
+
+  const loadWo = () => { try { return JSON.parse(localStorage.getItem(WO_KEY)) || []; } catch { return []; } };
+  const saveWo = ws => localStorage.setItem(WO_KEY, JSON.stringify(ws));
+  const exById = id => state.exercises.find(e => e.id === id);
+
+  function initWorkouts() {
+    const tabLib = document.getElementById('tab-library');
+    const tabWo  = document.getElementById('tab-workouts');
+    const woView = document.getElementById('workouts-view');
+    const gridWrap = document.querySelector('.grid-wrapper');
+    const resultsBar = document.querySelector('.results-bar');
+
+    function showView(which) {
+      const lib = which === 'lib';
+      tabLib.classList.toggle('active', lib);
+      tabWo.classList.toggle('active', !lib);
+      gridWrap.style.display = lib ? '' : 'none';
+      resultsBar.style.display = lib ? '' : 'none';
+      woView.hidden = lib;
+      if (!lib) renderWorkouts();
+    }
+    tabLib.addEventListener('click', () => showView('lib'));
+    tabWo.addEventListener('click', () => showView('wo'));
+
+    document.getElementById('wo-new').addEventListener('click', () => {
+      const ws = loadWo();
+      ws.push({ id: Date.now().toString(36), name: T('woDefaultName'), items: [] });
+      saveWo(ws); renderWorkouts();
+    });
+
+    // ייצוא/ייבוא גיבוי — הנתונים אצל המשתמש
+    document.getElementById('wo-export').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(loadWo(), null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'appnest-workouts-backup.json';
+      a.click(); URL.revokeObjectURL(a.href);
+    });
+    const importFile = document.getElementById('wo-import-file');
+    const importBtn  = document.getElementById('wo-import');
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', async () => {
+      const f = importFile.files[0]; if (!f) return;
+      let ok = false;
+      try {
+        const arr = JSON.parse(await f.text());
+        if (Array.isArray(arr)) { saveWo(arr); renderWorkouts(); ok = true; }
+      } catch {}
+      importBtn.textContent = ok ? T('importOk') : T('importErr');
+      setTimeout(() => { importBtn.textContent = T('woImport'); }, 1600);
+      importFile.value = '';
+    });
+
+    // picker
+    document.getElementById('modal-add-workout').addEventListener('click', () => {
+      pendingExId = modalGif.dataset.exId;
+      renderPicker();
+      document.getElementById('wo-picker').classList.add('open');
+    });
+    document.getElementById('wo-picker-close').addEventListener('click', () =>
+      document.getElementById('wo-picker').classList.remove('open'));
+    document.getElementById('wo-picker').addEventListener('click', e => {
+      if (e.target.id === 'wo-picker') e.target.classList.remove('open');
+    });
+    document.getElementById('wo-picker-create').addEventListener('click', () => {
+      const nameEl = document.getElementById('wo-picker-new');
+      const name = nameEl.value.trim() || T('woDefaultName');
+      const ws = loadWo();
+      const w = { id: Date.now().toString(36), name, items: [] };
+      ws.push(w); addToWorkout(ws, w.id); nameEl.value = '';
+    });
+  }
+
+  function renderPicker() {
+    const list = document.getElementById('wo-picker-list');
+    list.innerHTML = '';
+    loadWo().forEach(w => {
+      const b = document.createElement('button');
+      b.className = 'wo-picker-item';
+      b.textContent = `${w.name} · ${T('woExercises')(w.items.length)}`;
+      b.addEventListener('click', () => addToWorkout(loadWo(), w.id));
+      list.appendChild(b);
+    });
+  }
+
+  function addToWorkout(ws, woId) {
+    const w = ws.find(x => x.id === woId);
+    if (w && pendingExId && !w.items.some(i => i.exId === pendingExId)) {
+      w.items.push({ exId: pendingExId, sets: 3, reps: 12 });
+    }
+    saveWo(ws);
+    document.getElementById('wo-picker').classList.remove('open');
+    const btn = document.getElementById('modal-add-workout');
+    const orig = btn.innerHTML;
+    btn.innerHTML = T('woAdded');
+    setTimeout(() => { btn.innerHTML = orig; applyStaticI18n(); }, 1200);
+  }
+
+  function renderWorkouts() {
+    const listEl = document.getElementById('wo-list');
+    listEl.innerHTML = '';
+    const ws = loadWo();
+    if (ws.length === 0) {
+      listEl.innerHTML = `<div class="wo-empty">${T('woEmpty')}</div>`;
+      return;
+    }
+    ws.forEach(w => {
+      const card = document.createElement('div');
+      card.className = 'wo-card';
+
+      const head = document.createElement('div');
+      head.className = 'wo-head';
+      const nameIn = document.createElement('input');
+      nameIn.className = 'an-input wo-name';
+      nameIn.value = w.name;
+      nameIn.addEventListener('change', () => {
+        const all = loadWo(); all.find(x => x.id === w.id).name = nameIn.value.trim() || T('woDefaultName');
+        saveWo(all);
+      });
+      const count = document.createElement('span');
+      count.className = 'wo-count';
+      count.textContent = T('woExercises')(w.items.length);
+      const start = document.createElement('button');
+      start.className = 'wo-start';
+      start.textContent = T('woStart');
+      start.disabled = w.items.length === 0;
+      if (w.items.length === 0) start.style.opacity = 0.4;
+      start.addEventListener('click', () => startSession(w.id));
+
+      const del = document.createElement('button');
+      del.className = 'wo-del'; del.textContent = '🗑';
+      del.addEventListener('click', () => {
+        if (!confirm(T('woDeleteConfirm'))) return;
+        saveWo(loadWo().filter(x => x.id !== w.id)); renderWorkouts();
+      });
+      head.append(nameIn, count, start, del);
+      card.appendChild(head);
+
+      if (w.items.length === 0) {
+        const p = document.createElement('div');
+        p.className = 'wo-empty'; p.style.padding = '14px 0';
+        p.textContent = T('woNoItems');
+        card.appendChild(p);
+      }
+
+      w.items.forEach((item, idx) => {
+        const ex = exById(item.exId);
+        if (!ex) return;
+        const row = document.createElement('div');
+        row.className = 'wo-item';
+        const img = document.createElement('img');
+        img.src = ex.image; img.loading = 'lazy'; img.alt = '';
+        const nm = document.createElement('div');
+        nm.className = 'wo-item-name';
+        nm.innerHTML = `${exName(ex)}<small>${tv(ex.target)} · ${tv(ex.equipment)}</small>`;
+        nm.style.cursor = 'pointer';
+        nm.addEventListener('click', () => openModal(ex.id));
+
+        const mkNum = (val, key) => {
+          const wrap = document.createElement('span');
+          wrap.className = 'wo-sr';
+          const inp = document.createElement('input');
+          inp.type = 'number'; inp.min = 1; inp.max = 99; inp.value = val;
+          inp.addEventListener('change', () => {
+            const all = loadWo();
+            all.find(x => x.id === w.id).items[idx][key] = Math.max(1, +inp.value || 1);
+            saveWo(all);
+          });
+          const lbl = document.createElement('span');
+          lbl.textContent = T(key === 'sets' ? 'sets' : 'reps');
+          wrap.append(inp, lbl);
+          return wrap;
+        };
+
+        const rm = document.createElement('button');
+        rm.className = 'wo-item-remove'; rm.textContent = '×';
+        rm.addEventListener('click', () => {
+          const all = loadWo();
+          const cur = all.find(x => x.id === w.id);
+          cur.items = cur.items.filter(i => i.exId !== item.exId);
+          saveWo(all); renderWorkouts();
+        });
+
+        row.append(img, nm, mkNum(item.sets, 'sets'), mkNum(item.reps, 'reps'), rm);
+        card.appendChild(row);
+      });
+
+      listEl.appendChild(card);
+    });
+  }
+
+  // ═══════ Active Workout Session ═══════
+  const SESS_KEY = 'appnest-session';
+  let sess = null, restIv = null, clockIv = null;
+
+  function startSession(woId) {
+    const w = loadWo().find(x => x.id === woId);
+    if (!w || w.items.length === 0) return;
+    const saved = (() => { try { return JSON.parse(localStorage.getItem(SESS_KEY)); } catch { return null; } })();
+    if (saved && saved.woId === woId) {
+      sess = saved; // המשך אימון שנקטע
+    } else {
+      sess = {
+        woId, name: w.name, startedAt: Date.now(),
+        items: w.items.map(i => ({ exId: i.exId, reps: i.reps, done: Array(i.sets).fill(false) })),
+      };
+    }
+    persistSess();
+    renderSession();
+    document.getElementById('session-overlay').classList.add('open');
+    clockIv = setInterval(updateClock, 1000);
+    updateClock();
+  }
+
+  const persistSess = () => localStorage.setItem(SESS_KEY, JSON.stringify(sess));
+
+  function updateClock() {
+    if (!sess) return;
+    const s = Math.floor((Date.now() - sess.startedAt) / 1000);
+    document.getElementById('sess-clock').textContent =
+      `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  }
+
+  function sessTotals() {
+    let done = 0, total = 0;
+    sess.items.forEach(it => { done += it.done.filter(Boolean).length; total += it.done.length; });
+    return { done, total };
+  }
+
+  function renderSession() {
+    document.getElementById('sess-title').textContent = sess.name;
+    const list = document.getElementById('sess-list');
+    list.innerHTML = '';
+    document.getElementById('sess-finish').hidden = true;
+    list.hidden = false;
+
+    sess.items.forEach((it, ei) => {
+      const ex = exById(it.exId);
+      if (!ex) return;
+      const box = document.createElement('div');
+      box.className = 'sess-ex' + (it.done.every(Boolean) ? ' done' : '');
+
+      const head = document.createElement('div');
+      head.className = 'sess-ex-head';
+      const img = document.createElement('img');
+      img.src = ex.gif_url; img.loading = 'lazy'; img.alt = '';
+      const nm = document.createElement('div');
+      nm.className = 'sess-ex-name';
+      nm.innerHTML = `${exName(ex)}<small>${it.done.length} × ${it.reps} · ${tv(ex.target)}</small>`;
+      nm.style.cursor = 'pointer';
+      nm.addEventListener('click', () => openModal(ex.id));
+      head.append(img, nm);
+      box.appendChild(head);
+
+      const sets = document.createElement('div');
+      sets.className = 'sess-sets';
+      it.done.forEach((d, si) => {
+        const b = document.createElement('button');
+        b.className = 'set-btn' + (d ? ' done' : '');
+        b.textContent = d ? '✓' : `${T('setWord')} ${si + 1}`;
+        b.addEventListener('click', () => {
+          it.done[si] = !it.done[si];
+          persistSess();
+          if (it.done[si]) startRest();
+          renderSession();
+          checkFinish();
+        });
+        sets.appendChild(b);
+      });
+      box.appendChild(sets);
+      list.appendChild(box);
+    });
+
+    const { done, total } = sessTotals();
+    document.getElementById('sess-fill').style.width = (total ? (done / total) * 100 : 0) + '%';
+  }
+
+  function checkFinish() {
+    const { done, total } = sessTotals();
+    if (done < total) return;
+    stopRest();
+    document.getElementById('sess-list').hidden = true;
+    document.getElementById('rest-bar').classList.remove('on');
+    const mins = Math.max(1, Math.round((Date.now() - sess.startedAt) / 60000));
+    document.getElementById('sess-summary').textContent = T('sessSummary')(total, mins);
+    document.getElementById('sess-finish').hidden = false;
+    localStorage.removeItem(SESS_KEY);
+  }
+
+  // ── טיימר מנוחה ──
+  let restLeft = 0;
+  function startRest(seconds = 60) {
+    stopRest();
+    restLeft = seconds;
+    const bar = document.getElementById('rest-bar');
+    bar.classList.add('on');
+    paintRest();
+    restIv = setInterval(() => {
+      restLeft--;
+      if (restLeft <= 0) { stopRest(); return; }
+      paintRest();
+    }, 1000);
+  }
+  function paintRest() {
+    document.getElementById('rest-time').textContent =
+      `${Math.floor(restLeft / 60)}:${String(restLeft % 60).padStart(2, '0')}`;
+  }
+  function stopRest() {
+    clearInterval(restIv); restIv = null;
+    document.getElementById('rest-bar').classList.remove('on');
+  }
+
+  function wireSession() {
+    document.getElementById('rest-skip').addEventListener('click', stopRest);
+    document.getElementById('rest-add').addEventListener('click', () => { restLeft += 15; paintRest(); });
+    const exit = () => {
+      const { done, total } = sessTotals();
+      if (done > 0 && done < total && !confirm(T('sessExitConfirm'))) return;
+      stopRest(); clearInterval(clockIv);
+      document.getElementById('session-overlay').classList.remove('open');
+      renderWorkouts();
+    };
+    document.getElementById('sess-close').addEventListener('click', exit);
+    document.getElementById('sess-finish-close').addEventListener('click', () => {
+      clearInterval(clockIv);
+      document.getElementById('session-overlay').classList.remove('open');
+      renderWorkouts();
+    });
+  }
+
+  function closeModal() {
+    modalOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    modalGif.src = '';
+  }
+
+  // ── Events ─────────────────────────────────────────
+  function wireEvents() {
+    // Search
+    searchEl.addEventListener('input', debounce(() => {
+      state.search = searchEl.value;
+      searchClearEl.classList.toggle('visible', state.search.length > 0);
+      applyFilters();
+    }, 250));
+
+    searchClearEl.addEventListener('click', () => {
+      searchEl.value = '';
+      state.search = '';
+      searchClearEl.classList.remove('visible');
+      applyFilters();
+    });
+
+    // Filter chips (delegated)
+    document.querySelector('.sidebar-body').addEventListener('click', e => {
+      const chip = e.target.closest('[data-filter]');
+      if (!chip || chip.classList.contains('filter-show-more')) return;
+      const { filter, value } = chip.dataset;
+      toggleFilter(filter, value);
+      chip.classList.toggle('active');
+      applyFilters();
+    });
+
+    // Remove active badge
+    activeFilEl.addEventListener('click', e => {
+      const btn = e.target.closest('.active-badge-remove');
+      if (!btn) return;
+      const { filter, value } = btn.dataset;
+      state.filters[filter].delete(value);
+      // Deactivate corresponding chip
+      const chip = document.querySelector(`.chip[data-filter="${filter}"][data-value="${value}"]`);
+      if (chip) chip.classList.remove('active');
+      applyFilters();
+    });
+
+    // Card hover → load GIF
+    gridEl.addEventListener('mouseover', e => {
+      const card = e.target.closest('.exercise-card');
+      if (!card) return;
+      const gif = card.querySelector('.card-gif');
+      if (gif && gif.dataset.src && !gif.src) {
+        gif.src = gif.dataset.src;
+      }
+    });
+
+    // Card click → modal
+    gridEl.addEventListener('click', e => {
+      const card = e.target.closest('.exercise-card');
+      if (card) openModal(card.dataset.id);
+    });
+
+    // Modal close
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', e => {
+      if (e.target === modalOverlay) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Infinite scroll
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && spinnerEl.classList.contains('visible')) {
+        appendNextPage();
+      }
+    }, { rootMargin: '200px' });
+    observer.observe(sentinelEl);
+  }
+
+
+  // ── Boot ───────────────────────────────────────────
+  init();
+
+  // ══════════════════════════════════════════════════
+  // ── DB Setup ───────────────────────────────────────
+  // ══════════════════════════════════════════════════
+
+  const DB_SQL = {
+    mssql: `CREATE TABLE exercises (
+  id                NVARCHAR(10)  PRIMARY KEY,
+  name              NVARCHAR(255) NOT NULL,
+  category          NVARCHAR(100),
+  body_part         NVARCHAR(100),
+  equipment         NVARCHAR(100),
+  instructions_en   NVARCHAR(MAX),
+  instructions_es   NVARCHAR(MAX),
+  instructions_it   NVARCHAR(MAX),
+  instructions_tr   NVARCHAR(MAX),
+  instructions_ru   NVARCHAR(MAX),
+  instructions_zh   NVARCHAR(MAX),
+  instructions_hi   NVARCHAR(MAX),
+  instructions_pl   NVARCHAR(MAX),
+  instructions_ko   NVARCHAR(MAX),
+  muscle_group      NVARCHAR(100),
+  secondary_muscles NVARCHAR(MAX),  -- JSON array stored as string
+  target            NVARCHAR(100),
+  image             NVARCHAR(500),
+  gif_url           NVARCHAR(500),
+  created_at        DATETIME2
+);`,
+    postgresql: `CREATE TABLE exercises (
+  id                VARCHAR(10)  PRIMARY KEY,
+  name              VARCHAR(255) NOT NULL,
+  category          VARCHAR(100),
+  body_part         VARCHAR(100),
+  equipment         VARCHAR(100),
+  instructions_en   TEXT,
+  instructions_es   TEXT,
+  instructions_it   TEXT,
+  instructions_tr   TEXT,
+  instructions_ru   TEXT,
+  instructions_zh   TEXT,
+  instructions_hi   TEXT,
+  instructions_pl   TEXT,
+  instructions_ko   TEXT,
+  muscle_group      VARCHAR(100),
+  secondary_muscles JSONB,
+  target            VARCHAR(100),
+  image             VARCHAR(500),
+  gif_url           VARCHAR(500),
+  created_at        TIMESTAMPTZ
+);`,
+    mysql: `CREATE TABLE exercises (
+  id                VARCHAR(10)  PRIMARY KEY,
+  name              VARCHAR(255) NOT NULL,
+  category          VARCHAR(100),
+  body_part         VARCHAR(100),
+  equipment         VARCHAR(100),
+  instructions_en   TEXT,
+  instructions_es   TEXT,
+  instructions_it   TEXT,
+  instructions_tr   TEXT,
+  instructions_ru   TEXT,
+  instructions_zh   TEXT,
+  instructions_hi   TEXT,
+  instructions_pl   TEXT,
+  instructions_ko   TEXT,
+  muscle_group      VARCHAR(100),
+  secondary_muscles JSON,
+  target            VARCHAR(100),
+  image             VARCHAR(500),
+  gif_url           VARCHAR(500),
+  created_at        DATETIME
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`,
+    sqlite: `CREATE TABLE exercises (
+  id                TEXT PRIMARY KEY,
+  name              TEXT NOT NULL,
+  category          TEXT,
+  body_part         TEXT,
+  equipment         TEXT,
+  instructions_en   TEXT,
+  instructions_es   TEXT,
+  instructions_it   TEXT,
+  instructions_tr   TEXT,
+  instructions_ru   TEXT,
+  instructions_zh   TEXT,
+  instructions_hi   TEXT,
+  instructions_pl   TEXT,
+  instructions_ko   TEXT,
+  muscle_group      TEXT,
+  secondary_muscles TEXT,  -- JSON array stored as string
+  target            TEXT,
+  image             TEXT,
+  gif_url           TEXT,
+  created_at        TEXT
+);`
+  };
+
+  let currentDb = 'mssql';
+
+  const dbOverlay      = document.getElementById('db-overlay');
+  const dbOpenBtn      = document.getElementById('db-setup-open');
+  const dbCloseBtn     = document.getElementById('db-setup-close');
+  const dbTabs         = document.querySelectorAll('.db-tab');
+  const createSqlEl    = document.getElementById('create-table-sql');
+  const copyCreateBtn  = document.getElementById('copy-create-btn');
+  const generateBtn    = document.getElementById('generate-sql-btn');
+  const generateStatus = document.getElementById('generate-status');
+
+  function openDbSetup() {
+    dbOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    switchDbTab(currentDb);
+  }
+
+  function closeDbSetup() {
+    dbOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function switchDbTab(db) {
+    currentDb = db;
+    dbTabs.forEach(t => t.classList.toggle('active', t.dataset.db === db));
+    createSqlEl.textContent = DB_SQL[db];
+  }
+
+  function copyToClipboard(text, btn) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = T('copied');
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = T('copy'); btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function escStr(val, db) {
+    if (val === null || val === undefined) return 'NULL';
+    const s = String(val).replace(/'/g, "''");
+    return db === 'mssql' ? `N'${s}'` : `'${s}'`;
+  }
+
+  function buildInserts(exercises, db) {
+    const lines = [];
+    const header = db === 'mssql' ? 'BEGIN TRANSACTION;\nGO\n' : 'BEGIN;\n';
+    const footer = db === 'mssql' ? '\nCOMMIT;\nGO' : '\nCOMMIT;';
+    lines.push(header);
+
+    exercises.forEach((ex, i) => {
+      const muscles = JSON.stringify(Array.isArray(ex.secondary_muscles) ? ex.secondary_muscles : []);
+      const instrEn = ex.instructions && ex.instructions.en
+        ? ex.instructions.en
+        : (Array.isArray(ex.instruction_steps) ? ex.instruction_steps.join(' ') : (ex.instructions || ''));
+      const instrEs = ex.instructions && ex.instructions.es ? ex.instructions.es : '';
+      const instrIt = ex.instructions && ex.instructions.it ? ex.instructions.it : '';
+      const instrTr = ex.instructions && ex.instructions.tr ? ex.instructions.tr : '';
+      const instrRu = ex.instructions && ex.instructions.ru ? ex.instructions.ru : '';
+      const instrZh = ex.instructions && ex.instructions.zh ? ex.instructions.zh : '';
+      const instrHi = ex.instructions && ex.instructions.hi ? ex.instructions.hi : '';
+      const instrPl = ex.instructions && ex.instructions.pl ? ex.instructions.pl : '';
+      const instrKo = ex.instructions && ex.instructions.ko ? ex.instructions.ko : '';
+
+      const vals = [
+        escStr(ex.id, db),
+        escStr(ex.name, db),
+        escStr(ex.category, db),
+        escStr(ex.body_part, db),
+        escStr(ex.equipment, db),
+        escStr(instrEn, db),
+        escStr(instrEs, db),
+        escStr(instrIt, db),
+        escStr(instrTr, db),
+        escStr(instrRu, db),
+        escStr(instrZh, db),
+        escStr(instrHi, db),
+        escStr(instrPl, db),
+        escStr(instrKo, db),
+        escStr(ex.muscle_group, db),
+        escStr(muscles, db),
+        escStr(ex.target, db),
+        escStr(ex.image, db),
+        escStr(ex.gif_url, db),
+        escStr(ex.created_at, db),
+      ].join(', ');
+
+      lines.push(`INSERT INTO exercises (id, name, category, body_part, equipment, instructions_en, instructions_es, instructions_it, instructions_tr, instructions_ru, instructions_zh, instructions_hi, instructions_pl, instructions_ko, muscle_group, secondary_muscles, target, image, gif_url, created_at) VALUES (${vals});`);
+
+      // Batch commits every 50 rows for MSSQL compatibility
+      if (db === 'mssql' && (i + 1) % 50 === 0 && i + 1 < exercises.length) {
+        lines.push('GO');
+      }
+    });
+
+    lines.push(footer);
+    return lines.join('\n');
+  }
+
+  function generateInsertSql() {
+    generateBtn.disabled = true;
+    generateStatus.textContent = T('generating');
+
+    setTimeout(() => {
+      try {
+        const sql = buildInserts(EXERCISES, currentDb);
+        const blob = new Blob([sql], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `exercises_insert_${currentDb}.sql`;
+        a.click();
+        URL.revokeObjectURL(url);
+        generateStatus.textContent = `${T('downloaded')} exercises_insert_${currentDb}.sql`;
+      } catch (e) {
+        generateStatus.textContent = (LANG === 'he' ? 'שגיאה ביצירת הקובץ.' : 'Error generating file.');
+        console.error(e);
+      }
+      generateBtn.disabled = false;
+    }, 10);
+  }
+
+  // Wire DB Setup events
+  if (dbOpenBtn) dbOpenBtn.addEventListener('click', openDbSetup);
+  dbCloseBtn.addEventListener('click', closeDbSetup);
+  dbOverlay.addEventListener('click', e => { if (e.target === dbOverlay) closeDbSetup(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && dbOverlay.classList.contains('open')) closeDbSetup(); });
+  dbTabs.forEach(tab => tab.addEventListener('click', () => switchDbTab(tab.dataset.db)));
+  copyCreateBtn.addEventListener('click', () => copyToClipboard(DB_SQL[currentDb], copyCreateBtn));
+  generateBtn.addEventListener('click', generateInsertSql);
+</script>
+</body>
+</html>
