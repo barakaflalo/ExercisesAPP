@@ -1,5 +1,9 @@
 /* AppNest Service Worker — ספריית הכושר */
-const VERSION = 'fitlib-v6';
+/* Cloudflare Pages redirects *.html -> pretty URL (308); a cached "redirected" copy is refused for page loads. Hand navigations a clean copy. */
+function cleanNav(r){ if(!r||!r.redirected) return r; return r.blob().then(b=>new Response(b,{status:r.status,statusText:r.statusText,headers:r.headers})); }
+const _respondWith=FetchEvent.prototype.respondWith;
+FetchEvent.prototype.respondWith=function(p){ const nav=this.request.mode==='navigate'; return _respondWith.call(this, nav?Promise.resolve(p).then(cleanNav):p); };
+const VERSION = 'fitlib-v7';
 const CORE = ['./index.html', './exercises.js', './names-he.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -8,7 +12,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+    caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('fitlib-') && k !== VERSION && k !== VERSION + '-media').map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
