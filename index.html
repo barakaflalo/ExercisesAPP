@@ -1727,6 +1727,27 @@
       #session-overlay { align-items: stretch; }
       .gd-slim { padding-bottom: 16px; }
     }
+    /* ── 2.1.1: שורות סינון בטלפון ──
+       הבאג: פריט grid/flex מקבל min-width:auto = רוחב התוכן. הסרגל נמתח ל-2,157px
+       ונחתך ע"י overflow:hidden של app-shell — כך שהשורה בכלל לא הייתה אזור גלילה. */
+    @media (max-width: 768px) {
+      .app-shell { grid-template-columns: minmax(0, 1fr); }
+      .sidebar, .sidebar-body, .sidebar-body > *, .filter-section, .filter-options, .more-filters { min-width: 0; max-width: 100%; }
+      /* קטגוריה: שורה אחת שגוללים לצד, עם דהייה בקצה כרמז שיש עוד */
+      #category-chips {
+        overflow-x: auto; overscroll-behavior-x: contain; touch-action: pan-x;
+        -webkit-mask-image: linear-gradient(to left, transparent 0, #000 28px);
+                mask-image: linear-gradient(to left, transparent 0, #000 28px);
+        padding-inline-end: 24px;
+      }
+      html[dir="ltr"] #category-chips {
+        -webkit-mask-image: linear-gradient(to right, transparent 0, #000 28px);
+                mask-image: linear-gradient(to right, transparent 0, #000 28px);
+      }
+      /* סינון נוסף: הכול גלוי — שורות שנשברות, עם גלילה אנכית אם ארוך */
+      .more-filters.open { max-height: 46vh; overflow-y: auto; overscroll-behavior: contain; border-top: 1px solid var(--border); margin-top: 2px; }
+      .more-filters .filter-options { flex-wrap: wrap; overflow-x: visible; }
+    }
     @media (min-width: 769px) {
       .more-filters { display: block !important; }
       #more-filters { display: none; }
@@ -2099,7 +2120,7 @@
 
     <div class="an-cards">
       <div class="an-rows">
-        <div><span class="k" data-i18n="version">גרסה</span><span class="v" id="about-ver">2.1.0</span></div>
+        <div><span class="k" data-i18n="version">גרסה</span><span class="v" id="about-ver">2.1.1</span></div>
         <div><span class="k" data-i18n="developer">פיתוח</span><span class="v" style="color:var(--accent);font-weight:600" data-i18n="devName">ברק אפללו</span></div>
         <div><span class="k" data-i18n="platform">פלטפורמה</span><span class="v">PWA · HTML5</span></div>
         <div><span class="k" data-i18n="storage">אחסון נתונים</span><span class="v" data-i18n="storageVal">על המכשיר בלבד</span></div>

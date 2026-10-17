@@ -26,7 +26,7 @@
    · רק שורש האפליקציה נשמר כדף הראשי ("./"), לא index.html
    · מדיה במטמון נפרד וקבוע — לא נמחק בעדכון גרסה (138MB לא יורדים שוב)
    · בכל עדכון: להעלות את VERSION */
-const VERSION = 'fitlib-v9';
+const VERSION = 'fitlib-v10';
 // ⚠️ חייב להתאים לתגית <script src="fitlog.js?v=..."> ב-index.html — מעלים את שניהם יחד.
 //    הפרמטר מונע ערבוב: index.html חדש מהרשת + fitlog.js ישן מהמטמון של ה-SW הקודם.
 const FITLOG = './fitlog.js?v=21';
