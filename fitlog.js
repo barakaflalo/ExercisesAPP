@@ -2,7 +2,7 @@
    מודול: אחסון, אימונים, אימון חי, בית, התקדמות, מנהל חלונות.
    נטען לפני הסקריפט הראשי של index.html. משתמש ב-T, state, LANG ושאר
    הגלובליים של הסקריפט הראשי — רק בזמן ריצה, לא בטעינה.
-   בכל שינוי: להעלות VERSION ב-sw.js (הקובץ ברשימת CORE). */
+   בכל שינוי: להעלות ?v= בתגית ב-index.html וגם FITLOG ב-sw.js (שניהם יחד), ואת VERSION. */
   // ═══════════════════════════════════════════════════════════
   //  v2.0 — אחסון, אימונים, יומן, בית, התקדמות
   //  (כתוב מאפס עבור AppNest. רעיונות המוצר נבדקו מול אפליקציות
@@ -13,7 +13,7 @@
   const FAV_KEY  = 'appnest-favs';
   const SESS_KEY = 'appnest-session';
   const VIEW_KEY = 'appnest-libview';
-  const APP_VERSION = '2.1.0';
+  const APP_VERSION = '2.2.0';
   let pendingExId = null;
 
   // Storage shim — כשל שמירה מקבל הודעה ברורה (דרישות AppNest, חלק א׳)
@@ -64,6 +64,7 @@
   const TIME_NOT = /push-up|raise|row|curl|crunch|press|tap|jack|climber|twist|jump|lift|pull|walk|kick|fly|adduction|abduction|wipers/;
   function autoMode(ex) {
     if (!ex) return 'wr';
+    if (ex.mode) return ex.mode;                 // תרגיל משלי — הסוג שהמשתמש בחר
     const n = ex.name.toLowerCase();
     if (CARDIO_EQ.test(ex.equipment) || (ex.category === 'cardio' && CARDIO_NAME.test(n) && !CARDIO_NOT.test(n))) return 'cardio';
     if (TIME_NAME.test(n) && !TIME_NOT.test(n)) return 'time';
@@ -225,10 +226,12 @@
     const todays = plannedFor(now.getDay());
     if (!ws.length) {
       today.innerHTML = `<div class="hcard"><div class="cta-row">
+        <button class="cta wide accent" id="cta-build"><span class="ic">🎯</span><b>${esc(T('ctaBuildT'))}</b><small>${esc(T('ctaBuildS'))}</small></button>
         <button class="cta" id="cta-plans"><span class="ic">📋</span><b>${esc(T('ctaPlansT'))}</b><small>${esc(T('ctaPlansS'))}</small></button>
         <button class="cta" id="cta-own"><span class="ic">✏️</span><b>${esc(T('ctaOwnT'))}</b><small>${esc(T('ctaOwnS'))}</small></button>
       </div></div>`;
       document.getElementById('cta-plans').onclick = openPlans;
+      document.getElementById('cta-build').onclick = openBuilder;
       document.getElementById('cta-own').onclick = () => { newWorkout(); showView('wo'); };
     } else if (todays.length) {
       const doneToday = new Set(hist.filter(x => startOfDay(x.start) === startOfDay(Date.now())).map(x => x.woId));
@@ -327,6 +330,8 @@
       ? rows.map(([c, n]) => `<div class="mbar"><span>${esc(tv(c))}</span><div class="mbar-t"><div class="mbar-f" style="width:${Math.max(4, n / max * 100)}%"></div></div><span class="mbar-n">${n}</span></div>`).join('')
       : `<div class="empty-mini">${esc(T('musclesEmpty'))}</div>`;
     document.querySelectorAll('#prog-range button').forEach(b => b.classList.toggle('active', +b.dataset.days === progDays));
+    renderBodyCard();
+    renderProgMap();
 
     // שיאים — לפי תאריך השיא, החדשים קודם
     const prs = Object.entries(best).sort((a, b) => b[1].at - a[1].at).slice(0, 15);
@@ -381,6 +386,7 @@
       } },
       '|',
       { label: T('histEdit'), fn: () => openHistEditor(JSON.parse(JSON.stringify(h)), false) },
+      { label: '📤', fn: () => openShare(h.id) },
       { label: T('close'), cls: 'primary', fn: () => ov.classList.remove('open') },
     ]);
     if (!ov.classList.contains('open')) ov.classList.add('open');
@@ -580,7 +586,8 @@
   }
 
   // ══════════ גיבוי מלא ══════════
-  const BACKUP_KEYS = ['appnest-workouts', 'appnest-history', 'appnest-favs', 'appnest-reminder', 'appnest-username', 'appnest-palette', 'appnest-mode', 'appnest-lang', 'appnest-libview', 'appnest-autoprog'];
+  const BACKUP_KEYS = ['appnest-workouts', 'appnest-history', 'appnest-favs', 'appnest-reminder', 'appnest-username', 'appnest-palette', 'appnest-mode', 'appnest-lang', 'appnest-libview', 'appnest-autoprog',
+    'appnest-profile', 'appnest-custom-ex', 'appnest-body', 'appnest-bodytrack', 'appnest-plates', 'appnest-asst'];   // מפתח ה-AI לא נכנס לגיבוי
   function exportBackup() {
     const data = {};
     BACKUP_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v != null) data[k] = v; });
@@ -702,9 +709,10 @@
     const ws = loadWo();
     if (ws.length === 0) {
       listEl.innerHTML = `<div class="hcard"><div class="wo-empty" style="padding:20px 0 14px">${esc(T('woEmpty'))}</div>
-        <div class="cta-row"><button class="cta" id="wo-cta-plans"><span class="ic">📋</span><b>${esc(T('ctaPlansT'))}</b><small>${esc(T('ctaPlansS'))}</small></button>
+        <div class="cta-row"><button class="cta wide accent" id="wo-cta-build"><span class="ic">🎯</span><b>${esc(T('ctaBuildT'))}</b><small>${esc(T('ctaBuildS'))}</small></button><button class="cta" id="wo-cta-plans"><span class="ic">📋</span><b>${esc(T('ctaPlansT'))}</b><small>${esc(T('ctaPlansS'))}</small></button>
         <button class="cta" id="wo-cta-own"><span class="ic">✏️</span><b>${esc(T('ctaOwnT'))}</b><small>${esc(T('ctaOwnS'))}</small></button></div></div>`;
       document.getElementById('wo-cta-plans').onclick = openPlans;
+      document.getElementById('wo-cta-build').onclick = openBuilder;
       document.getElementById('wo-cta-own').onclick = () => { newWorkout(); renderWorkouts(); };
       return;
     }
@@ -712,6 +720,7 @@
       const card = document.createElement('div');
       card.className = 'wo-card';
       const items = w.items.filter(i => exById(i.exId));
+      const SS = ssInfo(items);
 
       const head = document.createElement('div');
       head.className = 'wo-head';
@@ -768,12 +777,13 @@
       items.forEach((item, idx) => {
         const ex = exById(item.exId);
         const row = document.createElement('div');
-        row.className = 'wo-item';
+        const ssi = SS[idx];
+        row.className = 'wo-item' + (ssi ? ' ss' + (ssi.first ? ' ss-first' : '') + (ssi.last ? ' ss-last' : '') : '');
         const img = document.createElement('img');
         img.src = ex.image; img.loading = 'lazy'; img.alt = '';
         const nm = document.createElement('div');
         nm.className = 'wo-item-name';
-        nm.innerHTML = `${esc(exName(ex))}<small>${esc(tv(ex.target))} · ${esc(tv(ex.equipment))}</small>`;
+        nm.innerHTML = `${esc(exName(ex))}<small>${ssi ? `<span class="ss-tag">🔗 ${esc(ssi.g)}${ssi.n}</span> ` : ''}${esc(tv(ex.target))} · ${esc(tv(ex.equipment))}</small>`;
         nm.style.cursor = 'pointer';
         nm.addEventListener('click', () => openModal(ex.id));
         img.style.cursor = 'pointer'; img.addEventListener('click', () => openModal(ex.id));
@@ -809,10 +819,16 @@
         });
         if (idx === 0) up.style.visibility = 'hidden';
         const swap = mkBtn('⇄', T('swapBtn'), () => openSwap(w.id, item.exId));
+        const link = mkBtn('🔗', T('ssLink'), () => {
+          updateWo(w.id, x => { const it = x.items.find(i => i.exId === item.exId); if (it) { if (it.link) delete it.link; else it.link = true; } });
+          renderWorkouts();
+        });
+        link.classList.add('wo-link'); link.classList.toggle('on', !!item.link);
+        if (idx === items.length - 1) link.style.visibility = 'hidden';
         const rm = mkBtn('×', T('removeBtn'), () => { updateWo(w.id, x => { x.items = x.items.filter(i => i.exId !== item.exId); }); renderWorkouts(); });
         rm.classList.add('wo-item-remove');
         const ctrl = document.createElement('div'); ctrl.className = 'wo-ctrl';
-        ctrl.append(modeSel, mkNum(item.sets, 'sets'), mkNum(item.reps, 'reps'), up, swap, rm);
+        ctrl.append(modeSel, mkNum(item.sets, 'sets'), mkNum(item.reps, 'reps'), up, link, swap, rm);
         row.append(img, nm, ctrl);
         card.appendChild(row);
       });
@@ -831,8 +847,9 @@
     const w = loadWo().find(x => x.id === woId);
     const inWo = new Set(w ? w.items.map(i => i.exId) : []);
     const favs = new Set(loadFavs());
-    const cands = state.exercises
-      .filter(e => e.target === ex.target && e.id !== ex.id && !inWo.has(e.id))
+    let pool = state.exercises.filter(e => e.target === ex.target && e.id !== ex.id && !inWo.has(e.id) && !e.hidden);
+    if (eqLimited()) { const mine = pool.filter(e => hasEq(e)); if (mine.length >= 3) pool = mine; }
+    const cands = pool
       .map(e => ({ e, s: (favs.has(e.id) ? 4 : 0) + (e.equipment === ex.equipment ? 2 : 0) + (e.category === ex.category ? 1 : 0) - (/\bv\. ?\d|pov|\(male\)|\(female\)/i.test(e.name) ? 1 : 0) }))
       .sort((a, b) => b.s - a.s).slice(0, 14).map(x => x.e);
     document.getElementById('swap-sub').textContent = T('swapSub')(exName(ex));
@@ -882,13 +899,17 @@
 
   function openPlans() {
     const box = document.getElementById('plans-list');
-    box.innerHTML = PLANS.map(p => {
+    const fits = p => p.wos.every(w => w.items.every(([id]) => hasEq(exById(id))));
+    const list = eqLimited() ? PLANS.slice().sort((a, b) => fits(b) - fits(a)) : PLANS;
+    box.innerHTML = `<button class="plan-card plan-build" id="plans-build"><h3>🎯 ${esc(T('ctaBuildT'))}</h3><p>${esc(T('ctaBuildS'))}</p></button>` + list.map(p => {
       const n = p.wos.reduce((a, w) => a + w.items.length, 0);
+      const eqTag = eqLimited() ? `<span class="${fits(p) ? 'fit' : 'miss'}">${esc(T(fits(p) ? 'eqFits' : 'eqMissing'))}</span>` : '';
       return `<div class="plan-card"><h3>${p.ic} ${esc(LANG === 'he' ? p.he : p.en)}</h3><p>${esc(LANG === 'he' ? p.dhe : p.den)}</p>
-        <div class="plan-tags"><span>${p.tags[0] === 'gym' ? (LANG === 'he' ? 'חדר כושר' : 'Gym') : (LANG === 'he' ? 'בבית' : 'Home')}</span><span>${esc(T('perWeek')(p.tags[1]))}</span><span>${esc(T('woExercises')(n))}</span></div>
+        <div class="plan-tags"><span>${p.tags[0] === 'gym' ? (LANG === 'he' ? 'חדר כושר' : 'Gym') : (LANG === 'he' ? 'בבית' : 'Home')}</span><span>${esc(T('perWeek')(p.tags[1]))}</span><span>${esc(T('woExercises')(n))}</span>${eqTag}</div>
         <button class="an-btn primary small" data-plan="${p.id}">${esc(T('planAdd'))}</button></div>`;
     }).join('');
     box.querySelectorAll('[data-plan]').forEach(b => b.onclick = () => addPlan(b.dataset.plan));
+    document.getElementById('plans-build').onclick = () => { document.getElementById('plans-overlay').classList.remove('open'); openBuilder(); };
     document.getElementById('plans-overlay').classList.add('open');
   }
 
@@ -978,7 +999,7 @@
           if (sug && sug.kind === 'repup') return { w: '', r: sug.r, done: false };
           return { w: p && p.w > 0 ? p.w : '', r: p ? (sug && sug.kind === 'stay' ? Math.max(+p.r, 0) : p.r) : target, done: false };
         });
-        return { exId: i.exId, mode, target, sug, sets };
+        return { exId: i.exId, mode, target, sug, sets, link: !!i.link };
       }),
     };
     persistSess();
@@ -1054,13 +1075,16 @@
     list.innerHTML = '';
     const { best, last } = stats();
 
+    const SS = ssInfo(sess.items);
     sess.items.forEach((it, ei) => {
       const ex = exById(it.exId);
       if (!ex) return;
       const mode = it.mode || 'wr';
       const bw = mode === 'wr' && isBW(ex);
+      const ssi = SS[ei];
       const box = document.createElement('div');
-      box.className = 'sess-ex' + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '');
+      box.className = 'sess-ex' + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '') + (ssi ? ' ss' + (ssi.first ? ' ss-first' : '') + (ssi.last ? ' ss-last' : '') : '');
+      box.dataset.ei = ei;
 
       const head = document.createElement('div');
       head.className = 'sess-ex-head';
@@ -1069,7 +1093,7 @@
       img.style.cursor = 'pointer'; img.addEventListener('click', () => openModal(ex.id));
       const nm = document.createElement('div');
       nm.className = 'sess-ex-name';
-      nm.innerHTML = `${esc(exName(ex))}<small>${esc(tv(ex.target))} · ${esc(tv(ex.equipment))}${mode !== 'wr' ? ' · ' + esc(T('mode_' + mode)) : ''}</small>`;
+      nm.innerHTML = `${esc(exName(ex))}<small>${ssi ? `<span class="ss-tag">🔗 ${esc(T('ssLabel')(ssi.g + ssi.n))}</span> ` : ''}${esc(tv(ex.target))} · ${esc(tv(ex.equipment))}${mode !== 'wr' ? ' · ' + esc(T('mode_' + mode)) : ''}</small>`;
       nm.style.cursor = 'pointer'; nm.addEventListener('click', () => openModal(ex.id));
       head.append(img, nm);
       box.appendChild(head);
@@ -1083,6 +1107,15 @@
         : esc(T('firstTime'));
       box.appendChild(info);
       if (it.sug && !it.sets.some(s => s.done)) box.insertAdjacentHTML('beforeend', sugLine(it, ex));
+      if (mode === 'wr' && isBarbell(ex)) {
+        const pb = document.createElement('button');
+        pb.className = 'sess-mini'; pb.textContent = T('plBtn');
+        pb.addEventListener('click', () => {
+          const s0 = it.sets.find(x => !x.done) || it.sets[it.sets.length - 1] || {};
+          openPlates(+s0.w || 0, ex, v => { it.sets.forEach(x => { if (!x.done) x.w = v; }); persistSess(); renderSession(); });
+        });
+        head.appendChild(pb);
+      }
 
       const cols = mode === 'time' ? [T('colSec'), T('colKg') + ' (+)'] : mode === 'cardio' ? [T('colMin'), T('colKm')] : [bw ? T('colKg') + ' (+)' : T('colKg'), T('colReps')];
       const tbl = document.createElement('table');
@@ -1195,6 +1228,7 @@
     if (rerender) renderSession();
   }
 
+  let ssJump = null;
   function toggleSet(ei, si) {
     const it = sess.items[ei], s = it.sets[si];
     const ex = exById(it.exId);
@@ -1213,12 +1247,15 @@
       const isPr = !!top && beats(sc, top);
       sess.prs = sess.prs || [];
       if (isPr) { sess.prs.push({ ei, si, exId: it.exId }); toast(T('newPR')(exName(ex))); buzz([60, 40, 60, 40, 120]); }
-      startRest(sess.rest || 90);
+      const ssi = ssInfo(sess.items)[ei], nxt = ssi && !ssi.last ? sess.items[ei + 1] : null;
+      if (nxt && nxt.sets.some(x => !x.done)) { stopRest(); ssJump = ei + 1; if (!isPr) toast(T('ssNext')(exName(exById(nxt.exId)))); }
+      else startRest(sess.rest || 90);
     } else {
       sess.prs = (sess.prs || []).filter(p => !(p.ei === ei && p.si === si));
     }
     persistSess();
     renderSession();
+    if (ssJump != null) { const el = document.querySelector(`#sess-list .sess-ex[data-ei="${ssJump}"]`); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); ssJump = null; }
     const { done, total } = sessTotals();
     if (done === total) { stopRest(); setTimeout(finishSession, 350); }
   }
@@ -1360,11 +1397,11 @@
     const mo = new MutationObserver(muts => muts.forEach(m => {
       const el = m.target, open = el.classList.contains('open'), idx = OV_STACK.indexOf(el);
       if (open && idx < 0) {
-        OV_STACK.push(el);
+        OV_STACK.push(el); document.body.classList.add('ov-open');
         ghostUntil = Date.now() + 450; ghostOv = el;           // בולע את ה"קליק" המאוחר של המגע
         if (!NO_BACK.has(el.id)) history.pushState({ an: 'ov', id: el.id }, '');
       } else if (!open && idx >= 0) {
-        OV_STACK.splice(idx, 1);
+        OV_STACK.splice(idx, 1); document.body.classList.toggle('ov-open', OV_STACK.length > 0);
         if (!ovClosingByPop && !NO_BACK.has(el.id) && history.state && history.state.an === 'ov') { ovSkipPop++; history.back(); }
       }
     }));

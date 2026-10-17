@@ -19,19 +19,22 @@
   CacheStorage.prototype.match=function(){return sm.apply(this,arguments).then(clean);};
 })();
 
-/* AppNest Service Worker — ספריית הכושר 2.1
+/* AppNest Service Worker — ספריית הכושר 2.2
    חוקי AppNest (מסמך הדרישות, חלקים י״ב / ט״ז / י״ח):
    · שמירה לפי קובץ (allSettled) — לא addAll אטומי
    · ניווט: רשת קודם עם זמן קצוב ← מטמון ← דף אופליין. לעולם לא שגיאה.
    · רק שורש האפליקציה נשמר כדף הראשי ("./"), לא index.html
    · מדיה במטמון נפרד וקבוע — לא נמחק בעדכון גרסה (138MB לא יורדים שוב)
    · בכל עדכון: להעלות את VERSION */
-const VERSION = 'fitlib-v10';
-// ⚠️ חייב להתאים לתגית <script src="fitlog.js?v=..."> ב-index.html — מעלים את שניהם יחד.
-//    הפרמטר מונע ערבוב: index.html חדש מהרשת + fitlog.js ישן מהמטמון של ה-SW הקודם.
-const FITLOG = './fitlog.js?v=21';
+const VERSION = 'fitlib-v11';
+// ⚠️ חייבים להתאים לתגיות <script src="...?v=..."> ב-index.html — מעלים את שניהם יחד.
+//    הפרמטר מונע ערבוב: index.html חדש מהרשת + קובץ JS ישן מהמטמון של ה-SW הקודם.
+const FITLOG = './fitlog.js?v=22';
+const COACH = './coach.js?v=22';
+const ASSISTANT = './appnest-assistant.js?v=22';   // מנוע העוזר — נטען מ-coach.js
+const BODYMAP = './bodymap.js?v=22';              // מפת השרירים — נטענת בעצלות מ-coach.js
 const MEDIA_CACHE = 'fitlib-media-v1';
-const CORE = ['./', FITLOG, './exercises.js', './names-he.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CORE = ['./', FITLOG, COACH, ASSISTANT, BODYMAP, './exercises.js', './names-he.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 const SCOPE_PATH = new URL('./', self.location).pathname;
 
 self.addEventListener('install', e => {
