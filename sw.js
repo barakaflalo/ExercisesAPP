@@ -19,16 +19,19 @@
   CacheStorage.prototype.match=function(){return sm.apply(this,arguments).then(clean);};
 })();
 
-/* AppNest Service Worker — ספריית הכושר 2.0
+/* AppNest Service Worker — ספריית הכושר 2.1
    חוקי AppNest (מסמך הדרישות, חלקים י״ב / ט״ז / י״ח):
    · שמירה לפי קובץ (allSettled) — לא addAll אטומי
    · ניווט: רשת קודם עם זמן קצוב ← מטמון ← דף אופליין. לעולם לא שגיאה.
    · רק שורש האפליקציה נשמר כדף הראשי ("./"), לא index.html
    · מדיה במטמון נפרד וקבוע — לא נמחק בעדכון גרסה (138MB לא יורדים שוב)
    · בכל עדכון: להעלות את VERSION */
-const VERSION = 'fitlib-v8';
+const VERSION = 'fitlib-v9';
+// ⚠️ חייב להתאים לתגית <script src="fitlog.js?v=..."> ב-index.html — מעלים את שניהם יחד.
+//    הפרמטר מונע ערבוב: index.html חדש מהרשת + fitlog.js ישן מהמטמון של ה-SW הקודם.
+const FITLOG = './fitlog.js?v=21';
 const MEDIA_CACHE = 'fitlib-media-v1';
-const CORE = ['./', './exercises.js', './names-he.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const CORE = ['./', FITLOG, './exercises.js', './names-he.js', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
 const SCOPE_PATH = new URL('./', self.location).pathname;
 
 self.addEventListener('install', e => {
@@ -103,7 +106,7 @@ function handleMedia(req) {
 // כך שלא מורידים 3.5MB ברקע בכל פתיחה על חבילת גלישה.
 function handleAsset(req) {
   return caches.open(VERSION).then(c =>
-    c.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(res => {
+    c.match(req).then(hit => hit || fetch(req).then(res => {
       if (res && res.ok) c.put(req, res.clone()).catch(() => {});
       return res;
     }))
