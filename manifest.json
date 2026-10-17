@@ -1,17 +1,24 @@
 {
+  "id": "./",
   "name": "ספריית הכושר — AppNest",
   "short_name": "ספריית כושר",
-  "description": "1,324 תרגילי כושר עם אנימציות והוראות ביצוע בעברית",
+  "description": "1,324 תרגילי כושר עם אנימציות, יומן אימונים, שיאים ומעקב התקדמות — בעברית",
   "dir": "rtl",
   "lang": "he",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
+  "categories": ["health", "fitness", "sports"],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "התחלת אימון", "short_name": "אימון", "url": "./?go=start", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "ההתקדמות שלי", "short_name": "התקדמות", "url": "./?go=progress", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

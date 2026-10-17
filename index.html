@@ -6,6 +6,7 @@
 <script>/* Moved to its own address. Redirect ONLY from the old GitHub Pages address (same repo feeds both). */(function(){try{if(location.hostname==='barakaflalo.github.io'){var p=location.pathname.replace(/^\/[^\/]+/,'')||'/';location.replace('https://exercisesapp.pages.dev'+p+location.search+location.hash);}}catch(e){}})();</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ספריית התרגילים</title>
+  <meta name="description" content="1,324 תרגילי כושר עם אנימציות, יומן אימונים, שיאים ומעקב התקדמות — בעברית" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0a0a0a" />
   <link rel="icon" href="icons/icon-192.png" />
@@ -1397,6 +1398,307 @@
       font-weight: 700; padding: 6px 14px; border-radius: var(--radius-md); font-size: 12.5px;
     }
     .wo-start:hover { opacity: 0.9; }
+
+    /* ══════════════════════════════════════════════════
+       v2.0 — ניווט, בית, התקדמות, יומן אימונים
+       ══════════════════════════════════════════════════ */
+    :root { --bottom-nav-h: 0px; }
+
+    /* ── סרגל עליון ── */
+    .top-tools { display: flex; gap: 5px; align-items: center; }
+    .sidebar-logo { white-space: nowrap; }
+    .mode-btn.icon { padding: 5px 9px; font-size: 13px; min-width: 34px; text-align: center; font-weight: 700; }
+
+    /* ── כלי הספרייה ── */
+    .lib-tools { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; padding: 2px 2px 4px; }
+    .chip.fav-chip.active { background: rgba(250,204,21,.14); border-color: #eab308; color: #eab308; }
+    .chip b { font-weight: 800; color: var(--accent); }
+    .icon-chip { min-width: 34px; justify-content: center; font-size: 14px; }
+    .more-filters { display: block; }
+
+    /* ── מסכים ── */
+    .view-pane { padding: 20px 20px 28px; max-width: 900px; width: 100%; margin: 0 auto; }
+    .pane-title { font-size: 22px; font-weight: 800; letter-spacing: -.02em; margin: 2px 0 14px; }
+    body[data-view="home"] .results-bar, body[data-view="home"] .grid-wrapper, body[data-view="home"] .gd-slim,
+    body[data-view="wo"]   .results-bar, body[data-view="wo"]   .grid-wrapper, body[data-view="wo"]   .gd-slim,
+    body[data-view="prog"] .results-bar, body[data-view="prog"] .grid-wrapper, body[data-view="prog"] .gd-slim { display: none; }
+    .view-tabs { flex: none; }
+    .view-tab[data-view] { border-radius: var(--radius-md) var(--radius-md) 0 0; }
+
+    /* ── כרטיסי בית ── */
+    .home-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 14px; }
+    .home-hello { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+    .home-hello span { color: var(--accent); }
+    .home-date { color: var(--text-secondary); font-size: 13px; margin-top: 2px; }
+    .hcard {
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 14px 16px; margin-bottom: 12px;
+    }
+    .hcard-h {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      font-size: 12.5px; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px;
+    }
+    .hcard.accent { border-color: var(--accent); background: linear-gradient(0deg, var(--accent-muted), var(--accent-muted)), var(--bg-surface); }
+    .today-row { display: flex; align-items: center; gap: 12px; }
+    .today-ic {
+      width: 46px; height: 46px; flex: none; border-radius: 14px; background: var(--accent);
+      color: #0a0a0a; display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .today-txt { flex: 1; min-width: 0; }
+    .today-lbl { font-size: 11px; font-weight: 700; color: var(--text-tertiary); letter-spacing: .06em; }
+    .today-name { font-size: 17px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .today-sub { font-size: 12px; color: var(--text-secondary); }
+    .big-btn {
+      background: var(--accent); color: #0a0a0a; font-weight: 800; font-size: 14px;
+      padding: 11px 18px; border-radius: 12px; flex: none;
+    }
+    .big-btn:hover { opacity: .92; }
+    .today-more { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cta {
+      text-align: start; background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 14px; color: var(--text-primary);
+    }
+    .cta:hover { border-color: var(--accent); }
+    .cta b { display: block; font-size: 14px; margin: 6px 0 2px; }
+    .cta small { color: var(--text-secondary); font-size: 11.5px; line-height: 1.5; display: block; }
+    .cta .ic { font-size: 22px; }
+
+    /* ── פס השבוע ── */
+    .week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+    .wd { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 0; }
+    .wd-n { font-size: 10.5px; color: var(--text-tertiary); font-weight: 700; }
+    .wd-d {
+      width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: var(--text-primary); border: 2px solid transparent;
+    }
+    .wd.plan .wd-d { border-color: var(--border-hover); border-style: dashed; }
+    .wd.done .wd-d { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+    .wd.today .wd-d { box-shadow: 0 0 0 2px var(--bg-surface), 0 0 0 4px var(--accent); }
+    .wd-dot { width: 5px; height: 5px; border-radius: 50%; background: transparent; }
+    .wd.plan .wd-dot { background: var(--text-tertiary); }
+    .wd.done .wd-dot { background: var(--accent); }
+
+    /* ── אריחי נתונים ── */
+    .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+    .tile {
+      background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 12px 14px; min-width: 0;
+    }
+    .tile-l { font-size: 11.5px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tile-v { font-size: 24px; font-weight: 800; letter-spacing: -.02em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .tile-v small { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-inline-start: 3px; }
+    .tile-v.acc { color: var(--accent); }
+    .tiles.small { grid-template-columns: repeat(3, 1fr); margin: 14px 0 6px; }
+    .tiles.small .tile-v { font-size: 20px; }
+
+    /* ── שורת אימון אחרון / היסטוריה ── */
+    .hrow {
+      display: flex; align-items: center; gap: 12px; width: 100%; text-align: start;
+      padding: 10px 0; border-top: 1px solid var(--border); color: var(--text-primary);
+    }
+    .hrow:first-child { border-top: none; padding-top: 2px; }
+    .hrow-date { width: 46px; flex: none; text-align: center; }
+    .hrow-date b { display: block; font-size: 18px; font-weight: 800; line-height: 1.1; }
+    .hrow-date small { font-size: 10.5px; color: var(--text-tertiary); }
+    .hrow-mid { flex: 1; min-width: 0; }
+    .hrow-mid b { display: block; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .hrow-mid small { font-size: 11.5px; color: var(--text-secondary); }
+    .hrow-pr { font-size: 11px; color: #eab308; font-weight: 700; flex: none; }
+    .hrow-go { color: var(--text-tertiary); flex: none; }
+    .empty-mini { color: var(--text-tertiary); font-size: 12.5px; text-align: center; padding: 12px 0; line-height: 1.7; }
+
+    /* ── מועדפים בבית ── */
+    .fav-strip { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+    .fav-strip::-webkit-scrollbar { display: none; }
+    .fav-it { flex: none; width: 82px; text-align: center; color: var(--text-primary); }
+    .fav-it img { width: 82px; height: 82px; border-radius: 14px; object-fit: cover; background: #fff; display: block; }
+    .fav-it span { display: block; font-size: 10.5px; margin-top: 4px; line-height: 1.3; height: 2.6em; overflow: hidden; }
+
+    /* ── מפת חום ── */
+    .heat-wrap { overflow-x: auto; scrollbar-width: none; }
+    .heat { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 13px); grid-auto-columns: 13px; gap: 3px; direction: ltr; width: max-content; margin-inline: auto; }
+    .heat i, .heat-legend i { width: 13px; height: 13px; border-radius: 3px; background: var(--bg-elevated); display: block; }
+    .heat i.l1, .heat-legend i.l1 { background: color-mix(in srgb, var(--accent) 35%, var(--bg-elevated)); }
+    .heat i.l2, .heat-legend i.l2 { background: color-mix(in srgb, var(--accent) 65%, var(--bg-elevated)); }
+    .heat i.l3, .heat-legend i.l3 { background: var(--accent); }
+    .heat i.now { outline: 1.5px solid var(--text-secondary); outline-offset: 1px; }
+    .heat i.fut { visibility: hidden; }
+    .heat-legend { display: flex; align-items: center; justify-content: flex-end; gap: 4px; margin-top: 10px; font-size: 10.5px; color: var(--text-tertiary); }
+
+    /* ── עמודות שרירים ── */
+    .mbar { display: grid; grid-template-columns: 92px 1fr 34px; align-items: center; gap: 10px; padding: 5px 0; font-size: 12.5px; }
+    .mbar-t { height: 10px; background: var(--bg-elevated); border-radius: 6px; overflow: hidden; }
+    .mbar-f { height: 100%; background: var(--accent); border-radius: 6px; }
+    .mbar-n { text-align: end; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .an-seg.mini button { padding: 4px 10px; font-size: 11px; flex: none; }
+    .an-btn.small { padding: 5px 11px; font-size: 11.5px; }
+
+    /* ── שיאים ── */
+    .pr-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--border); width: 100%; text-align: start; color: var(--text-primary); }
+    .pr-row:first-child { border-top: none; }
+    .pr-row img { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: #fff; flex: none; }
+    .pr-row .n { flex: 1; min-width: 0; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pr-row .n small { display: block; color: var(--text-tertiary); font-size: 11px; }
+    .pr-row .v { font-weight: 800; color: var(--accent); font-size: 14px; flex: none; font-variant-numeric: tabular-nums; }
+    .pr-row .v small { font-weight: 600; font-size: 11px; }
+
+    /* ── ספרייה: תצוגת רשימה ── */
+    .exercise-grid.list { grid-template-columns: 1fr !important; gap: 8px; }
+    .exercise-grid.list .exercise-card { display: flex; align-items: center; }
+    .exercise-grid.list .exercise-card:hover { transform: none; }
+    .exercise-grid.list .card-media { width: 74px; flex: none; aspect-ratio: 1; background: #fff; }
+    .exercise-grid.list .card-body { flex: 1; min-width: 0; padding: 8px 12px; }
+    .exercise-grid.list .card-name { font-size: 13.5px; }
+    .card-media { aspect-ratio: 1 / 1; background: #fff; }
+    .exercise-card { position: relative; }
+    .card-add {
+      position: absolute; top: 6px; inset-inline-end: 6px; z-index: 2;
+      width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #0a0a0a;
+      font-size: 19px; font-weight: 800; line-height: 30px; text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .exercise-grid.list .card-add { position: static; margin-inline-end: 10px; flex: none; }
+    .card-star { position: absolute; top: 6px; inset-inline-start: 7px; z-index: 2; font-size: 14px; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
+    .exercise-grid.list .card-star { top: 4px; inset-inline-start: 4px; font-size: 11px; }
+
+    /* ── חלון תרגיל: מועדף + שלי ── */
+    .modal-fav { font-size: 20px; color: var(--text-tertiary); padding: 2px 8px; margin-inline-start: auto; }
+    .modal-fav.on { color: #eab308; }
+    .modal-header .modal-close { margin-inline-start: 0; }
+    .modal-mine { padding: 12px 22px 0; }
+    .mine-box { background: var(--accent-muted); border: 1px solid var(--accent); border-radius: var(--radius-lg); padding: 10px 14px; font-size: 12.5px; color: var(--text-secondary); line-height: 1.8; }
+    .mine-box b { color: var(--text-primary); }
+    .mine-box .mine-pr { color: var(--accent); font-weight: 800; }
+
+    /* ── האימונים שלי: ימים, מנוחה, החלפה ── */
+    .wo-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 2px 0 10px; }
+    .wo-meta-l { font-size: 11.5px; color: var(--text-tertiary); font-weight: 700; }
+    .wo-days { display: flex; gap: 4px; }
+    .wo-days button {
+      width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--bg-input); color: var(--text-secondary); font-size: 11.5px; font-weight: 700;
+    }
+    .wo-days button.on { border-color: var(--accent); background: var(--accent-muted); color: var(--accent); }
+    .wo-rest { padding: 4px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-input); color: var(--text-primary); font: inherit; font-size: 12px; }
+    .wo-item-btn { color: var(--text-tertiary); padding: 4px 6px; font-size: 14px; border-radius: var(--radius-sm); }
+    .wo-item-btn:hover { color: var(--accent); background: var(--accent-muted); }
+    .wo-addex { width: 100%; margin-top: 8px; padding: 9px; border: 1px dashed var(--border-hover); border-radius: var(--radius-md); color: var(--text-secondary); font-size: 12.5px; }
+    .wo-addex:hover { border-color: var(--accent); color: var(--accent); }
+    .wo-item img { background: #fff; }
+    .wo-item { flex-wrap: wrap; row-gap: 4px; }
+    .wo-item-name { flex: 1 1 160px; min-width: 0; }
+    .wo-ctrl { display: flex; align-items: center; gap: 4px; margin-inline-start: auto; }
+
+    /* ── תוכניות / החלפה ── */
+    .plan-card { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 14px; margin-bottom: 10px; background: var(--bg-elevated); }
+    .plan-card h3 { font-size: 15px; margin-bottom: 2px; }
+    .plan-card p { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 8px; }
+    .plan-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .plan-tags span { font-size: 10.5px; padding: 2px 8px; border-radius: 20px; background: var(--accent-muted); color: var(--accent); font-weight: 600; }
+    .swap-row { display: flex; align-items: center; gap: 10px; width: 100%; text-align: start; padding: 8px; border-radius: var(--radius-md); color: var(--text-primary); border: 1px solid transparent; }
+    .swap-row:hover { border-color: var(--accent); background: var(--accent-muted); }
+    .swap-row img { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; background: #fff; flex: none; }
+    .swap-row span { flex: 1; font-size: 13px; }
+    .swap-row small { display: block; color: var(--text-tertiary); font-size: 11px; }
+
+    /* ── היסטוריה מפורטת ── */
+    .hx { padding: 8px 0; border-top: 1px solid var(--border); }
+    .hx:first-child { border-top: none; }
+    .hx b { font-size: 13.5px; }
+    .hx-sets { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; direction: ltr; justify-content: flex-end; }
+    html[dir="ltr"] .hx-sets { justify-content: flex-start; }
+    .hx-sets span { font-size: 11.5px; padding: 3px 8px; border-radius: 8px; background: var(--bg-elevated); color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .hx-sets span.pr { background: rgba(234,179,8,.15); color: #eab308; font-weight: 700; }
+    .confirm-panel { width: min(380px, 92vw); }
+
+    /* ── מסך אימון חי ── */
+    .session-panel { width: min(620px, 96vw); max-height: 94vh; display: flex; flex-direction: column; padding: 16px 16px 12px; }
+    #sess-body { overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 6px; }
+    .sess-top { display: flex; align-items: center; gap: 10px; }
+    .sess-icon { width: 38px; height: 38px; border-radius: 50%; background: var(--bg-elevated); color: var(--text-primary); font-size: 20px; line-height: 1; flex: none; }
+    .sess-head-mid { flex: 1; min-width: 0; text-align: center; }
+    .sess-head-mid h2 { font-size: 16px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sess-sub { font-size: 12px; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+    .sess-ex { padding: 12px; }
+    .sess-ex.done { opacity: 1; border-color: var(--accent); }
+    .sess-ex-head img { background: #fff; width: 58px; height: 58px; }
+    .sess-last { font-size: 11.5px; color: var(--text-tertiary); margin: -4px 0 8px; line-height: 1.6; }
+    .sess-last b { color: var(--text-secondary); font-weight: 600; }
+    .set-tbl { width: 100%; border-collapse: separate; border-spacing: 0 5px; }
+    .set-tbl th { font-size: 10.5px; color: var(--text-tertiary); font-weight: 700; text-align: center; padding: 0 2px; }
+    .set-tbl td { text-align: center; padding: 0 2px; }
+    .set-n { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; background: var(--bg-surface); color: var(--text-secondary); }
+    .set-in {
+      width: 100%; max-width: 92px; text-align: center; padding: 9px 4px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-primary);
+      font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums;
+    }
+    .set-in:focus { outline: none; border-color: var(--accent); }
+    .set-in::placeholder { color: var(--text-tertiary); font-weight: 500; }
+    .set-ok {
+      width: 42px; height: 40px; border-radius: 12px; border: 2px solid var(--border-hover);
+      background: transparent; color: var(--text-tertiary); font-size: 18px; font-weight: 800;
+    }
+    .set-ok.on { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+    tr.set-done .set-in { border-color: transparent; background: var(--accent-muted); }
+    tr.set-pr .set-n { background: #eab308; color: #0a0a0a; }
+    .set-x { color: var(--text-tertiary); font-size: 14px; padding: 4px; }
+    .sess-add-set { font-size: 12px; color: var(--accent); font-weight: 700; padding: 6px 4px; }
+    .rest-bar { position: static; flex-wrap: wrap; }
+    .rest-bar.on { display: flex; }
+    #rest-sub, #rest-add { padding: 7px 10px; }
+    .sess-pr-list { margin-top: 12px; text-align: start; }
+    .sess-pr-list div { padding: 7px 10px; border-radius: 10px; background: rgba(234,179,8,.12); color: #eab308; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+
+    /* ── ניווט תחתון (טלפון) ── */
+    .bottom-nav { display: none; }
+
+    @media (max-width: 768px) {
+      :root { --bottom-nav-h: 64px; }
+      .view-tabs { display: none; }
+      .bottom-nav {
+        display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: var(--bottom-nav-h); align-items: end;
+        position: fixed; inset-inline: 0; bottom: 0; z-index: 45;
+        height: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        background: var(--bg-surface); border-top: 1px solid var(--border);
+      }
+      .bottom-nav button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0 9px; font-size: 10.5px; font-weight: 600; color: var(--text-tertiary); }
+      .bottom-nav button .bn-ic { line-height: 1; display: flex; }
+      .bottom-nav .bn-svg { width: 22px; height: 22px; }
+      .bottom-nav button.active { color: var(--accent); }
+      .bottom-nav .bn-start { color: var(--accent); }
+      .bottom-nav .bn-start .bn-ic {
+        width: 54px; height: 54px; border-radius: 50%; background: var(--accent); color: #0a0a0a;
+        display: flex; align-items: center; justify-content: center; margin-top: -30px; border: 4px solid var(--bg-surface);
+        box-shadow: 0 4px 18px color-mix(in srgb, var(--accent) 45%, transparent);
+      }
+      .bottom-nav .bn-start.live .bn-ic { animation: pulse 1.6s ease-in-out infinite; }
+      @keyframes pulse { 50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 20%, transparent); } }
+
+      .app-shell { height: 100dvh; padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px)); }
+      .sidebar { max-height: none; overflow: visible; }
+      body:not([data-view="lib"]) .sidebar-body, body:not([data-view="lib"]) .attribution { display: none; }
+      .sidebar .attribution { display: none; }
+      .sidebar-header { position: static; }
+      .more-filters { display: none; }
+      .more-filters.open { display: block; }
+      .sidebar-body { gap: 6px; padding: 8px 12px 8px; }
+      .filter-section .filter-summary { display: none; }
+      .more-filters .filter-section .filter-summary { display: flex; padding: 6px 4px 0; }
+      .view-pane { padding: 16px 14px 24px; }
+      .tiles { grid-template-columns: 1fr 1fr; }
+      .tiles.small { grid-template-columns: repeat(3, 1fr); }
+      .toast-wrap { bottom: calc(var(--bottom-nav-h) + 18px); }
+      .session-panel { width: 100vw; max-height: 100dvh; height: 100dvh; border-radius: 0; border: none; padding: 12px 12px calc(10px + env(safe-area-inset-bottom, 0px)); }
+      #session-overlay { align-items: stretch; }
+      .gd-slim { padding-bottom: 16px; }
+    }
+    @media (min-width: 769px) {
+      .more-filters { display: block !important; }
+      #more-filters { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -1405,26 +1707,14 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo" data-i18n="appTitle">ספריית<span>כושר</span></div>
-      <button class="db-setup-btn" id="db-setup-open" title="חיבור למסד נתונים">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <ellipse cx="8" cy="4" rx="6" ry="2.5"/>
-          <path d="M2 4v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V4"/>
-          <path d="M2 7v3c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5V7"/>
-          <path d="M2 10v2c0 1.38 2.69 2.5 6 2.5s6-1.12 6-2.5v-2"/>
-        </svg>
-        <span data-i18n="dbSetup">חיבור למסד נתונים</span>
-      </button>
+      <div class="sidebar-logo" data-i18n="appTitle">ספריית <span>כושר</span></div>
+      <div class="top-tools">
+        <button class="mode-btn icon" id="lang-toggle" title="Language / שפה">EN</button>
+        <button class="mode-btn icon" id="mode-toggle" title="מצב יום / לילה">🌙</button>
+        <button class="mode-btn icon" id="open-settings" title="הגדרות">⚙️</button>
+        <button class="mode-btn icon" id="open-about" title="אודות">ℹ️</button>
+      </div>
     </div>
-    <div class="appnest-tools">
-      <button class="mode-btn" id="mode-toggle" title="מצב יום / לילה">🌙</button>
-      <button class="mode-btn" id="open-settings" title="הגדרות">⚙️</button>
-      <button class="mode-btn" id="open-about" title="אודות">ℹ️</button>
-      <span style="flex:1"></span>
-      <button class="lang-btn" data-lang="he">עב</button>
-      <button class="lang-btn" data-lang="en">EN</button>
-    </div>
-    <div class="greeting" id="greeting" hidden></div>
     <div class="sidebar-body">
       <!-- Search -->
       <div class="search-wrapper">
@@ -1436,22 +1726,31 @@
         <button class="search-clear" id="search-clear" aria-label="ניקוי חיפוש">×</button>
       </div>
 
+      <div class="lib-tools">
+        <button class="chip fav-chip" id="fav-only">⭐ <span data-i18n="favOnly">מועדפים</span></button>
+        <button class="chip" id="more-filters"><span data-i18n="moreFilters">סינון נוסף</span> <b id="more-count"></b> ▾</button>
+        <span style="flex:1"></span>
+        <button class="chip icon-chip" id="view-toggle" title="רשת / רשימה">☰</button>
+      </div>
+
       <!-- Category filter -->
       <div class="filter-section">
         <div class="filter-summary" data-i18n="fCategory">קטגוריה</div>
         <div class="filter-options" id="category-chips"></div>
       </div>
 
-      <!-- Equipment filter -->
-      <div class="filter-section">
-        <div class="filter-summary" data-i18n="fEquipment">ציוד</div>
-        <div class="filter-options" id="equipment-chips"></div>
-      </div>
+      <div class="more-filters" id="more-filters-box">
+        <!-- Equipment filter -->
+        <div class="filter-section">
+          <div class="filter-summary" data-i18n="fEquipment">ציוד</div>
+          <div class="filter-options" id="equipment-chips"></div>
+        </div>
 
-      <!-- Target filter -->
-      <div class="filter-section">
-        <div class="filter-summary" data-i18n="fTarget">שריר מטרה</div>
-        <div class="filter-options" id="target-chips"></div>
+        <!-- Target filter -->
+        <div class="filter-section">
+          <div class="filter-summary" data-i18n="fTarget">שריר מטרה</div>
+          <div class="filter-options" id="target-chips"></div>
+        </div>
       </div>
     </div>
     <div class="attribution">
@@ -1466,9 +1765,64 @@
   <!-- Main Content -->
   <main class="main-content">
     <div class="view-tabs">
-      <button class="view-tab active" id="tab-library" data-i18n="tabLibrary">הספרייה</button>
-      <button class="view-tab" id="tab-workouts" data-i18n="tabWorkouts">האימונים שלי</button>
+      <button class="view-tab" data-view="home" data-i18n="tabHome">בית</button>
+      <button class="view-tab" data-view="lib" data-i18n="tabLibrary">תרגילים</button>
+      <button class="view-tab" data-view="wo" data-i18n="tabWorkouts">האימונים שלי</button>
+      <button class="view-tab" data-view="prog" data-i18n="tabProgress">התקדמות</button>
     </div>
+
+    <!-- ═════ בית ═════ -->
+    <section class="view-pane" id="home-view" hidden>
+      <div class="home-head">
+        <div>
+          <h1 class="home-hello" id="home-hello"></h1>
+          <div class="home-date" id="home-date"></div>
+        </div>
+      </div>
+      <div id="home-resume"></div>
+      <div class="hcard" id="home-week"></div>
+      <div id="home-today"></div>
+      <div class="tiles" id="home-tiles"></div>
+      <div id="home-last"></div>
+      <div class="hcard" id="home-favs"></div>
+      <div class="gd-bar" style="margin-top:4px">
+        <span class="gd-ic">⚠️</span>
+        <span class="gd-tx" data-i18n="gdShort">אין ייעוץ רפואי. התייעצו עם רופא לפני אימון ובצעו בטכניקה נכונה ובהתאם ליכולתכם.</span>
+        <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+      </div>
+    </section>
+
+    <!-- ═════ התקדמות ═════ -->
+    <section class="view-pane" id="prog-view" hidden>
+      <h1 class="pane-title" data-i18n="tabProgress">התקדמות</h1>
+      <div class="tiles" id="prog-tiles"></div>
+      <div class="hcard">
+        <div class="hcard-h"><span data-i18n="activityTitle">פעילות — 18 השבועות האחרונים</span></div>
+        <div class="heat-wrap"><div class="heat" id="prog-heat"></div></div>
+        <div class="heat-legend"><span data-i18n="heatLess">פחות</span><i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><span data-i18n="heatMore">יותר</span></div>
+      </div>
+      <div class="hcard">
+        <div class="hcard-h">
+          <span data-i18n="musclesTitle">סטים לפי אזור גוף</span>
+          <div class="an-seg mini" id="prog-range">
+            <button data-days="7" class="active" data-i18n="days7">7 ימים</button>
+            <button data-days="30" data-i18n="days30">30 יום</button>
+          </div>
+        </div>
+        <div id="prog-muscles"></div>
+      </div>
+      <div class="hcard">
+        <div class="hcard-h"><span data-i18n="prsTitle">🏆 שיאים אישיים</span></div>
+        <div id="prog-prs"></div>
+      </div>
+      <div class="hcard">
+        <div class="hcard-h">
+          <span data-i18n="historyTitle">היסטוריית אימונים</span>
+          <button class="an-btn small" id="csv-export" data-i18n="csvExport">📊 ייצוא CSV</button>
+        </div>
+        <div id="prog-history"></div>
+      </div>
+    </section>
     <div class="results-bar">
       <div class="active-filters" id="active-filters"></div>
       <span class="results-count" id="results-count"></span>
@@ -1485,8 +1839,10 @@
       <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
     </div>
     <div class="workouts-wrap" id="workouts-view" hidden>
+      <h1 class="pane-title" data-i18n="tabWorkouts">האימונים שלי</h1>
       <div class="workouts-toolbar">
         <button class="an-btn primary" id="wo-new" data-i18n="woNew">+ אימון חדש</button>
+        <button class="an-btn" id="open-plans" data-i18n="plansBtn">📋 תוכניות מוכנות</button>
       </div>
       <div class="gd-bar" style="margin-bottom:16px">
         <span class="gd-ic">⚠️</span>
@@ -1497,6 +1853,14 @@
     </div>
   </main>
 </div>
+
+<nav class="bottom-nav" id="bottom-nav">
+  <button data-view="home"><span class="bn-ic"><svg class="bn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/></svg></span><span data-i18n="tabHome">בית</span></button>
+  <button data-view="lib"><span class="bn-ic"><svg class="bn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 12h11M6.5 17.5h11"/><circle cx="3" cy="6.5" r=".6"/><circle cx="3" cy="12" r=".6"/><circle cx="3" cy="17.5" r=".6"/></svg></span><span data-i18n="tabLibraryShort">תרגילים</span></button>
+  <button class="bn-start" id="bn-start"><span class="bn-ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span><span data-i18n="bnStart">אימון</span></button>
+  <button data-view="wo"><span class="bn-ic"><svg class="bn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.5 10h7M8.5 14h7M8.5 18h4"/></svg></span><span data-i18n="tabWorkoutsShort">אימונים</span></button>
+  <button data-view="prog"><span class="bn-ic"><svg class="bn-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span data-i18n="tabProgress">התקדמות</span></button>
+</nav>
 
 <!-- DB Setup Overlay -->
 <div class="db-overlay" id="db-overlay" role="dialog" aria-modal="true" aria-labelledby="db-setup-title">
@@ -1609,7 +1973,7 @@
 
       <!-- גיבוי -->
       <div class="an-card">
-        <div class="an-card-label" data-i18n="backupLabel">גיבוי האימונים שלי</div>
+        <div class="an-card-label" data-i18n="backupLabel">גיבוי מלא</div>
         <div class="an-card-row">
           <button class="an-btn" id="wo-export" data-i18n="woExport">📥 ייצוא גיבוי</button>
           <button class="an-btn" id="wo-import" data-i18n="woImport">📤 ייבוא גיבוי</button>
@@ -1648,6 +2012,14 @@
         <div class="an-card-label" data-i18n="helpLabel">עזרה</div>
         <button class="an-btn wide" id="open-guide" data-i18n="guideBtn">📖 מדריך שימוש</button>
         <button class="an-btn wide" data-gd-open style="margin-top:8px" data-i18n="gdOpenBtn">⚠️ הסרת אחריות ותנאי שימוש</button>
+        <a class="an-btn wide" href="privacy_policy.html" style="margin-top:8px;display:block;text-decoration:none" data-i18n="privacyBtn">🔒 מדיניות פרטיות</a>
+      </div>
+
+      <!-- למפתחים -->
+      <div class="an-card">
+        <div class="an-card-label" data-i18n="devLabel">למפתחים</div>
+        <button class="an-btn wide" id="db-setup-open" data-i18n="dbSetupBtn">🗄 ייצוא המאגר למסד נתונים (SQL)</button>
+        <div class="an-card-hint" data-i18n="devHint">יצירת טבלה וקובץ INSERT לכל 1,324 התרגילים — ל-SQL Server, PostgreSQL, MySQL ו-SQLite.</div>
       </div>
 
       <!-- איפוס -->
@@ -1676,7 +2048,7 @@
 
     <div class="an-cards">
       <div class="an-rows">
-        <div><span class="k" data-i18n="version">גרסה</span><span class="v">1.1.0</span></div>
+        <div><span class="k" data-i18n="version">גרסה</span><span class="v" id="about-ver">2.0.0</span></div>
         <div><span class="k" data-i18n="developer">פיתוח</span><span class="v" style="color:var(--accent);font-weight:600" data-i18n="devName">ברק אפללו</span></div>
         <div><span class="k" data-i18n="platform">פלטפורמה</span><span class="v">PWA · HTML5</span></div>
         <div><span class="k" data-i18n="storage">אחסון נתונים</span><span class="v" data-i18n="storageVal">על המכשיר בלבד</span></div>
@@ -1695,6 +2067,10 @@
         <span style="color:var(--accent)">↗</span>
       </button>
 
+      <div class="an-card-row">
+        <button class="an-btn" id="about-guide" data-i18n="guideShort">📖 מדריך</button>
+        <a class="an-btn" href="privacy_policy.html" style="text-decoration:none;text-align:center" data-i18n="privacyShort">🔒 פרטיות</a>
+      </div>
       <div class="an-card-row">
         <button class="an-btn" id="about-share" data-i18n="shareApp">📤 שיתוף</button>
         <button class="an-btn" id="about-feedback" data-i18n="sendFeedback">✉️ משוב</button>
@@ -1764,10 +2140,12 @@
 <div class="an-overlay" id="onb-overlay" role="dialog" aria-modal="true">
   <div class="an-panel">
     <h2 data-i18n="onbTitle">ברוכים הבאים לספריית הכושר! 💪</h2>
-    <p class="an-sub" data-i18n="onbSub">שלושה דברים ששווה להכיר:</p>
-    <div class="onb-step"><div class="onb-num">1</div><p data-i18n="onb1"><strong>חיפוש וסינון</strong> — חפשו בעברית או באנגלית, וסננו לפי קטגוריה, ציוד ושריר מטרה בסרגל הצדדי.</p></div>
-    <div class="onb-step"><div class="onb-num">2</div><p data-i18n="onb2"><strong>לחיצה על תרגיל</strong> פותחת אנימציה, פירוט שרירים והוראות ביצוע מלאות.</p></div>
-    <div class="onb-step"><div class="onb-num">3</div><p data-i18n="onb3"><strong>התאמה אישית</strong> — ערכת צבע, מצב יום/לילה, שפה וגיבוי נמצאים במסך ההגדרות ⚙️.</p></div>
+    <p class="an-sub" data-i18n="onbSub">חמישה דברים ששווה להכיר:</p>
+    <div class="onb-step"><div class="onb-num">1</div><p data-i18n="onb1"></p></div>
+    <div class="onb-step"><div class="onb-num">2</div><p data-i18n="onb2"></p></div>
+    <div class="onb-step"><div class="onb-num">3</div><p data-i18n="onb3"></p></div>
+    <div class="onb-step"><div class="onb-num">4</div><p data-i18n="onb4"></p></div>
+    <div class="onb-step"><div class="onb-num">5</div><p data-i18n="onb5"></p></div>
     <div class="an-actions">
       <button class="an-btn primary" id="onb-close" data-i18n="onbGo">יאללה, מתחילים</button>
     </div>
@@ -1777,33 +2155,87 @@
 <!-- Active workout session -->
 <div class="an-overlay" id="session-overlay" role="dialog" aria-modal="true">
   <div class="an-panel session-panel">
-    <div style="display:flex;align-items:center;gap:10px">
-      <h2 id="sess-title" style="flex:1"></h2>
-      <span id="sess-clock" style="font-size:13px;color:var(--text-secondary);font-variant-numeric:tabular-nums"></span>
-      <button class="an-btn" id="sess-close" data-i18n="sessClose">יציאה</button>
+    <div class="sess-top">
+      <button class="sess-icon" id="sess-min" title="מזעור" aria-label="מזעור">⌄</button>
+      <div class="sess-head-mid">
+        <h2 id="sess-title"></h2>
+        <div class="sess-sub"><span id="sess-clock">0:00</span> · <span id="sess-count"></span></div>
+      </div>
+      <button class="an-btn primary" id="sess-done" data-i18n="sessFinishBtn">סיום ✓</button>
     </div>
     <div class="sess-progress-track"><div class="sess-progress-fill" id="sess-fill"></div></div>
-    <div class="gd-bar" style="margin:12px 0">
-      <span class="gd-ic">⚠️</span>
-      <span class="gd-tx" data-i18n="gdSess">הקשיבו לגוף. כאב חד, סחרחורת או קוצר נשימה — עצרו מיד ופנו לרופא.</span>
-      <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+    <div id="sess-body">
+      <div class="gd-bar" style="margin:0 0 12px">
+        <span class="gd-ic">⚠️</span>
+        <span class="gd-tx" data-i18n="gdSess">הקשיבו לגוף. כאב חד, סחרחורת או קוצר נשימה — עצרו מיד ופנו לרופא.</span>
+        <span class="gd-more" data-gd-open data-i18n="gdMore">פרטים</span>
+      </div>
+      <div id="sess-list"></div>
+      <button class="an-btn wide danger" id="sess-close" style="margin-top:6px" data-i18n="sessDiscard">ביטול האימון</button>
     </div>
-    <div id="sess-list"></div>
     <div class="rest-bar" id="rest-bar">
-      <span class="rest-time" id="rest-time">1:00</span>
+      <span class="rest-time" id="rest-time">1:30</span>
       <span class="rest-label" data-i18n="restLabel">מנוחה — נשמו עמוק 💨</span>
-      <button class="an-btn" id="rest-add" title="+15 שניות">+15</button>
+      <button class="an-btn" id="rest-sub" title="-15">−15</button>
+      <button class="an-btn" id="rest-add" title="+15">+15</button>
       <button class="an-btn primary" id="rest-skip" data-i18n="restSkip">דילוג</button>
     </div>
     <div id="sess-finish" hidden>
       <div class="sess-done-msg">
         <div class="big">🏆</div>
         <h2 data-i18n="sessDoneTitle">כל הכבוד, סיימת את האימון!</h2>
-        <p id="sess-summary"></p>
+        <div class="tiles small" id="sess-sum-tiles"></div>
+        <div id="sess-prs"></div>
       </div>
       <div class="an-actions" style="justify-content:center">
         <button class="an-btn primary" id="sess-finish-close" data-i18n="sessFinishClose">סגירה</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Starter plans -->
+<div class="an-overlay" id="plans-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="plansTitle">📋 תוכניות מוכנות</h2>
+    <p class="an-sub" data-i18n="plansSub">כל תוכנית נוספת כאימונים רגילים שאפשר לערוך — כולל ימים בשבוע.</p>
+    <div id="plans-list"></div>
+    <div class="an-actions"><button class="an-btn" data-close data-i18n="close">סגירה</button></div>
+  </div>
+</div>
+
+<!-- Swap exercise -->
+<div class="an-overlay" id="swap-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 data-i18n="swapTitle">החלפת תרגיל</h2>
+    <p class="an-sub" id="swap-sub"></p>
+    <div id="swap-list"></div>
+    <div class="an-actions"><button class="an-btn" data-close data-i18n="close">סגירה</button></div>
+  </div>
+</div>
+
+<!-- History entry -->
+<div class="an-overlay" id="hist-overlay" role="dialog" aria-modal="true">
+  <div class="an-panel">
+    <h2 id="hist-title"></h2>
+    <p class="an-sub" id="hist-sub"></p>
+    <div id="hist-body"></div>
+    <div class="an-actions">
+      <button class="an-btn danger" id="hist-del" data-i18n="histDelete">🗑 מחיקה</button>
+      <span style="flex:1"></span>
+      <button class="an-btn primary" data-close data-i18n="close">סגירה</button>
+    </div>
+  </div>
+</div>
+
+<!-- In-app confirm -->
+<div class="an-overlay" id="confirm-overlay" role="alertdialog" aria-modal="true">
+  <div class="an-panel confirm-panel">
+    <h2 id="confirm-title"></h2>
+    <p class="an-sub" id="confirm-text"></p>
+    <div class="an-actions">
+      <button class="an-btn" id="confirm-no" data-i18n="cancel">ביטול</button>
+      <button class="an-btn primary" id="confirm-yes"></button>
     </div>
   </div>
 </div>
@@ -1829,12 +2261,14 @@
   <div class="modal-panel" id="modal-panel">
     <div class="modal-header">
       <h2 class="modal-title" id="modal-title"></h2>
+      <button class="modal-fav" id="modal-fav" aria-label="מועדף">☆</button>
       <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
     </div>
     <div class="modal-media">
       <img class="modal-gif" id="modal-gif" alt="" />
     </div>
     <div class="modal-meta" id="modal-meta"></div>
+    <div class="modal-mine" id="modal-mine"></div>
     <div class="modal-muscles" id="modal-muscles"></div>
     <div class="modal-instructions" id="modal-instructions"></div>
     <div style="padding:0 22px 14px">
@@ -1858,7 +2292,70 @@
   // ══════════════════════════════════════════════════
   const UI = {
     he: {
-      appTitle: 'ספריית<span>כושר</span>', dbSetup: 'חיבור למסד נתונים',
+      // ── v2.0 ──
+      tabHome: 'בית', tabLibrary: 'תרגילים', tabLibraryShort: 'תרגילים', tabWorkouts: 'האימונים שלי', tabWorkoutsShort: 'אימונים',
+      tabProgress: 'התקדמות', bnStart: 'אימון',
+      favOnly: 'מועדפים', moreFilters: 'סינון נוסף',
+      helloMorning: 'בוקר טוב', helloNoon: 'צהריים טובים', helloEvening: 'ערב טוב', helloNight: 'לילה טוב',
+      dayShort: ['א','ב','ג','ד','ה','ו','ש'],
+      dayLong: ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'],
+      thisWeek: 'השבוע', today: 'היום', todayWorkout: 'האימון של היום', startNow: 'התחלה ▶',
+      restDay: 'היום יום מנוחה 😌', nextIs: (n, d) => `האימון הבא: ${n} · יום ${d}`,
+      noPlanYet: 'עוד לא שיבצתם אימונים לימים בשבוע. אפשר לשבץ במסך "האימונים שלי".',
+      trainAnyway: 'להתאמן בכל זאת', pickWorkout: 'בחירת אימון',
+      ctaPlansT: 'תוכנית מוכנה', ctaPlansS: '5 תוכניות למתחילים ולמתקדמים, בחדר כושר ובבית',
+      ctaOwnT: 'אימון משלי', ctaOwnS: 'בוחרים תרגילים מהספרייה ובונים אימון',
+      resumeT: 'יש אימון פתוח', resumeS: (sets, min) => `${sets} סטים בוצעו · התחיל לפני ${min} דק׳`, resumeBtn: 'המשך ▶',
+      tWeek: 'אימונים השבוע', tStreak: 'רצף שבועות 🔥', tTotal: 'סה״כ אימונים', tVolWeek: 'נפח השבוע',
+      tMonth: 'החודש', tTime: 'זמן אימון', tSets: 'סטים', tVolume: 'נפח', tDuration: 'משך',
+      kg: 'ק״ג', tons: 'טון', minShort: 'דק׳', hoursShort: 'ש׳',
+      lastWorkout: 'האימון האחרון', favsTitle: '⭐ התרגילים המועדפים', favsEmpty: 'סמנו ☆ בחלון של תרגיל כדי שיופיע כאן.',
+      activityTitle: 'פעילות — 18 השבועות האחרונים', heatLess: 'פחות', heatMore: 'יותר',
+      musclesTitle: 'סטים לפי אזור גוף', days7: '7 ימים', days30: '30 יום', musclesEmpty: 'עוד אין אימונים בטווח הזה.',
+      prsTitle: '🏆 שיאים אישיים', prsEmpty: 'שיאים יופיעו כאן אחרי שתרשמו משקל וחזרות באימון.',
+      historyTitle: 'היסטוריית אימונים', historyEmpty: 'עוד לא סיימתם אימון. כל אימון שתסיימו יישמר כאן.',
+      csvExport: '📊 ייצוא CSV', csvEmpty: 'אין עדיין היסטוריה לייצוא',
+      histDelete: '🗑 מחיקה', histDelConfirm: 'למחוק את האימון הזה מההיסטוריה? השיאים יחושבו מחדש.',
+      prBadge: n => `🏆 ${n}`, setsN: n => `${n} סטים`,
+      plansBtn: '📋 תוכניות מוכנות', plansTitle: '📋 תוכניות מוכנות',
+      plansSub: 'כל תוכנית נוספת כאימונים רגילים שאפשר לערוך — כולל שיבוץ לימים בשבוע.',
+      planAdd: '+ הוספה לאימונים שלי', planAdded: (n) => n === 1 ? 'נוסף אימון חדש ✓' : `נוספו ${n} אימונים ✓`, perWeek: n => `${n}× בשבוע`,
+      planDays: 'ימים:', restSec: 'מנוחה:', secShort: 'שנ׳',
+      woAddEx: '+ הוספת תרגיל מהספרייה', woAddHint: 'בחרו תרגיל ולחצו + כדי להוסיף אותו',
+      swapTitle: 'החלפת תרגיל', swapSub: (n) => `תרגילים לאותו שריר כמו "${n}"`, swapDone: 'התרגיל הוחלף ✓',
+      moveUp: 'העברה למעלה', swapBtn: 'החלפה', removeBtn: 'הסרה',
+      woDeleteConfirm: 'למחוק את האימון הזה? ההיסטוריה שלו תישמר.',
+      deleteBtn: 'מחיקה', cancel: 'ביטול', yes: 'כן', confirmT: 'רגע לפני…',
+      sessFinishBtn: 'סיום ✓', sessDiscard: 'ביטול האימון בלי לשמור',
+      sessDiscardConfirm: 'לבטל את האימון? הסטים שסימנתם לא יישמרו.',
+      sessFinishEarly: (d, t) => `סימנתם ${d} מתוך ${t} סטים. לסיים ולשמור את מה שבוצע?`,
+      sessNothing: 'עוד לא סימנתם אף סט ✓. לסגור בלי לשמור?',
+      sessFinishAnyway: 'סיום ושמירה', sessCloseNoSave: 'סגירה בלי שמירה',
+      sessCount: (d, t) => `${d}/${t} סטים`, colSet: 'סט', colKg: 'ק״ג', colReps: 'חזרות',
+      addSet: '+ סט', lastTime: 'בפעם הקודמת:', bestEver: 'שיא:', firstTime: 'פעם ראשונה — בהצלחה! 💪',
+      newPR: n => `🏆 שיא חדש ב${n}!`, prLine: (n, v) => `🏆 ${n}: ${v}`,
+      sessSaved: 'האימון נשמר ✓', restDone: 'סוף המנוחה — לסט הבא! 💪',
+      bodyweight: 'משקל גוף',
+      mineTitle: 'ההיסטוריה שלך בתרגיל', mineBest: 'שיא:', mineLast: 'בפעם האחרונה', mineTimes: n => `ביצעת ${n} פעמים`,
+      e1rm: 'הערכת חזרה מקסימלית',
+      favAdded: 'נוסף למועדפים ⭐', favRemoved: 'הוסר מהמועדפים',
+      backupLabel: 'גיבוי מלא', backupHint: 'כל הנתונים בקובץ אחד: אימונים, היסטוריה, שיאים, מועדפים והעדפות. שימושי למעבר מכשיר.',
+      woExport: '📥 ייצוא גיבוי', woImport: '📤 שחזור מגיבוי',
+      importConfirm: 'השחזור יחליף את כל הנתונים הנוכחיים במכשיר בנתונים מהקובץ. להמשיך?', importReplace: 'החלפה',
+      importOk: 'הגיבוי שוחזר ✓', importErr: 'הקובץ לא תקין',
+      devLabel: 'למפתחים', dbSetupBtn: '🗄 ייצוא המאגר למסד נתונים (SQL)',
+      devHint: 'יצירת טבלה וקובץ INSERT לכל 1,324 התרגילים — ל-SQL Server, PostgreSQL, MySQL ו-SQLite.',
+      dbLoading: 'טוען את המאגר המלא (17MB)…', dbLoadErr: 'לא הצלחנו לטעון את המאגר המלא. בדקו חיבור ונסו שוב.',
+      privacyBtn: '🔒 מדיניות פרטיות', privacyShort: '🔒 פרטיות', guideShort: '📖 מדריך',
+      storageOk: 'האחסון במכשיר מוגן מפני מחיקה אוטומטית ✓',
+      onbSub: 'חמישה דברים ששווה להכיר:',
+      onb1: '<strong>בית</strong> — האימון של היום, השבוע שלכם ורצף האימונים במבט אחד.',
+      onb2: '<strong>תרגילים</strong> — 1,324 תרגילים עם אנימציה. חפשו, סננו, סמנו ⭐ ולחצו + כדי להוסיף לאימון.',
+      onb3: '<strong>האימונים שלי</strong> — בנו אימון או בחרו תוכנית מוכנה, ושבצו אותו לימים בשבוע.',
+      onb4: '<strong>במהלך האימון</strong> — רושמים משקל וחזרות בכל סט, רואים מה עשיתם בפעם הקודמת, ומקבלים 🏆 על כל שיא.',
+      onb5: '<strong>התקדמות</strong> — מפת פעילות, סטים לפי אזור גוף, שיאים והיסטוריה מלאה. הכול נשמר רק במכשיר שלכם.',
+
+      appTitle: 'ספריית <span>כושר</span>', dbSetup: 'חיבור למסד נתונים',
       searchPh: 'חיפוש תרגילים…', fCategory: 'קטגוריה', fEquipment: 'ציוד', fTarget: 'שריר מטרה',
       noResults: 'לא נמצאו תרגילים', clearAll: 'ניקוי הכול',
       countAll: n => `${n} תרגילים`, countOf: (t, a) => `${t} מתוך ${a} תרגילים`,
@@ -1875,13 +2372,11 @@
       settingsTitle: 'הגדרות', settingsSub: 'ההעדפות נשמרות במכשיר שלך בלבד.',
       username: 'שם משתמש', usernamePh: 'איך לקרוא לך?', langLabel: 'שפת ממשק', close: 'סגירה', save: 'שמירה',
       themeLabel: 'ערכת צבעים', modeLabel: 'מצב תצוגה', modeDark: '🌙 לילה', modeLight: '☀️ יום',
-      backupLabel: 'גיבוי האימונים שלי',
-      backupHint: 'קובץ JSON שנשמר אצלכם במכשיר. שימושי למעבר בין מכשירים.',
       helpLabel: 'עזרה', guideBtn: '📖 מדריך שימוש',
       resetLabel: 'איפוס', resetBtn: '🗑 מחיקת כל הנתונים',
       resetConfirm: '⚠️ בטוחים? לחצו שוב', resetDone: 'נמחק ✓',
       resetHint: 'מוחק אימונים, העדפות ושם משתמש מהמכשיר הזה.',
-      importOk: 'הגיבוי יובא ✓', importErr: 'קובץ לא תקין',
+      
       remLabel: 'תזכורת אימון', remSub: 'קבעו מתי להזכיר לכם להתאמן.',
       remDays: 'ימים בשבוע', remTime: 'שעה', remMsg: 'הודעה אישית',
       remMsgPh: 'זמן להתאמן! 💪', remTest: '🔔 בדיקת תזכורת',
@@ -1934,20 +2429,16 @@
       disclaimerB: 'התכנים באפליקציה הם מידע כללי בלבד ואינם מהווים ייעוץ רפואי, אבחון או תוכנית אימונים אישית. התייעצו עם רופא או פיזיולוג מוסמך לפני תחילת פעילות גופנית, במיוחד אם יש לכם מצב רפואי, פציעה או הריון. בצעו כל תרגיל בטכניקה נכונה ובהתאם ליכולתכם — האפליקציה והמפתחים אינם אחראים לנזק או פציעה כתוצאה מהשימוש.',
       aboutTag: 'ספריית תרגילים מלאה בעברית — 1,324 תרגילים עם אנימציות והוראות ביצוע.',
       version: 'גרסה', developer: 'פיתוח', mediaCredit: 'מדיה', dataCredit: 'נתונים',
-      onbTitle: 'ברוכים הבאים לספריית הכושר! 💪', onbSub: 'שלושה דברים ששווה להכיר:',
-      onb1: '<strong>חיפוש וסינון</strong> — חפשו בעברית או באנגלית, וסננו לפי קטגוריה, ציוד ושריר מטרה בסרגל הצדדי.',
-      onb2: '<strong>לחיצה על תרגיל</strong> פותחת אנימציה, פירוט שרירים והוראות ביצוע מלאות.',
-      onb3: '<strong>התאמה אישית</strong> — ערכת צבע, מצב יום/לילה, שפה וגיבוי נמצאים במסך ההגדרות ⚙️.',
+      onbTitle: 'ברוכים הבאים לספריית הכושר! 💪',
       onbGo: 'יאללה, מתחילים', hello: 'שלום',
-      tabLibrary: 'הספרייה', tabWorkouts: 'האימונים שלי',
-      woNew: '+ אימון חדש', woExport: '📥 ייצוא גיבוי', woImport: '📤 ייבוא גיבוי',
+      
+      woNew: '+ אימון חדש',
       woEmpty: 'עוד אין אימונים. פתחו תרגיל בספרייה ולחצו "הוספה לאימון", או צרו אימון חדש כאן.',
       woNoItems: 'אימון ריק — הוסיפו תרגילים מהספרייה.',
       woAdd: 'הוספה לאימון', woPickTitle: 'הוספה לאימון', woPickSub: 'בחרו אימון קיים או צרו חדש:',
       woNamePh: 'שם לאימון חדש… (למשל: חזה + טרייספס)', woCreateAdd: 'צור והוסף',
       woDefaultName: 'אימון חדש', sets: 'סטים', reps: 'חזרות',
       woExercises: n => `${n} תרגילים`, woAdded: 'נוסף ✓',
-      woDeleteConfirm: 'למחוק את האימון הזה?',
       devBadge: 'פיתוח: ברק אפללו', devName: 'ברק אפללו',
       woStart: 'התחל אימון ▶', sessClose: 'יציאה',
       sessExitConfirm: 'לצאת באמצע האימון? ההתקדמות תישמר.',
@@ -1957,7 +2448,69 @@
       sessFinishClose: 'סגירה', setWord: 'סט',
     },
     en: {
-      appTitle: 'Exercise<span>DB</span>', dbSetup: 'DB Setup',
+      // ── v2.0 ──
+      tabHome: 'Home', tabLibrary: 'Exercises', tabLibraryShort: 'Exercises', tabWorkouts: 'My Workouts', tabWorkoutsShort: 'Workouts',
+      tabProgress: 'Progress', bnStart: 'Train',
+      favOnly: 'Favourites', moreFilters: 'More filters',
+      helloMorning: 'Good morning', helloNoon: 'Good afternoon', helloEvening: 'Good evening', helloNight: 'Good night',
+      dayShort: ['S','M','T','W','T','F','S'],
+      dayLong: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+      thisWeek: 'This week', today: 'Today', todayWorkout: "TODAY'S WORKOUT", startNow: 'Start ▶',
+      restDay: 'Rest day today 😌', nextIs: (n, d) => `Next: ${n} · ${d}`,
+      noPlanYet: 'No workouts are assigned to weekdays yet. You can do that in "My Workouts".',
+      trainAnyway: 'Train anyway', pickWorkout: 'Pick a workout',
+      ctaPlansT: 'Starter plan', ctaPlansS: '5 plans for beginners and up, gym or home',
+      ctaOwnT: 'My own workout', ctaOwnS: 'Pick exercises from the library and build one',
+      resumeT: 'A workout is in progress', resumeS: (sets, min) => `${sets} sets done · started ${min} min ago`, resumeBtn: 'Resume ▶',
+      tWeek: 'Workouts this week', tStreak: 'Week streak 🔥', tTotal: 'Total workouts', tVolWeek: 'Volume this week',
+      tMonth: 'This month', tTime: 'Time trained', tSets: 'Sets', tVolume: 'Volume', tDuration: 'Duration',
+      kg: 'kg', tons: 't', minShort: 'min', hoursShort: 'h',
+      lastWorkout: 'Last workout', favsTitle: '⭐ Favourite exercises', favsEmpty: 'Tap ☆ in an exercise to pin it here.',
+      activityTitle: 'Activity — last 18 weeks', heatLess: 'Less', heatMore: 'More',
+      musclesTitle: 'Sets by body part', days7: '7 days', days30: '30 days', musclesEmpty: 'No workouts in this range yet.',
+      prsTitle: '🏆 Personal records', prsEmpty: 'Records show up here once you log weight and reps in a workout.',
+      historyTitle: 'Workout history', historyEmpty: 'No finished workouts yet. Every workout you finish is saved here.',
+      csvExport: '📊 Export CSV', csvEmpty: 'No history to export yet',
+      histDelete: '🗑 Delete', histDelConfirm: 'Delete this workout from history? Records will be recalculated.',
+      prBadge: n => `🏆 ${n}`, setsN: n => `${n} sets`,
+      plansBtn: '📋 Starter plans', plansTitle: '📋 Starter plans',
+      plansSub: 'Each plan is added as regular, editable workouts — including weekday scheduling.',
+      planAdd: '+ Add to my workouts', planAdded: (n) => n === 1 ? '1 workout added ✓' : `${n} workouts added ✓`, perWeek: n => `${n}× a week`,
+      planDays: 'Days:', restSec: 'Rest:', secShort: 's',
+      woAddEx: '+ Add an exercise from the library', woAddHint: 'Pick an exercise and tap + to add it',
+      swapTitle: 'Swap exercise', swapSub: (n) => `Exercises for the same muscle as "${n}"`, swapDone: 'Exercise swapped ✓',
+      moveUp: 'Move up', swapBtn: 'Swap', removeBtn: 'Remove',
+      woDeleteConfirm: 'Delete this workout? Its history is kept.',
+      deleteBtn: 'Delete', cancel: 'Cancel', yes: 'Yes', confirmT: 'Just a moment…',
+      sessFinishBtn: 'Finish ✓', sessDiscard: 'Discard workout without saving',
+      sessDiscardConfirm: 'Discard this workout? Sets you ticked will not be saved.',
+      sessFinishEarly: (d, t) => `You ticked ${d} of ${t} sets. Finish and save what you did?`,
+      sessNothing: "You haven't ticked any set ✓ yet. Close without saving?",
+      sessFinishAnyway: 'Finish & save', sessCloseNoSave: 'Close without saving',
+      sessCount: (d, t) => `${d}/${t} sets`, colSet: 'Set', colKg: 'kg', colReps: 'Reps',
+      addSet: '+ Set', lastTime: 'Last time:', bestEver: 'Best:', firstTime: 'First time — good luck! 💪',
+      newPR: n => `🏆 New record: ${n}!`, prLine: (n, v) => `🏆 ${n}: ${v}`,
+      sessSaved: 'Workout saved ✓', restDone: 'Rest over — next set! 💪',
+      bodyweight: 'Bodyweight',
+      mineTitle: 'Your history', mineBest: 'Best:', mineLast: 'Last time', mineTimes: n => `Done ${n} times`,
+      e1rm: 'Estimated 1-rep max',
+      favAdded: 'Added to favourites ⭐', favRemoved: 'Removed from favourites',
+      backupLabel: 'Full backup', backupHint: 'Everything in one file: workouts, history, records, favourites and preferences. Handy when switching devices.',
+      woExport: '📥 Export backup', woImport: '📤 Restore backup',
+      importConfirm: 'Restoring replaces all current data on this device with the file. Continue?', importReplace: 'Replace',
+      importOk: 'Backup restored ✓', importErr: 'Invalid file',
+      devLabel: 'For developers', dbSetupBtn: '🗄 Export the database (SQL)',
+      devHint: 'Create a table and an INSERT file for all 1,324 exercises — SQL Server, PostgreSQL, MySQL and SQLite.',
+      dbLoading: 'Loading the full database (17MB)…', dbLoadErr: "Couldn't load the full database. Check your connection and try again.",
+      privacyBtn: '🔒 Privacy policy', privacyShort: '🔒 Privacy', guideShort: '📖 Guide',
+      storageOk: 'On-device storage is protected from automatic clearing ✓',
+      onbSub: 'Five things worth knowing:',
+      onb1: '<strong>Home</strong> — today\'s workout, your week and your streak at a glance.',
+      onb2: '<strong>Exercises</strong> — 1,324 animated exercises. Search, filter, star ⭐ and tap + to add to a workout.',
+      onb3: '<strong>My Workouts</strong> — build your own or pick a starter plan, and assign it to weekdays.',
+      onb4: '<strong>During a workout</strong> — log weight and reps per set, see last time\'s numbers, and get a 🏆 for every record.',
+      onb5: '<strong>Progress</strong> — activity map, sets by body part, records and full history. Everything stays on your device.',
+      appTitle: 'Exercise <span>Library</span>', dbSetup: 'DB Setup',
       searchPh: 'Search exercises…', fCategory: 'Category', fEquipment: 'Equipment', fTarget: 'Target Muscle',
       noResults: 'No exercises found', clearAll: 'Clear all',
       countAll: n => `${n} exercises`, countOf: (t, a) => `${t} of ${a} exercises`,
@@ -1974,13 +2527,11 @@
       settingsTitle: 'Settings', settingsSub: 'Preferences are stored on your device only.',
       username: 'Username', usernamePh: 'What should we call you?', langLabel: 'Interface language', close: 'Close', save: 'Save',
       themeLabel: 'Color theme', modeLabel: 'Display mode', modeDark: '🌙 Night', modeLight: '☀️ Day',
-      backupLabel: 'My workouts backup',
-      backupHint: 'A JSON file kept on your device. Handy when moving between devices.',
       helpLabel: 'Help', guideBtn: '📖 User guide',
       resetLabel: 'Reset', resetBtn: '🗑 Delete all data',
       resetConfirm: '⚠️ Are you sure? Tap again', resetDone: 'Deleted ✓',
       resetHint: 'Clears workouts, preferences and username from this device.',
-      importOk: 'Backup imported ✓', importErr: 'Invalid file',
+      
       remLabel: 'Workout reminder', remSub: 'Choose when to be reminded to train.',
       remDays: 'Days of the week', remTime: 'Time', remMsg: 'Custom message',
       remMsgPh: 'Time to train! 💪', remTest: '🔔 Test reminder',
@@ -2033,20 +2584,16 @@
       disclaimerB: 'The content in this app is general information only and is not medical advice, a diagnosis, or a personal training program. Consult a doctor or certified exercise professional before starting any physical activity, especially with a medical condition, injury, or pregnancy. Perform every exercise with proper form and within your ability — the app and its developers are not liable for any injury or damage resulting from its use.',
       aboutTag: 'A complete exercise library — 1,324 exercises with animations and full instructions.',
       version: 'Version', developer: 'Developed by', mediaCredit: 'Media', dataCredit: 'Data',
-      onbTitle: 'Welcome to the Exercise Library! 💪', onbSub: 'Three things worth knowing:',
-      onb1: '<strong>Search & filter</strong> — search in Hebrew or English and filter by category, equipment and target muscle.',
-      onb2: '<strong>Tap any exercise</strong> to see the animation, muscles and full instructions.',
-      onb3: '<strong>Make it yours</strong> — color palette, day/night mode, language and backup all live in Settings ⚙️.',
+      onbTitle: 'Welcome to the Exercise Library! 💪',
       onbGo: "Let's go", hello: 'Hello',
-      tabLibrary: 'Library', tabWorkouts: 'My Workouts',
-      woNew: '+ New workout', woExport: '📥 Export backup', woImport: '📤 Import backup',
+      
+      woNew: '+ New workout',
       woEmpty: 'No workouts yet. Open an exercise in the library and tap "Add to workout", or create one here.',
       woNoItems: 'Empty workout — add exercises from the library.',
       woAdd: 'Add to workout', woPickTitle: 'Add to workout', woPickSub: 'Pick an existing workout or create a new one:',
       woNamePh: 'New workout name… (e.g. Chest + Triceps)', woCreateAdd: 'Create & add',
       woDefaultName: 'New workout', sets: 'Sets', reps: 'Reps',
       woExercises: n => `${n} exercises`, woAdded: 'Added ✓',
-      woDeleteConfirm: 'Delete this workout?',
       devBadge: 'Developed by Barak Aflalo', devName: 'Barak Aflalo',
       woStart: 'Start workout ▶', sessClose: 'Exit',
       sessExitConfirm: 'Leave mid-workout? Your progress will be saved.',
@@ -2111,8 +2658,8 @@
     document.querySelectorAll('[data-i18n-ph]').forEach(el => {
       el.placeholder = T(el.dataset.i18nPh);
     });
-    document.querySelectorAll('.lang-btn').forEach(b =>
-      b.classList.toggle('active', b.dataset.lang === LANG));
+    const lt = document.getElementById('lang-toggle');
+    if (lt) lt.textContent = LANG === 'he' ? 'EN' : 'עב';
   }
 
   function setLang(l) {
@@ -2121,8 +2668,9 @@
     applyStaticI18n();
     buildFilterOptions();
     applyFilters();
-    // שמות התרגילים מתחלפים גם באימונים ובחלון הפתוח
-    if (typeof renderWorkouts === 'function') renderWorkouts();
+    // שמות התרגילים מתחלפים בכל המסכים ובחלון הפתוח
+    if (typeof refreshViews === 'function') refreshViews();
+    if (sess && document.getElementById('session-overlay').classList.contains('open')) renderSession();
     if (typeof refreshOpenModal === 'function') refreshOpenModal();
     if (typeof remRenderDays === 'function') { remRenderDays(); remStatus(); }
   }
@@ -2192,6 +2740,8 @@
   // ── Data Loading ───────────────────────────────────
   function init() {
     state.exercises = EXERCISES;
+    EXERCISES.forEach(e => { EX_BY_ID[e.id] = e; });
+    state.favOnly = false;
 
     // Pre-compute search index per exercise
     state.exercises.forEach(ex => {
@@ -2219,8 +2769,7 @@
       setMode(MODE === 'dark' ? 'light' : 'dark'));
     document.querySelectorAll('[data-mode-btn]').forEach(b =>
       b.addEventListener('click', () => setMode(b.dataset.modeBtn)));
-    document.querySelectorAll('.lang-btn').forEach(b =>
-      b.addEventListener('click', () => setLang(b.dataset.lang)));
+    document.getElementById('lang-toggle').addEventListener('click', () => setLang(LANG === 'he' ? 'en' : 'he'));
 
     // ── AppNest: settings / about / onboarding ──
     const settingsOv = document.getElementById('settings-overlay');
@@ -2229,14 +2778,7 @@
     const userInput  = document.getElementById('set-username');
     const langSelect = document.getElementById('set-lang');
 
-    function updateGreeting() {
-      const g = document.getElementById('greeting');
-      const name = localStorage.getItem('appnest-username') || '';
-      g.hidden = !name;
-      if (name) g.innerHTML = `${T('hello')}, <strong></strong>`,
-                g.querySelector('strong').textContent = name;
-    }
-    updateGreeting();
+    function updateGreeting() { if (VIEW === 'home') renderHome(); }
 
     document.getElementById('open-settings').addEventListener('click', () => {
       userInput.value = localStorage.getItem('appnest-username') || '';
@@ -2257,6 +2799,7 @@
     document.getElementById('open-about').addEventListener('click', () => aboutOv.classList.add('open'));
     document.getElementById('about-close').addEventListener('click', () => aboutOv.classList.remove('open'));
     document.getElementById('about-share').addEventListener('click', shareApp);
+    document.getElementById('about-guide').addEventListener('click', () => { aboutOv.classList.remove('open'); onbOv.classList.add('open'); });
     document.getElementById('about-feedback').addEventListener('click', sendFeedback);
     document.getElementById('about-appnest').addEventListener('click', () =>
       window.open('https://appnest-store.pages.dev', '_blank', 'noopener'));
@@ -2338,7 +2881,7 @@
         resetTimer = setTimeout(() => { resetStep = 0; resetBtn.textContent = T('resetBtn'); }, 4000);
         return;
       }
-      ['appnest-workouts', 'appnest-session', 'appnest-username', 'appnest-palette', 'appnest-mode', 'appnest-onboarded', 'appnest-reminder', 'appnest-disclaimer']
+      ['appnest-workouts', 'appnest-history', 'appnest-favs', 'appnest-libview', 'appnest-session', 'appnest-username', 'appnest-palette', 'appnest-mode', 'appnest-onboarded', 'appnest-reminder', 'appnest-disclaimer']
         .forEach(k => localStorage.removeItem(k));
       resetStep = 0;
       resetBtn.textContent = T('resetDone');
@@ -2348,10 +2891,21 @@
     // ── My Workouts ──
     initWorkouts();
     wireSession();
+    wireLibTools();
+    watchOverlays();
+    askPersist();
+    document.querySelectorAll('button[data-view]').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
+    document.getElementById('modal-fav').addEventListener('click', () => toggleFav(modalGif.dataset.exId));
+
+    // מסך פתיחה: קיצור דרך מהמניפסט (?go=) או בית
+    const go = new URLSearchParams(location.search).get('go');
+    history.replaceState({ an: 'view', v: 'home' }, '', location.pathname + location.hash);
+    showView(go === 'progress' ? 'prog' : go === 'library' ? 'lib' : 'home', { fromPop: true });
+    if (go === 'start') setTimeout(quickStart, 300);
 
     // ── PWA: רישום Service Worker ──
-    if ('serviceWorker' in navigator && location.protocol === 'https:') {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
   }
 
@@ -2566,6 +3120,29 @@
     window.open('mailto:appnest55@gmail.com?subject=' + encodeURIComponent('Exercise Library Feedback'), '_blank');
   }
 
+  // ── כלי הספרייה: מועדפים · סינון נוסף · רשת/רשימה ──
+  function wireLibTools() {
+    const favBtn = document.getElementById('fav-only');
+    favBtn.addEventListener('click', () => {
+      state.favOnly = !state.favOnly;
+      favBtn.classList.toggle('active', state.favOnly);
+      applyFilters();
+    });
+    const mf = document.getElementById('more-filters'), box = document.getElementById('more-filters-box');
+    mf.addEventListener('click', () => { box.classList.toggle('open'); mf.classList.toggle('active', box.classList.contains('open')); });
+    const vt = document.getElementById('view-toggle');
+    const narrow = window.matchMedia('(max-width: 768px)').matches;
+    let mode = localStorage.getItem(VIEW_KEY) || (narrow ? 'list' : 'grid');
+    const paint = () => { gridEl.classList.toggle('list', mode === 'list'); vt.textContent = mode === 'list' ? '▦' : '☰'; };
+    vt.addEventListener('click', () => { mode = mode === 'list' ? 'grid' : 'list'; try { localStorage.setItem(VIEW_KEY, mode); } catch {} paint(); });
+    paint();
+  }
+  function updateMoreCount() {
+    const n = state.filters.equipment.size + state.filters.target.size;
+    const el = document.getElementById('more-count');
+    if (el) el.textContent = n ? `(${n})` : '';
+  }
+
   // ── Build Filter Chips ─────────────────────────────
   function buildFilterOptions() {
     const cats   = uniqueSorted(state.exercises.map(e => e.category));
@@ -2626,14 +3203,17 @@
   function applyFilters() {
     const q = state.search.toLowerCase().trim();
     const { category, equipment, target } = state.filters;
+    const favSet = new Set(state.favOnly ? loadFavs() : []);
 
     state.filtered = state.exercises.filter(ex => {
       if (q && !ex._idx.includes(q)) return false;
       if (category.size  && !category.has(ex.category))   return false;
       if (equipment.size && !equipment.has(ex.equipment))  return false;
       if (target.size    && !target.has(ex.target))        return false;
+      if (state.favOnly  && !favSet.has(ex.id))             return false;
       return true;
     });
+    updateMoreCount();
 
     state.page = 0;
     renderGrid();
@@ -2642,7 +3222,9 @@
   }
 
   // ── Rendering ──────────────────────────────────────
+  let FAVS_NOW = new Set();
   function renderGrid() {
+    FAVS_NOW = new Set(loadFavs());
     gridEl.innerHTML = '';
     const slice = state.filtered.slice(0, state.pageSize);
 
@@ -2700,6 +3282,9 @@
 
     media.appendChild(thumb);
     media.appendChild(gif);
+    const star = document.createElement('span');
+    star.className = 'card-star'; star.textContent = '⭐'; star.hidden = !FAVS_NOW.has(ex.id);
+    media.appendChild(star);
 
     // Body
     const body = document.createElement('div');
@@ -2726,6 +3311,10 @@
     body.appendChild(tags);
     article.appendChild(media);
     article.appendChild(body);
+    const add = document.createElement('button');
+    add.className = 'card-add'; add.textContent = '+';
+    add.title = T('woAdd'); add.setAttribute('aria-label', T('woAdd'));
+    article.appendChild(add);
 
     return article;
   }
@@ -2919,348 +3508,1043 @@
       modalInstr.appendChild(list);
     }
 
+    // מועדף
+    const mf = document.getElementById('modal-fav');
+    const fav = isFav(ex.id);
+    mf.textContent = fav ? '★' : '☆'; mf.classList.toggle('on', fav);
+    // ההיסטוריה שלי בתרגיל
+    const mine = document.getElementById('modal-mine');
+    const st = stats(), b = st.best[ex.id], l = st.last[ex.id];
+    mine.innerHTML = l ? `<div class="mine-box"><b>${esc(T('mineTitle'))}</b> · ${esc(T('mineTimes')(st.count[ex.id] || 1))}<br>
+      ${esc(T('mineBest'))} <span class="mine-pr" dir="ltr">${setLabel(ex, b)}</span>${b && b.w > 0 ? ` <small>(${esc(T('e1rm'))} ≈ ${fmtKg(b.e)} ${T('kg')})</small>` : ''}<br>
+      ${esc(T('mineLast'))} (${new Date(l.at).toLocaleDateString()}): <span dir="ltr">${l.sets.map(x => setLabel(ex, x)).join(' · ')}</span></div>` : '';
+
     modalOverlay.classList.add('open');
     document.body.style.overflow = 'hidden';
     modalClose.focus();
   }
 
-  // ═══════ My Workouts ═══════
-  const WO_KEY = 'appnest-workouts';
+  // ═══════════════════════════════════════════════════════════
+  //  v2.0 — אחסון, אימונים, יומן, בית, התקדמות
+  //  (כתוב מאפס עבור AppNest. רעיונות המוצר נבדקו מול אפליקציות
+  //   כושר קיימות; שום קוד לא הועתק.)
+  // ═══════════════════════════════════════════════════════════
+  const WO_KEY   = 'appnest-workouts';
+  const HIST_KEY = 'appnest-history';
+  const FAV_KEY  = 'appnest-favs';
+  const SESS_KEY = 'appnest-session';
+  const VIEW_KEY = 'appnest-libview';
+  const APP_VERSION = '2.0.0';
   let pendingExId = null;
 
-  const loadWo = () => { try { return JSON.parse(localStorage.getItem(WO_KEY)) || []; } catch { return []; } };
-  const saveWo = ws => localStorage.setItem(WO_KEY, JSON.stringify(ws));
-  const exById = id => state.exercises.find(e => e.id === id);
+  // Storage shim — כשל שמירה מקבל הודעה ברורה (דרישות AppNest, חלק א׳)
+  const store = {
+    get(k, def) { try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch { return def; } },
+    set(k, v) {
+      try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+      catch { toast(LANG === 'he' ? '⚠️ השמירה נכשלה — אין מקום פנוי במכשיר' : '⚠️ Saving failed — device storage is full'); return false; }
+    },
+  };
+  const loadWo   = () => { const a = store.get(WO_KEY, []); return Array.isArray(a) ? a : []; };
+  const saveWo   = ws => store.set(WO_KEY, ws);
+  const loadHist = () => { const a = store.get(HIST_KEY, []); return Array.isArray(a) ? a : []; };
+  const saveHist = h => { store.set(HIST_KEY, h); invalidateStats(); };
+  const loadFavs = () => { const a = store.get(FAV_KEY, []); return Array.isArray(a) ? a : []; };
+  const saveFavs = f => store.set(FAV_KEY, f);
+  const isFav    = id => loadFavs().includes(id);
+  const exById   = id => EX_BY_ID[id];
+  let EX_BY_ID = {};
 
-  function initWorkouts() {
-    const tabLib = document.getElementById('tab-library');
-    const tabWo  = document.getElementById('tab-workouts');
-    const woView = document.getElementById('workouts-view');
-    const gridWrap = document.querySelector('.grid-wrapper');
-    const resultsBar = document.querySelector('.results-bar');
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const isBW = ex => !!ex && /body weight|assisted|band|roller|stability ball|bosu ball/.test(ex.equipment);
+  const fmtKg = n => (Math.round(n * 10) / 10).toLocaleString();
+  const fmtVol = kg => kg >= 10000 ? `${(kg / 1000).toLocaleString(undefined, { maximumFractionDigits: 1 })}<small>${T('tons')}</small>`
+                                    : `${Math.round(kg).toLocaleString()}<small>${T('kg')}</small>`;
+  const fmtDur = ms => { const m = Math.max(1, Math.round(ms / 60000)); return m >= 60 ? `${Math.floor(m / 60)} ${T('hoursShort')} ${m % 60} ${T('minShort')}` : `${m} ${T('minShort')}`; };
+  const dayKey = t => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+  const startOfDay = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const startOfWeek = t => { const d = new Date(startOfDay(t)); d.setDate(d.getDate() - d.getDay()); return d.getTime(); }; // שבוע מתחיל ביום ראשון
+  const e1rm = (w, r) => w > 0 ? w * (1 + Math.min(r, 12) / 30) : 0;     // Epley, מוגבל ל-12 חזרות
+  const setLabel = (ex, s) => (s.w > 0 ? `${fmtKg(s.w)}×${s.r}` : `${s.r} ${LANG === 'he' ? 'חז׳' : 'reps'}`);
+  const exThumb = ex => ex ? ex.image : '';
 
-    function showView(which) {
-      const lib = which === 'lib';
-      tabLib.classList.toggle('active', lib);
-      tabWo.classList.toggle('active', !lib);
-      gridWrap.style.display = lib ? '' : 'none';
-      resultsBar.style.display = lib ? '' : 'none';
-      woView.hidden = lib;
-      if (!lib) renderWorkouts();
-    }
-    tabLib.addEventListener('click', () => showView('lib'));
-    tabWo.addEventListener('click', () => showView('wo'));
-
-    document.getElementById('wo-new').addEventListener('click', () => {
-      const ws = loadWo();
-      ws.push({ id: Date.now().toString(36), name: T('woDefaultName'), items: [] });
-      saveWo(ws); renderWorkouts();
-    });
-
-    // ייצוא/ייבוא גיבוי — הנתונים אצל המשתמש
-    document.getElementById('wo-export').addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(loadWo(), null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'appnest-workouts-backup.json';
-      a.click(); URL.revokeObjectURL(a.href);
-    });
-    const importFile = document.getElementById('wo-import-file');
-    const importBtn  = document.getElementById('wo-import');
-    importBtn.addEventListener('click', () => importFile.click());
-    importFile.addEventListener('change', async () => {
-      const f = importFile.files[0]; if (!f) return;
-      let ok = false;
-      try {
-        const arr = JSON.parse(await f.text());
-        if (Array.isArray(arr)) { saveWo(arr); renderWorkouts(); ok = true; }
-      } catch {}
-      importBtn.textContent = ok ? T('importOk') : T('importErr');
-      setTimeout(() => { importBtn.textContent = T('woImport'); }, 1600);
-      importFile.value = '';
-    });
-
-    // picker
-    document.getElementById('modal-add-workout').addEventListener('click', () => {
-      pendingExId = modalGif.dataset.exId;
-      renderPicker();
-      document.getElementById('wo-picker').classList.add('open');
-    });
-    document.getElementById('wo-picker-close').addEventListener('click', () =>
-      document.getElementById('wo-picker').classList.remove('open'));
-    document.getElementById('wo-picker').addEventListener('click', e => {
-      if (e.target.id === 'wo-picker') e.target.classList.remove('open');
-    });
-    document.getElementById('wo-picker-create').addEventListener('click', () => {
-      const nameEl = document.getElementById('wo-picker-new');
-      const name = nameEl.value.trim() || T('woDefaultName');
-      const ws = loadWo();
-      const w = { id: Date.now().toString(36), name, items: [] };
-      ws.push(w); addToWorkout(ws, w.id); nameEl.value = '';
+  // ── אישור בתוך האפליקציה (במקום confirm של הדפדפן) ──
+  function appConfirm(text, yesLabel, danger) {
+    return new Promise(resolve => {
+      const ov = document.getElementById('confirm-overlay');
+      const yes = document.getElementById('confirm-yes');
+      const no = document.getElementById('confirm-no');
+      document.getElementById('confirm-title').textContent = T('confirmT');
+      document.getElementById('confirm-text').textContent = text;
+      yes.textContent = yesLabel || T('yes');
+      yes.classList.toggle('danger', !!danger);
+      yes.classList.toggle('primary', !danger);
+      const done = v => { ov.classList.remove('open'); yes.onclick = no.onclick = null; ov._resolve = null; resolve(v); };
+      yes.onclick = () => done(true);
+      no.onclick = () => done(false);
+      ov._resolve = () => done(false);          // סגירה בחזרה / Escape / רקע = "לא"
+      ov.classList.add('open');
     });
   }
 
-  function renderPicker() {
+  // ══════════ סטטיסטיקה (נגזרת מההיסטוריה, עם מטמון) ══════════
+  let STATS = null;
+  function invalidateStats() { STATS = null; }
+  function stats() {
+    if (STATS) return STATS;
+    const hist = loadHist().slice().sort((a, b) => a.start - b.start);
+    const best = {};       // exId → { w, r, e, at, reps (לתרגילי משקל גוף) }
+    const last = {};       // exId → { at, sets }
+    const count = {};      // exId → מספר אימונים
+    const prsByEntry = {}; // entryId → [{exId, label}]
+    hist.forEach(h => {
+      (h.items || []).forEach(it => {
+        const sets = (it.sets || []).filter(s => s.r > 0);
+        if (!sets.length) return;
+        count[it.exId] = (count[it.exId] || 0) + 1;
+        last[it.exId] = { at: h.start, sets };
+        sets.forEach(s => {
+          const b = best[it.exId];
+          const e = e1rm(s.w, s.r);
+          if (!b) { best[it.exId] = { w: s.w, r: s.r, e, at: h.start, firstHid: h.id }; return; }
+          if (s.w > 0 ? e > b.e + 1e-9 : (b.e === 0 && s.r > b.r)) {
+            best[it.exId] = { w: s.w, r: s.r, e, at: h.start, firstHid: b.firstHid };
+            // באימון הראשון בתרגיל אין "שיא" — רק קובעים בסיס
+            if (h.id !== b.firstHid) (prsByEntry[h.id] = prsByEntry[h.id] || []).push({ exId: it.exId, w: s.w, r: s.r });
+          }
+        });
+      });
+    });
+    STATS = { hist, best, last, count, prsByEntry };
+    return STATS;
+  }
+  const histVolume = h => (h.items || []).reduce((v, it) => v + (it.sets || []).reduce((a, s) => a + (s.w > 0 ? s.w * s.r : 0), 0), 0);
+  const histSets   = h => (h.items || []).reduce((v, it) => v + (it.sets || []).length, 0);
+
+  function weekStreak(hist) {
+    const weeks = new Set(hist.map(h => startOfWeek(h.start)));
+    let w = startOfWeek(Date.now());
+    if (!weeks.has(w)) w -= 7 * 864e5;          // השבוע עוד לא נגמר — לא שובר את הרצף
+    let n = 0;
+    while (weeks.has(w)) { n++; const d = new Date(w); d.setDate(d.getDate() - 7); w = d.getTime(); }
+    return n;
+  }
+
+  // ══════════ ניווט בין המסכים ══════════
+  let VIEW = 'home';
+  function showView(v, opts = {}) {
+    if (!['home', 'lib', 'wo', 'prog'].includes(v)) v = 'home';
+    const prev = VIEW;
+    VIEW = v;
+    document.body.dataset.view = v;
+    document.querySelectorAll('[data-view]').forEach(b => {
+      if (b.tagName === 'BUTTON') b.classList.toggle('active', b.dataset.view === v);
+    });
+    document.getElementById('home-view').hidden = v !== 'home';
+    document.getElementById('workouts-view').hidden = v !== 'wo';
+    document.getElementById('prog-view').hidden = v !== 'prog';
+    if (v === 'home') renderHome();
+    if (v === 'wo') renderWorkouts();
+    if (v === 'prog') renderProgress();
+    document.querySelector('.main-content').scrollTop = 0;
+    if (!opts.fromPop && prev !== v) {
+      if (prev === 'home' && v !== 'home') history.pushState({ an: 'view', v }, '');
+      else if (v === 'home' && history.state && history.state.an === 'view') { navSkipPop = true; history.back(); }
+      else history.replaceState({ an: 'view', v }, '');
+    }
+  }
+  let navSkipPop = false;
+
+  // ══════════ בית ══════════
+  function plannedFor(day) { return loadWo().filter(w => (w.days || []).includes(day) && w.items.length); }
+
+  function renderHome() {
+    const now = new Date();
+    const h = now.getHours();
+    const name = (localStorage.getItem('appnest-username') || '').trim();
+    const hi = h < 5 ? T('helloNight') : h < 12 ? T('helloMorning') : h < 17 ? T('helloNoon') : h < 22 ? T('helloEvening') : T('helloNight');
+    document.getElementById('home-hello').innerHTML = esc(hi) + (name ? `, <span>${esc(name)}</span>` : '');
+    document.getElementById('home-date').textContent = now.toLocaleDateString(LANG === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    const { hist } = stats();
+    const ws = loadWo();
+
+    // המשך אימון פתוח
+    const resume = document.getElementById('home-resume');
+    const saved = sessFromSaved(store.get(SESS_KEY, null));
+    if (saved && saved.items && !document.getElementById('session-overlay').classList.contains('open')) {
+      const d = saved.items.reduce((a, it) => a + (it.sets || []).filter(s => s.done).length, 0);
+      const mins = Math.max(1, Math.round((Date.now() - saved.startedAt) / 60000));
+      resume.innerHTML = `<div class="hcard accent"><div class="today-row">
+        <div class="today-ic">⏱</div>
+        <div class="today-txt"><div class="today-lbl">${esc(T('resumeT'))}</div>
+        <div class="today-name">${esc(saved.name)}</div><div class="today-sub">${esc(T('resumeS')(d, mins))}</div></div>
+        <button class="big-btn" id="home-resume-btn">${esc(T('resumeBtn'))}</button></div></div>`;
+      document.getElementById('home-resume-btn').onclick = () => resumeSession();
+    } else resume.innerHTML = '';
+
+    // פס השבוע
+    const wk = startOfWeek(Date.now());
+    const doneDays = new Set(hist.filter(x => x.start >= wk).map(x => new Date(x.start).getDay()));
+    const planDays = new Set(); ws.forEach(w => w.items.length && (w.days || []).forEach(d => planDays.add(d)));
+    let cells = '';
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(wk); d.setDate(d.getDate() + i);
+      const cls = ['wd', doneDays.has(i) ? 'done' : '', planDays.has(i) ? 'plan' : '', i === now.getDay() ? 'today' : ''].join(' ');
+      cells += `<div class="${cls}"><span class="wd-n">${T('dayShort')[i]}</span><span class="wd-d">${d.getDate()}</span><span class="wd-dot"></span></div>`;
+    }
+    document.getElementById('home-week').innerHTML = `<div class="hcard-h"><span>${esc(T('thisWeek'))}</span><span>${planDays.size ? doneDays.size + '/' + planDays.size : ''}</span></div><div class="week">${cells}</div>`;
+
+    // האימון של היום
+    const today = document.getElementById('home-today');
+    const todays = plannedFor(now.getDay());
+    if (!ws.length) {
+      today.innerHTML = `<div class="hcard"><div class="cta-row">
+        <button class="cta" id="cta-plans"><span class="ic">📋</span><b>${esc(T('ctaPlansT'))}</b><small>${esc(T('ctaPlansS'))}</small></button>
+        <button class="cta" id="cta-own"><span class="ic">✏️</span><b>${esc(T('ctaOwnT'))}</b><small>${esc(T('ctaOwnS'))}</small></button>
+      </div></div>`;
+      document.getElementById('cta-plans').onclick = openPlans;
+      document.getElementById('cta-own').onclick = () => { newWorkout(); showView('wo'); };
+    } else if (todays.length) {
+      const doneToday = new Set(hist.filter(x => startOfDay(x.start) === startOfDay(Date.now())).map(x => x.woId));
+      today.innerHTML = todays.map(w => `<div class="hcard ${doneToday.has(w.id) ? '' : 'accent'}"><div class="today-row">
+        <div class="today-ic">${doneToday.has(w.id) ? '✓' : '🏋️'}</div>
+        <div class="today-txt"><div class="today-lbl">${esc(T('todayWorkout'))}</div>
+        <div class="today-name">${esc(w.name)}</div><div class="today-sub">${esc(T('woExercises')(w.items.length))}${w.rest ? ' · ' + esc(T('restSec')) + ' ' + w.rest + ' ' + T('secShort') : ''}</div></div>
+        <button class="big-btn" data-start="${w.id}">${esc(T('startNow'))}</button></div></div>`).join('');
+    } else {
+      // יום מנוחה — האימון המתוכנן הבא
+      let next = null;
+      for (let i = 1; i <= 7 && !next; i++) {
+        const day = (now.getDay() + i) % 7;
+        const p = plannedFor(day);
+        if (p.length) next = { w: p[0], day };
+      }
+      today.innerHTML = `<div class="hcard"><div class="today-row">
+        <div class="today-ic" style="background:var(--bg-elevated);color:var(--text-primary)">😌</div>
+        <div class="today-txt"><div class="today-name">${esc(T('restDay'))}</div>
+        <div class="today-sub">${next ? esc(T('nextIs')(next.w.name, T('dayLong')[next.day])) : esc(T('noPlanYet'))}</div></div>
+        <button class="an-btn" id="home-anyway">${esc(T('trainAnyway'))}</button></div></div>`;
+      document.getElementById('home-anyway').onclick = () => showView('wo');
+    }
+    today.querySelectorAll('[data-start]').forEach(b => b.onclick = () => startSession(b.dataset.start));
+
+    // אריחים
+    const weekHist = hist.filter(x => x.start >= wk);
+    document.getElementById('home-tiles').innerHTML = [
+      [T('tWeek'), `${weekHist.length}${planDays.size ? `<small>/ ${planDays.size}</small>` : ''}`],
+      [T('tStreak'), weekStreak(hist)],
+      [T('tTotal'), hist.length],
+      [T('tVolWeek'), fmtVol(weekHist.reduce((a, x) => a + histVolume(x), 0))],
+    ].map(([l, v], i) => `<div class="tile"><div class="tile-l">${esc(l)}</div><div class="tile-v ${i === 1 ? 'acc' : ''}">${v}</div></div>`).join('');
+
+    // האימון האחרון
+    const lastEl = document.getElementById('home-last');
+    const lh = hist[hist.length - 1];
+    lastEl.innerHTML = lh ? `<div class="hcard"><div class="hcard-h"><span>${esc(T('lastWorkout'))}</span></div>${histRow(lh)}</div>` : '';
+    lastEl.querySelectorAll('[data-hist]').forEach(b => b.onclick = () => openHist(b.dataset.hist));
+
+    // מועדפים
+    const favs = loadFavs().map(exById).filter(Boolean);
+    document.getElementById('home-favs').innerHTML = `<div class="hcard-h"><span>${esc(T('favsTitle'))}</span></div>` +
+      (favs.length ? `<div class="fav-strip">${favs.map(ex => `<button class="fav-it" data-ex="${ex.id}"><img src="${exThumb(ex)}" alt="" loading="lazy"><span>${esc(exName(ex))}</span></button>`).join('')}</div>`
+                   : `<div class="empty-mini">${esc(T('favsEmpty'))}</div>`);
+    document.querySelectorAll('#home-favs [data-ex]').forEach(b => b.onclick = () => openModal(b.dataset.ex));
+  }
+
+  function histRow(h) {
+    const d = new Date(h.start);
+    const prs = (stats().prsByEntry[h.id] || []).length;
+    return `<button class="hrow" data-hist="${h.id}">
+      <span class="hrow-date"><b>${d.getDate()}</b><small>${d.toLocaleDateString(LANG === 'he' ? 'he-IL' : 'en-GB', { month: 'short' })}</small></span>
+      <span class="hrow-mid"><b>${esc(h.name)}</b><small>${esc(T('setsN')(histSets(h)))} · ${fmtDur(h.end - h.start)}${histVolume(h) ? ' · ' + Math.round(histVolume(h)).toLocaleString() + ' ' + T('kg') : ''}</small></span>
+      ${prs ? `<span class="hrow-pr">${esc(T('prBadge')(prs))}</span>` : ''}
+      <span class="hrow-go">‹</span></button>`;
+  }
+
+  // ══════════ התקדמות ══════════
+  let progDays = 7;
+  function renderProgress() {
+    const { hist, best, prsByEntry } = stats();
+    const now = Date.now();
+    const m0 = new Date(); m0.setDate(1); m0.setHours(0, 0, 0, 0);
+    const month = hist.filter(h => h.start >= m0.getTime());
+    const totalMs = hist.reduce((a, h) => a + (h.end - h.start), 0);
+    document.getElementById('prog-tiles').innerHTML = [
+      [T('tTotal'), hist.length], [T('tMonth'), month.length], [T('tStreak'), weekStreak(hist)],
+      [T('tTime'), totalMs ? fmtDur(totalMs) : '0'],
+    ].map(([l, v], i) => `<div class="tile"><div class="tile-l">${esc(l)}</div><div class="tile-v ${i === 2 ? 'acc' : ''}">${v}</div></div>`).join('');
+
+    // מפת חום — 18 שבועות, עמודה לכל שבוע, שורה לכל יום
+    const perDay = {};
+    hist.forEach(h => { const k = dayKey(h.start); perDay[k] = (perDay[k] || 0) + histSets(h); });
+    const first = new Date(startOfWeek(now)); first.setDate(first.getDate() - 17 * 7);
+    let cells = '';
+    for (let i = 0; i < 18 * 7; i++) {
+      const d = new Date(first); d.setDate(d.getDate() + i);
+      const n = perDay[dayKey(d)] || 0;
+      const lvl = n === 0 ? 'l0' : n < 8 ? 'l1' : n < 16 ? 'l2' : 'l3';
+      const fut = d.getTime() > now;
+      cells += `<i class="${lvl}${fut ? ' fut' : ''}${dayKey(d) === dayKey(now) ? ' now' : ''}" title="${d.toLocaleDateString()}${n ? ' · ' + n : ''}"></i>`;
+    }
+    document.getElementById('prog-heat').innerHTML = cells;
+
+    // סטים לפי אזור גוף
+    const since = now - progDays * 864e5;
+    const per = {};
+    hist.filter(h => h.start >= since).forEach(h => (h.items || []).forEach(it => {
+      const ex = exById(it.exId); if (!ex) return;
+      per[ex.category] = (per[ex.category] || 0) + (it.sets || []).length;
+    }));
+    const rows = Object.entries(per).sort((a, b) => b[1] - a[1]);
+    const max = rows.length ? rows[0][1] : 1;
+    document.getElementById('prog-muscles').innerHTML = rows.length
+      ? rows.map(([c, n]) => `<div class="mbar"><span>${esc(tv(c))}</span><div class="mbar-t"><div class="mbar-f" style="width:${Math.max(4, n / max * 100)}%"></div></div><span class="mbar-n">${n}</span></div>`).join('')
+      : `<div class="empty-mini">${esc(T('musclesEmpty'))}</div>`;
+    document.querySelectorAll('#prog-range button').forEach(b => b.classList.toggle('active', +b.dataset.days === progDays));
+
+    // שיאים — לפי תאריך השיא, החדשים קודם
+    const prs = Object.entries(best).filter(([, b]) => b.r > 0).sort((a, b) => b[1].at - a[1].at).slice(0, 15);
+    document.getElementById('prog-prs').innerHTML = prs.length
+      ? prs.map(([id, b]) => { const ex = exById(id); if (!ex) return '';
+          const val = b.w > 0 ? `<bdi dir="ltr">${fmtKg(b.w)}×${b.r}</bdi> <small>${T('kg')}</small>` : `${b.r} <small>${LANG === 'he' ? 'חזרות' : 'reps'}</small>`;
+          return `<button class="pr-row" data-ex="${id}"><img src="${exThumb(ex)}" alt="" loading="lazy"><span class="n">${esc(exName(ex))}<small>${new Date(b.at).toLocaleDateString()}${b.w > 0 ? ' · ' + esc(T('e1rm')) + ' ≈ ' + fmtKg(b.e) + ' ' + T('kg') : ''}</small></span><span class="v">${val}</span></button>`; }).join('')
+      : `<div class="empty-mini">${esc(T('prsEmpty'))}</div>`;
+    document.querySelectorAll('#prog-prs [data-ex]').forEach(b => b.onclick = () => openModal(b.dataset.ex));
+
+    // היסטוריה
+    const list = hist.slice().reverse().slice(0, 60);
+    document.getElementById('prog-history').innerHTML = list.length ? list.map(histRow).join('') : `<div class="empty-mini">${esc(T('historyEmpty'))}</div>`;
+    document.querySelectorAll('#prog-history [data-hist]').forEach(b => b.onclick = () => openHist(b.dataset.hist));
+  }
+
+  function openHist(id) {
+    const h = loadHist().find(x => x.id === id);
+    if (!h) return;
+    const prs = stats().prsByEntry[h.id] || [];
+    const isPr = (exId, s) => prs.some(p => p.exId === exId && p.w === s.w && p.r === s.r);
+    document.getElementById('hist-title').textContent = h.name;
+    const d = new Date(h.start);
+    document.getElementById('hist-sub').textContent =
+      `${d.toLocaleDateString(LANG === 'he' ? 'he-IL' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · ${fmtDur(h.end - h.start).replace(/<[^>]+>/g, '')}`;
+    document.getElementById('hist-body').innerHTML =
+      `<div class="tiles small"><div class="tile"><div class="tile-l">${esc(T('tSets'))}</div><div class="tile-v">${histSets(h)}</div></div>
+       <div class="tile"><div class="tile-l">${esc(T('tVolume'))}</div><div class="tile-v">${fmtVol(histVolume(h))}</div></div>
+       <div class="tile"><div class="tile-l">🏆</div><div class="tile-v acc">${prs.length}</div></div></div>` +
+      (h.items || []).map(it => { const ex = exById(it.exId);
+        return `<div class="hx"><b>${esc(ex ? exName(ex) : it.exId)}</b><div class="hx-sets">${(it.sets || []).map(s => `<span class="${isPr(it.exId, s) ? 'pr' : ''}">${setLabel(ex, s)}</span>`).join('')}</div></div>`; }).join('');
+    const ov = document.getElementById('hist-overlay');
+    document.getElementById('hist-del').onclick = async () => {
+      if (!await appConfirm(T('histDelConfirm'), T('deleteBtn'), true)) return;
+      saveHist(loadHist().filter(x => x.id !== id));
+      ov.classList.remove('open');
+      refreshViews();
+    };
+    ov.classList.add('open');
+  }
+
+  function exportCsv() {
+    const hist = stats().hist;
+    if (!hist.length) { toast(T('csvEmpty')); return; }
+    const q = v => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
+    const rows = [['date', 'time', 'workout', 'exercise', 'exercise_he', 'set', 'weight_kg', 'reps', 'duration_min'].join(',')];
+    hist.forEach(h => {
+      const d = new Date(h.start);
+      (h.items || []).forEach(it => { const ex = exById(it.exId);
+        (it.sets || []).forEach((s, i) => rows.push([
+          d.toISOString().slice(0, 10), d.toTimeString().slice(0, 5), h.name, ex ? ex.name : it.exId, ex ? heName(ex) : '',
+          i + 1, s.w || 0, s.r, Math.round((h.end - h.start) / 60000)].map(q).join(',')));
+      });
+    });
+    const user = (localStorage.getItem('appnest-username') || '').trim();
+    rows.unshift(q(`AppNest · ${LANG === 'he' ? 'ספריית הכושר' : 'Exercise Library'}${user ? ' · ' + user : ''} · ${new Date().toLocaleDateString()}`));
+    downloadFile('﻿' + rows.join('\r\n'), `fitness-history-${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv;charset=utf-8');
+  }
+
+  function downloadFile(text, name, type) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type }));
+    a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // ══════════ גיבוי מלא ══════════
+  const BACKUP_KEYS = ['appnest-workouts', 'appnest-history', 'appnest-favs', 'appnest-reminder', 'appnest-username', 'appnest-palette', 'appnest-mode', 'appnest-lang', 'appnest-libview'];
+  function exportBackup() {
+    const data = {};
+    BACKUP_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v != null) data[k] = v; });
+    const user = (localStorage.getItem('appnest-username') || '').trim();
+    const payload = { app: 'appnest-fitness-library', version: APP_VERSION, exportedAt: new Date().toISOString(), user, data };
+    const slug = user ? '-' + user.replace(/[^\w֐-׿-]+/g, '_') : '';
+    downloadFile(JSON.stringify(payload, null, 2), `fitness-backup${slug}-${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+  }
+  async function importBackup(file) {
+    let obj;
+    try { obj = JSON.parse(await file.text()); } catch { toast(T('importErr')); return; }
+    let data = null;
+    if (Array.isArray(obj)) data = { 'appnest-workouts': JSON.stringify(obj) };               // גיבוי ישן (1.x)
+    else if (obj && obj.data && typeof obj.data === 'object') data = obj.data;
+    if (!data || !Object.keys(data).length) { toast(T('importErr')); return; }
+    if (!await appConfirm(T('importConfirm'), T('importReplace'), true)) return;
+    BACKUP_KEYS.forEach(k => { if (k !== 'appnest-lang' && k !== 'appnest-palette' && k !== 'appnest-mode') localStorage.removeItem(k); });
+    Object.entries(data).forEach(([k, v]) => { if (BACKUP_KEYS.includes(k) && typeof v === 'string') localStorage.setItem(k, v); });
+    toast(T('importOk'));
+    setTimeout(() => location.reload(), 700);
+  }
+
+  // ══════════ מועדפים ══════════
+  function toggleFav(id) {
+    const f = loadFavs();
+    const i = f.indexOf(id);
+    if (i >= 0) f.splice(i, 1); else f.unshift(id);
+    saveFavs(f);
+    toast(i >= 0 ? T('favRemoved') : T('favAdded'));
+    syncFavUI(id);
+  }
+  function syncFavUI(id) {
+    const on = isFav(id);
+    const mf = document.getElementById('modal-fav');
+    if (mf && modalGif.dataset.exId === id) { mf.textContent = on ? '★' : '☆'; mf.classList.toggle('on', on); }
+    document.querySelectorAll(`.exercise-card[data-id="${id}"] .card-star`).forEach(s => s.hidden = !on);
+    if (state.favOnly) applyFilters();
+    if (VIEW === 'home') renderHome();
+  }
+
+  // ══════════ האימונים שלי ══════════
+  function newWorkout(name) {
+    const ws = loadWo();
+    const w = { id: uid(), name: name || T('woDefaultName'), items: [], days: [], rest: 90 };
+    ws.push(w); saveWo(ws);
+    return w;
+  }
+
+  function initWorkouts() {
+    document.getElementById('wo-new').addEventListener('click', () => { newWorkout(); renderWorkouts(); });
+    document.getElementById('open-plans').addEventListener('click', openPlans);
+
+    document.getElementById('wo-export').addEventListener('click', exportBackup);
+    const importFile = document.getElementById('wo-import-file');
+    document.getElementById('wo-import').addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', async () => {
+      const f = importFile.files[0]; importFile.value = '';
+      if (f) importBackup(f);
+    });
+    document.getElementById('csv-export').addEventListener('click', exportCsv);
+    document.querySelectorAll('#prog-range button').forEach(b => b.addEventListener('click', () => { progDays = +b.dataset.days; renderProgress(); }));
+
+    // הוספה מחלון התרגיל
+    document.getElementById('modal-add-workout').addEventListener('click', () => openPicker(modalGif.dataset.exId));
+    document.getElementById('wo-picker-close').addEventListener('click', () => document.getElementById('wo-picker').classList.remove('open'));
+    document.getElementById('wo-picker-create').addEventListener('click', () => {
+      const nameEl = document.getElementById('wo-picker-new');
+      const w = newWorkout(nameEl.value.trim());
+      nameEl.value = '';
+      addToWorkout(w.id);
+    });
+  }
+
+  function openPicker(exId) {
+    pendingExId = exId;
     const list = document.getElementById('wo-picker-list');
     list.innerHTML = '';
     loadWo().forEach(w => {
       const b = document.createElement('button');
       b.className = 'wo-picker-item';
-      b.textContent = `${w.name} · ${T('woExercises')(w.items.length)}`;
-      b.addEventListener('click', () => addToWorkout(loadWo(), w.id));
+      const has = w.items.some(i => i.exId === exId);
+      b.textContent = `${has ? '✓ ' : ''}${w.name} · ${T('woExercises')(w.items.length)}`;
+      b.addEventListener('click', () => addToWorkout(w.id));
       list.appendChild(b);
     });
+    document.getElementById('wo-picker').classList.add('open');
   }
 
-  function addToWorkout(ws, woId) {
+  function addToWorkout(woId) {
+    const ws = loadWo();
     const w = ws.find(x => x.id === woId);
     if (w && pendingExId && !w.items.some(i => i.exId === pendingExId)) {
-      w.items.push({ exId: pendingExId, sets: 3, reps: 12 });
+      const ex = exById(pendingExId);
+      w.items.push({ exId: pendingExId, sets: 3, reps: ex && ex.category === 'cardio' ? 1 : 10 });
     }
     saveWo(ws);
     document.getElementById('wo-picker').classList.remove('open');
+    toast(`${T('woAdded')} · ${w ? w.name : ''}`);
     const btn = document.getElementById('modal-add-workout');
-    const orig = btn.innerHTML;
-    btn.innerHTML = T('woAdded');
-    setTimeout(() => { btn.innerHTML = orig; applyStaticI18n(); }, 1200);
+    if (modalOverlay.classList.contains('open')) {
+      const orig = btn.innerHTML;
+      btn.innerHTML = T('woAdded');
+      setTimeout(() => { btn.innerHTML = orig; applyStaticI18n(); }, 1200);
+    }
+    if (VIEW === 'wo') renderWorkouts();
   }
+
+  function updateWo(id, fn) { const ws = loadWo(); const w = ws.find(x => x.id === id); if (w) { fn(w); saveWo(ws); } return w; }
 
   function renderWorkouts() {
     const listEl = document.getElementById('wo-list');
     listEl.innerHTML = '';
     const ws = loadWo();
     if (ws.length === 0) {
-      listEl.innerHTML = `<div class="wo-empty">${T('woEmpty')}</div>`;
+      listEl.innerHTML = `<div class="hcard"><div class="wo-empty" style="padding:20px 0 14px">${esc(T('woEmpty'))}</div>
+        <div class="cta-row"><button class="cta" id="wo-cta-plans"><span class="ic">📋</span><b>${esc(T('ctaPlansT'))}</b><small>${esc(T('ctaPlansS'))}</small></button>
+        <button class="cta" id="wo-cta-own"><span class="ic">✏️</span><b>${esc(T('ctaOwnT'))}</b><small>${esc(T('ctaOwnS'))}</small></button></div></div>`;
+      document.getElementById('wo-cta-plans').onclick = openPlans;
+      document.getElementById('wo-cta-own').onclick = () => { newWorkout(); renderWorkouts(); };
       return;
     }
     ws.forEach(w => {
       const card = document.createElement('div');
       card.className = 'wo-card';
+      const items = w.items.filter(i => exById(i.exId));
 
       const head = document.createElement('div');
       head.className = 'wo-head';
       const nameIn = document.createElement('input');
       nameIn.className = 'an-input wo-name';
       nameIn.value = w.name;
-      nameIn.addEventListener('change', () => {
-        const all = loadWo(); all.find(x => x.id === w.id).name = nameIn.value.trim() || T('woDefaultName');
-        saveWo(all);
-      });
-      const count = document.createElement('span');
-      count.className = 'wo-count';
-      count.textContent = T('woExercises')(w.items.length);
+      nameIn.addEventListener('change', () => updateWo(w.id, x => { x.name = nameIn.value.trim() || T('woDefaultName'); }));
       const start = document.createElement('button');
       start.className = 'wo-start';
       start.textContent = T('woStart');
-      start.disabled = w.items.length === 0;
-      if (w.items.length === 0) start.style.opacity = 0.4;
+      start.disabled = items.length === 0;
+      if (!items.length) start.style.opacity = 0.4;
       start.addEventListener('click', () => startSession(w.id));
-
       const del = document.createElement('button');
-      del.className = 'wo-del'; del.textContent = '🗑';
-      del.addEventListener('click', () => {
-        if (!confirm(T('woDeleteConfirm'))) return;
+      del.className = 'wo-del'; del.textContent = '🗑'; del.title = T('deleteBtn');
+      del.addEventListener('click', async () => {
+        if (!await appConfirm(T('woDeleteConfirm'), T('deleteBtn'), true)) return;
         saveWo(loadWo().filter(x => x.id !== w.id)); renderWorkouts();
       });
-      head.append(nameIn, count, start, del);
+      head.append(nameIn, start, del);
       card.appendChild(head);
 
-      if (w.items.length === 0) {
+      // ימים בשבוע + מנוחה
+      const meta = document.createElement('div');
+      meta.className = 'wo-meta';
+      const dl = document.createElement('span'); dl.className = 'wo-meta-l'; dl.textContent = T('planDays');
+      const days = document.createElement('div'); days.className = 'wo-days';
+      for (let d = 0; d < 7; d++) {
+        const b = document.createElement('button');
+        b.textContent = T('dayShort')[d]; b.title = T('dayLong')[d];
+        b.classList.toggle('on', (w.days || []).includes(d));
+        b.addEventListener('click', () => {
+          const x = updateWo(w.id, x => { x.days = x.days || []; const i = x.days.indexOf(d); if (i >= 0) x.days.splice(i, 1); else x.days.push(d); x.days.sort(); });
+          b.classList.toggle('on', x.days.includes(d));
+        });
+        days.appendChild(b);
+      }
+      const rl = document.createElement('span'); rl.className = 'wo-meta-l'; rl.textContent = T('restSec');
+      const rest = document.createElement('select'); rest.className = 'wo-rest';
+      [30, 45, 60, 90, 120, 150, 180, 240].forEach(sec => { const o = document.createElement('option'); o.value = sec; o.textContent = sec >= 60 ? `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}` : `${sec}${T('secShort')}`; rest.appendChild(o); });
+      rest.value = w.rest || 90;
+      rest.addEventListener('change', () => updateWo(w.id, x => { x.rest = +rest.value; }));
+      const cnt = document.createElement('span'); cnt.className = 'wo-count'; cnt.style.marginInlineStart = 'auto'; cnt.textContent = T('woExercises')(items.length);
+      meta.append(dl, days, rl, rest, cnt);
+      card.appendChild(meta);
+
+      if (!items.length) {
         const p = document.createElement('div');
-        p.className = 'wo-empty'; p.style.padding = '14px 0';
+        p.className = 'wo-empty'; p.style.padding = '10px 0';
         p.textContent = T('woNoItems');
         card.appendChild(p);
       }
 
-      w.items.forEach((item, idx) => {
+      items.forEach((item, idx) => {
         const ex = exById(item.exId);
-        if (!ex) return;
         const row = document.createElement('div');
         row.className = 'wo-item';
         const img = document.createElement('img');
         img.src = ex.image; img.loading = 'lazy'; img.alt = '';
         const nm = document.createElement('div');
         nm.className = 'wo-item-name';
-        nm.innerHTML = `${exName(ex)}<small>${tv(ex.target)} · ${tv(ex.equipment)}</small>`;
+        nm.innerHTML = `${esc(exName(ex))}<small>${esc(tv(ex.target))} · ${esc(tv(ex.equipment))}</small>`;
         nm.style.cursor = 'pointer';
         nm.addEventListener('click', () => openModal(ex.id));
+        img.style.cursor = 'pointer'; img.addEventListener('click', () => openModal(ex.id));
 
         const mkNum = (val, key) => {
           const wrap = document.createElement('span');
           wrap.className = 'wo-sr';
           const inp = document.createElement('input');
-          inp.type = 'number'; inp.min = 1; inp.max = 99; inp.value = val;
-          inp.addEventListener('change', () => {
-            const all = loadWo();
-            all.find(x => x.id === w.id).items[idx][key] = Math.max(1, +inp.value || 1);
-            saveWo(all);
-          });
+          inp.type = 'number'; inp.inputMode = 'numeric'; inp.min = 1; inp.max = 99; inp.value = val;
+          inp.addEventListener('change', () => updateWo(w.id, x => { const it = x.items.find(i => i.exId === item.exId); if (it) it[key] = Math.min(99, Math.max(1, +inp.value || 1)); }));
           const lbl = document.createElement('span');
           lbl.textContent = T(key === 'sets' ? 'sets' : 'reps');
           wrap.append(inp, lbl);
           return wrap;
         };
-
-        const rm = document.createElement('button');
-        rm.className = 'wo-item-remove'; rm.textContent = '×';
-        rm.addEventListener('click', () => {
-          const all = loadWo();
-          const cur = all.find(x => x.id === w.id);
-          cur.items = cur.items.filter(i => i.exId !== item.exId);
-          saveWo(all); renderWorkouts();
+        const mkBtn = (txt, title, fn) => { const b = document.createElement('button'); b.className = 'wo-item-btn'; b.textContent = txt; b.title = title; b.addEventListener('click', fn); return b; };
+        const up = mkBtn('↑', T('moveUp'), () => {
+          if (idx === 0) return;
+          updateWo(w.id, x => { const i = x.items.findIndex(i => i.exId === item.exId); if (i > 0) [x.items[i - 1], x.items[i]] = [x.items[i], x.items[i - 1]]; });
+          renderWorkouts();
         });
-
-        row.append(img, nm, mkNum(item.sets, 'sets'), mkNum(item.reps, 'reps'), rm);
+        if (idx === 0) up.style.visibility = 'hidden';
+        const swap = mkBtn('⇄', T('swapBtn'), () => openSwap(w.id, item.exId));
+        const rm = mkBtn('×', T('removeBtn'), () => { updateWo(w.id, x => { x.items = x.items.filter(i => i.exId !== item.exId); }); renderWorkouts(); });
+        rm.classList.add('wo-item-remove');
+        const ctrl = document.createElement('div'); ctrl.className = 'wo-ctrl';
+        ctrl.append(mkNum(item.sets, 'sets'), mkNum(item.reps, 'reps'), up, swap, rm);
+        row.append(img, nm, ctrl);
         card.appendChild(row);
       });
 
+      const add = document.createElement('button');
+      add.className = 'wo-addex'; add.textContent = T('woAddEx');
+      add.addEventListener('click', () => { showView('lib'); toast(T('woAddHint')); });
+      card.appendChild(add);
       listEl.appendChild(card);
     });
   }
 
-  // ═══════ Active Workout Session ═══════
-  const SESS_KEY = 'appnest-session';
-  let sess = null, restIv = null, clockIv = null;
+  // ── החלפת תרגיל: אותו שריר מטרה, עדיפות לאותו ציוד ──
+  function openSwap(woId, exId) {
+    const ex = exById(exId); if (!ex) return;
+    const w = loadWo().find(x => x.id === woId);
+    const inWo = new Set(w ? w.items.map(i => i.exId) : []);
+    const favs = new Set(loadFavs());
+    const cands = state.exercises
+      .filter(e => e.target === ex.target && e.id !== ex.id && !inWo.has(e.id))
+      .map(e => ({ e, s: (favs.has(e.id) ? 4 : 0) + (e.equipment === ex.equipment ? 2 : 0) + (e.category === ex.category ? 1 : 0) - (/\bv\. ?\d|pov|\(male\)|\(female\)/i.test(e.name) ? 1 : 0) }))
+      .sort((a, b) => b.s - a.s).slice(0, 14).map(x => x.e);
+    document.getElementById('swap-sub').textContent = T('swapSub')(exName(ex));
+    const list = document.getElementById('swap-list');
+    list.innerHTML = cands.map(e => `<button class="swap-row" data-id="${e.id}"><img src="${e.image}" alt="" loading="lazy"><span>${esc(exName(e))}<small>${esc(tv(e.equipment))}${favs.has(e.id) ? ' · ⭐' : ''}</small></span></button>`).join('')
+      || `<div class="empty-mini">—</div>`;
+    list.querySelectorAll('[data-id]').forEach(b => b.onclick = () => {
+      updateWo(woId, x => { const it = x.items.find(i => i.exId === exId); if (it) it.exId = b.dataset.id; });
+      document.getElementById('swap-overlay').classList.remove('open');
+      toast(T('swapDone'));
+      renderWorkouts();
+    });
+    document.getElementById('swap-overlay').classList.add('open');
+  }
+
+  // ── תוכניות מוכנות (מזהים מתוך המאגר) ──
+  const PLANS = [
+    { id: 'fb', he: 'גוף מלא למתחילים', en: 'Full Body — Beginner', ic: '🌱',
+      dhe: 'שלושה אימונים בשבוע, כל אחד עובד על כל הגוף. הבסיס הכי טוב למי שמתחיל בחדר כושר.',
+      den: 'Three sessions a week, each working the whole body. The best foundation for gym beginners.',
+      tags: ['gym', 3], wos: [
+        { he: 'גוף מלא', en: 'Full Body', days: [0, 2, 4], rest: 90, items: [['0043', 3, 8], ['0025', 3, 8], ['0861', 3, 10], ['0405', 3, 10], ['0586', 3, 12], ['0274', 3, 15]] }] },
+    { id: 'ppl', he: 'דחיפה · משיכה · רגליים', en: 'Push · Pull · Legs', ic: '🔁',
+      dhe: 'החלוקה הקלאסית: יום חזה-כתפיים-יד אחורית, יום גב-יד קדמית ויום רגליים. 5–6 אימונים בשבוע.',
+      den: 'The classic split: chest-shoulders-triceps, back-biceps, and legs. 5–6 sessions a week.',
+      tags: ['gym', 5], wos: [
+        { he: 'דחיפה', en: 'Push', days: [0, 3], rest: 120, items: [['0025', 4, 8], ['0314', 3, 10], ['0405', 3, 10], ['0334', 3, 12], ['0201', 3, 12]] },
+        { he: 'משיכה', en: 'Pull', days: [1, 4], rest: 120, items: [['0032', 3, 5], ['0198', 3, 10], ['0027', 3, 8], ['0031', 3, 10], ['0313', 3, 12]] },
+        { he: 'רגליים', en: 'Legs', days: [2], rest: 120, items: [['0043', 4, 8], ['0739', 3, 10], ['0085', 3, 10], ['0585', 3, 12], ['0594', 4, 15]] }] },
+    { id: 'ul', he: 'עליון / תחתון', en: 'Upper / Lower', ic: '↕️',
+      dhe: 'ארבעה אימונים בשבוע: פלג גוף עליון ותחתון לסירוגין. איזון טוב בין עומס למנוחה.',
+      den: 'Four sessions a week alternating upper and lower body. A good balance of load and rest.',
+      tags: ['gym', 4], wos: [
+        { he: 'פלג גוף עליון', en: 'Upper Body', days: [0, 3], rest: 90, items: [['0025', 4, 8], ['0027', 4, 8], ['0426', 3, 10], ['0198', 3, 10], ['0294', 3, 12], ['0201', 3, 12]] },
+        { he: 'פלג גוף תחתון', en: 'Lower Body', days: [1, 4], rest: 120, items: [['0043', 4, 8], ['0085', 3, 10], ['0739', 3, 12], ['0586', 3, 12], ['1372', 4, 15], ['0472', 3, 10]] }] },
+    { id: 'home', he: 'בבית בלי ציוד', en: 'Home — No Equipment', ic: '🏠',
+      dhe: 'משקל גוף בלבד, צריך רק כיסא יציב ומקום על הרצפה. מתאים לימים בלי חדר כושר.',
+      den: 'Bodyweight only — all you need is a sturdy chair and some floor space.',
+      tags: ['home', 3], wos: [
+        { he: 'בית — משקל גוף', en: 'Home — Bodyweight', days: [0, 2, 4], rest: 60, items: [['0662', 3, 10], ['1460', 3, 10], ['0129', 3, 10], ['3561', 3, 12], ['0630', 3, 20], ['0276', 3, 12], ['1160', 3, 8]] }] },
+    { id: 'db', he: 'משקולות יד בבית', en: 'Home — Dumbbells', ic: '🏋️',
+      dhe: 'זוג משקולות יד מספיק לאימון גוף מלא אפקטיבי. שלוש פעמים בשבוע.',
+      den: 'A pair of dumbbells is enough for an effective full-body workout. Three times a week.',
+      tags: ['home', 3], wos: [
+        { he: 'משקולות יד — גוף מלא', en: 'Dumbbells — Full Body', days: [0, 2, 4], rest: 75, items: [['1760', 3, 10], ['0293', 3, 10], ['0426', 3, 10], ['1459', 3, 10], ['0381', 3, 10], ['0294', 3, 12], ['0334', 3, 12]] }] },
+  ];
+
+  function openPlans() {
+    const box = document.getElementById('plans-list');
+    box.innerHTML = PLANS.map(p => {
+      const n = p.wos.reduce((a, w) => a + w.items.length, 0);
+      return `<div class="plan-card"><h3>${p.ic} ${esc(LANG === 'he' ? p.he : p.en)}</h3><p>${esc(LANG === 'he' ? p.dhe : p.den)}</p>
+        <div class="plan-tags"><span>${p.tags[0] === 'gym' ? (LANG === 'he' ? 'חדר כושר' : 'Gym') : (LANG === 'he' ? 'בבית' : 'Home')}</span><span>${esc(T('perWeek')(p.tags[1]))}</span><span>${esc(T('woExercises')(n))}</span></div>
+        <button class="an-btn primary small" data-plan="${p.id}">${esc(T('planAdd'))}</button></div>`;
+    }).join('');
+    box.querySelectorAll('[data-plan]').forEach(b => b.onclick = () => addPlan(b.dataset.plan));
+    document.getElementById('plans-overlay').classList.add('open');
+  }
+
+  function addPlan(pid) {
+    const p = PLANS.find(x => x.id === pid); if (!p) return;
+    const ws = loadWo();
+    p.wos.forEach(w => ws.push({
+      id: uid(), name: LANG === 'he' ? w.he : w.en, days: w.days.slice(), rest: w.rest,
+      items: w.items.filter(([id]) => exById(id)).map(([exId, sets, reps]) => ({ exId, sets, reps })),
+    }));
+    saveWo(ws);
+    document.getElementById('plans-overlay').classList.remove('open');
+    toast(T('planAdded')(p.wos.length));
+    showView('wo');
+  }
+
+  // ══════════ אימון חי ══════════
+  let sess = null, restIv = null, clockIv = null, wakeLock = null;
+
+  function sessFromSaved(saved) {
+    // המרה משמירה של גרסה 1.x (done[] בלבד) לגרסה 2
+    if (saved && saved.items && saved.items[0] && Array.isArray(saved.items[0].done)) {
+      saved.items = saved.items.map(it => ({ exId: it.exId, sets: it.done.map(d => ({ w: '', r: it.reps, done: d })) }));
+    }
+    return saved;
+  }
 
   function startSession(woId) {
     const w = loadWo().find(x => x.id === woId);
-    if (!w || w.items.length === 0) return;
-    const saved = (() => { try { return JSON.parse(localStorage.getItem(SESS_KEY)); } catch { return null; } })();
-    if (saved && saved.woId === woId) {
-      sess = saved; // המשך אימון שנקטע
-    } else {
-      sess = {
-        woId, name: w.name, startedAt: Date.now(),
-        items: w.items.map(i => ({ exId: i.exId, reps: i.reps, done: Array(i.sets).fill(false) })),
-      };
-    }
+    const saved = sessFromSaved(store.get(SESS_KEY, null));
+    if (saved && saved.woId === woId) { sess = saved; return openSession(); }
+    if (!w || !w.items.some(i => exById(i.exId))) return;
+    const { last } = stats();
+    sess = {
+      v: 2, woId, name: w.name, startedAt: Date.now(), rest: w.rest || 90, prs: [],
+      items: w.items.filter(i => exById(i.exId)).map(i => {
+        const prev = last[i.exId] ? last[i.exId].sets : [];
+        return { exId: i.exId, sets: Array.from({ length: i.sets }, (_, k) => {
+          const p = prev[k] || prev[prev.length - 1];
+          return { w: p && p.w > 0 ? p.w : '', r: p ? p.r : i.reps, done: false };
+        }) };
+      }),
+    };
     persistSess();
-    renderSession();
-    document.getElementById('session-overlay').classList.add('open');
-    clockIv = setInterval(updateClock, 1000);
-    updateClock();
+    openSession();
+  }
+  function resumeSession() {
+    const saved = sessFromSaved(store.get(SESS_KEY, null));
+    if (!saved) return;
+    sess = saved; openSession();
+  }
+  // כפתור ▶ בניווט התחתון: אימון פתוח ← אימון של היום ← מסך האימונים
+  function quickStart() {
+    if (store.get(SESS_KEY, null)) return resumeSession();
+    const t = plannedFor(new Date().getDay());
+    if (t.length === 1) return startSession(t[0].id);
+    showView(loadWo().length ? 'wo' : 'home');
+    if (!loadWo().length) openPlans();
   }
 
-  const persistSess = () => localStorage.setItem(SESS_KEY, JSON.stringify(sess));
+  function openSession() {
+    persistSess();                       // שומר גם המרה מפורמט 1.x
+    document.getElementById('sess-finish').hidden = true;
+    document.getElementById('sess-body').hidden = false;
+    renderSession();
+    document.getElementById('session-overlay').classList.add('open');
+    clearInterval(clockIv);
+    clockIv = setInterval(updateClock, 1000);
+    updateClock();
+    requestWake();
+    document.getElementById('bn-start').classList.add('live');
+  }
+  function minimizeSession() {
+    stopRest();
+    clearInterval(clockIv);
+    releaseWake();
+    document.getElementById('session-overlay').classList.remove('open');
+    refreshViews();
+  }
+
+  const persistSess = () => { if (sess) store.set(SESS_KEY, sess); };
 
   function updateClock() {
     if (!sess) return;
     const s = Math.floor((Date.now() - sess.startedAt) / 1000);
-    document.getElementById('sess-clock').textContent =
-      `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60;
+    document.getElementById('sess-clock').textContent = (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0');
   }
-
   function sessTotals() {
     let done = 0, total = 0;
-    sess.items.forEach(it => { done += it.done.filter(Boolean).length; total += it.done.length; });
+    sess.items.forEach(it => { it.sets.forEach(s => { total++; if (s.done) done++; }); });
     return { done, total };
+  }
+  function paintProgress() {
+    const { done, total } = sessTotals();
+    document.getElementById('sess-fill').style.width = (total ? (done / total) * 100 : 0) + '%';
+    document.getElementById('sess-count').textContent = T('sessCount')(done, total);
   }
 
   function renderSession() {
     document.getElementById('sess-title').textContent = sess.name;
     const list = document.getElementById('sess-list');
     list.innerHTML = '';
-    document.getElementById('sess-finish').hidden = true;
-    list.hidden = false;
+    const { best, last } = stats();
 
     sess.items.forEach((it, ei) => {
       const ex = exById(it.exId);
       if (!ex) return;
+      const bw = isBW(ex);
       const box = document.createElement('div');
-      box.className = 'sess-ex' + (it.done.every(Boolean) ? ' done' : '');
+      box.className = 'sess-ex' + (it.sets.length && it.sets.every(s => s.done) ? ' done' : '');
 
       const head = document.createElement('div');
       head.className = 'sess-ex-head';
       const img = document.createElement('img');
       img.src = ex.gif_url; img.loading = 'lazy'; img.alt = '';
+      img.style.cursor = 'pointer'; img.addEventListener('click', () => openModal(ex.id));
       const nm = document.createElement('div');
       nm.className = 'sess-ex-name';
-      nm.innerHTML = `${exName(ex)}<small>${it.done.length} × ${it.reps} · ${tv(ex.target)}</small>`;
-      nm.style.cursor = 'pointer';
-      nm.addEventListener('click', () => openModal(ex.id));
+      nm.innerHTML = `${esc(exName(ex))}<small>${esc(tv(ex.target))} · ${esc(tv(ex.equipment))}</small>`;
+      nm.style.cursor = 'pointer'; nm.addEventListener('click', () => openModal(ex.id));
       head.append(img, nm);
       box.appendChild(head);
 
-      const sets = document.createElement('div');
-      sets.className = 'sess-sets';
-      it.done.forEach((d, si) => {
-        const b = document.createElement('button');
-        b.className = 'set-btn' + (d ? ' done' : '');
-        b.textContent = d ? '✓' : `${T('setWord')} ${si + 1}`;
-        b.addEventListener('click', () => {
-          it.done[si] = !it.done[si];
-          persistSess();
-          if (it.done[si]) startRest();
-          renderSession();
-          checkFinish();
-        });
-        sets.appendChild(b);
+      const info = document.createElement('div');
+      info.className = 'sess-last';
+      const l = last[it.exId], b = best[it.exId];
+      info.innerHTML = l
+        ? `<b>${esc(T('lastTime'))}</b> <span dir="ltr">${l.sets.map(s => setLabel(ex, s)).join(' · ')}</span>${b ? ` &nbsp;·&nbsp; <b>${esc(T('bestEver'))}</b> <span dir="ltr">${setLabel(ex, b)}</span>` : ''}`
+        : esc(T('firstTime'));
+      box.appendChild(info);
+
+      const tbl = document.createElement('table');
+      tbl.className = 'set-tbl';
+      tbl.innerHTML = `<thead><tr><th>${esc(T('colSet'))}</th><th>${esc(bw ? T('colKg') + ' (+)' : T('colKg'))}</th><th>${esc(T('colReps'))}</th><th></th><th></th></tr></thead>`;
+      const tb = document.createElement('tbody');
+      it.sets.forEach((s, si) => {
+        const tr = document.createElement('tr');
+        const isPr = (sess.prs || []).some(p => p.ei === ei && p.si === si);
+        tr.className = (s.done ? 'set-done' : '') + (isPr ? ' set-pr' : '');
+        const num = document.createElement('td'); num.innerHTML = `<span class="set-n">${isPr ? '🏆' : si + 1}</span>`;
+        const mkIn = (key, ph) => {
+          const td = document.createElement('td');
+          const inp = document.createElement('input');
+          inp.className = 'set-in'; inp.type = 'number'; inp.inputMode = key === 'w' ? 'decimal' : 'numeric';
+          inp.min = 0; inp.step = key === 'w' ? '0.5' : '1'; inp.placeholder = ph;
+          inp.value = s[key] === '' || s[key] == null ? '' : s[key];
+          inp.addEventListener('change', () => {
+            const v = inp.value === '' ? '' : Math.max(0, +inp.value);
+            s[key] = key === 'r' && v !== '' ? Math.round(v) : v;
+            // סט הבא שעוד לא בוצע — מקבל את אותו ערך (חוסך הקלדה)
+            for (let k = si + 1; k < it.sets.length; k++) if (!it.sets[k].done) { if (key === 'w' || it.sets[k][key] === '' ) it.sets[k][key] = s[key]; }
+            persistSess();
+            tb.querySelectorAll('tr').forEach((row, k) => { if (k > si && !it.sets[k].done) { const ins = row.querySelectorAll('.set-in'); ins[key === 'w' ? 0 : 1].value = it.sets[k][key]; } });
+          });
+          inp.addEventListener('focus', () => inp.select());
+          td.appendChild(inp); return td;
+        };
+        const ok = document.createElement('td');
+        const okb = document.createElement('button');
+        okb.className = 'set-ok' + (s.done ? ' on' : ''); okb.textContent = '✓';
+        okb.setAttribute('aria-label', '✓');
+        okb.addEventListener('click', () => toggleSet(ei, si));
+        ok.appendChild(okb);
+        const x = document.createElement('td');
+        if (it.sets.length > 1 && !s.done) {
+          const xb = document.createElement('button'); xb.className = 'set-x'; xb.textContent = '×';
+          xb.addEventListener('click', () => { it.sets.splice(si, 1); persistSess(); renderSession(); });
+          x.appendChild(xb);
+        }
+        tr.append(num, mkIn('w', bw ? T('bodyweight').slice(0, 6) : '0'), mkIn('r', '0'), ok, x);
+        tb.appendChild(tr);
       });
-      box.appendChild(sets);
+      tbl.appendChild(tb);
+      box.appendChild(tbl);
+
+      const add = document.createElement('button');
+      add.className = 'sess-add-set'; add.textContent = T('addSet');
+      add.addEventListener('click', () => {
+        const p = it.sets[it.sets.length - 1] || { w: '', r: 10 };
+        it.sets.push({ w: p.w, r: p.r, done: false }); persistSess(); renderSession();
+      });
+      box.appendChild(add);
       list.appendChild(box);
     });
-
-    const { done, total } = sessTotals();
-    document.getElementById('sess-fill').style.width = (total ? (done / total) * 100 : 0) + '%';
+    paintProgress();
   }
 
-  function checkFinish() {
+  function toggleSet(ei, si) {
+    const it = sess.items[ei], s = it.sets[si];
+    const ex = exById(it.exId);
+    s.done = !s.done;
+    if (s.done) {
+      if (s.r === '' || s.r == null || +s.r <= 0) s.r = 1;
+      s.w = s.w === '' ? '' : +s.w; s.r = +s.r;
+      // שיא חדש? מול כל ההיסטוריה ומול הסטים שכבר בוצעו היום
+      const b = stats().best[it.exId];
+      const w = +s.w || 0, e = e1rm(w, s.r);
+      const todayBest = sess.items[ei].sets.filter((x, k) => k !== si && x.done)
+        .reduce((m, x) => Math.max(m, (+x.w || 0) > 0 ? e1rm(+x.w, x.r) : 0), 0);
+      const todayReps = sess.items[ei].sets.filter((x, k) => k !== si && x.done && !(+x.w > 0)).reduce((m, x) => Math.max(m, x.r), 0);
+      // בפעם הראשונה בתרגיל אין "שיא" — אין למה להשוות
+      const isPr = !!b && (w > 0 ? e > Math.max(b.e, todayBest) + 1e-9 : (b.e === 0 && s.r > Math.max(b.r, todayReps)));
+      sess.prs = sess.prs || [];
+      if (isPr) { sess.prs.push({ ei, si, exId: it.exId, w, r: s.r }); toast(T('newPR')(exName(ex))); buzz([60, 40, 60, 40, 120]); }
+      startRest(sess.rest || 90);
+    } else {
+      sess.prs = (sess.prs || []).filter(p => !(p.ei === ei && p.si === si));
+    }
+    persistSess();
+    renderSession();
     const { done, total } = sessTotals();
-    if (done < total) return;
-    stopRest();
-    document.getElementById('sess-list').hidden = true;
-    document.getElementById('rest-bar').classList.remove('on');
-    const mins = Math.max(1, Math.round((Date.now() - sess.startedAt) / 60000));
-    document.getElementById('sess-summary').textContent = T('sessSummary')(total, mins);
-    document.getElementById('sess-finish').hidden = false;
+    if (done === total) { stopRest(); setTimeout(finishSession, 350); }
+  }
+
+  async function finishSession(force) {
+    const { done, total } = sessTotals();
+    if (!force) {
+      if (done === 0) {
+        if (await appConfirm(T('sessNothing'), T('sessCloseNoSave'), true)) discardSession(true);
+        return;
+      }
+      if (done < total && !await appConfirm(T('sessFinishEarly')(done, total), T('sessFinishAnyway'))) return;
+    }
+    stopRest(); clearInterval(clockIv); releaseWake();
+    const entry = {
+      id: uid(), woId: sess.woId, name: sess.name, start: sess.startedAt, end: Date.now(),
+      items: sess.items.map(it => ({ exId: it.exId, sets: it.sets.filter(s => s.done).map(s => ({ w: +s.w || 0, r: +s.r || 0 })) }))
+        .filter(it => it.sets.length),
+    };
+    const hist = loadHist(); hist.push(entry); saveHist(hist);
     localStorage.removeItem(SESS_KEY);
+    document.getElementById('bn-start').classList.remove('live');
+    // סיכום
+    const prs = stats().prsByEntry[entry.id] || [];
+    document.getElementById('sess-sum-tiles').innerHTML = [
+      [T('tDuration'), fmtDur(entry.end - entry.start)], [T('tSets'), histSets(entry)], [T('tVolume'), fmtVol(histVolume(entry))],
+    ].map(([l, v]) => `<div class="tile"><div class="tile-l">${esc(l)}</div><div class="tile-v">${v}</div></div>`).join('');
+    document.getElementById('sess-prs').innerHTML = prs.length ? `<div class="sess-pr-list">${prs.map(p => { const ex = exById(p.exId);
+      return `<div>${esc(T('prLine')(exName(ex), ''))}<span dir="ltr">${setLabel(ex, p)}</span></div>`; }).join('')}</div>` : '';
+    document.getElementById('sess-body').hidden = true;
+    document.getElementById('sess-finish').hidden = false;
+    sess = null;
+    buzz([100, 60, 100]);
   }
 
-  // ── טיימר מנוחה ──
-  let restLeft = 0;
-  function startRest(seconds = 60) {
+  async function discardSession(skipAsk) {
+    if (!skipAsk && sessTotals().done > 0 && !await appConfirm(T('sessDiscardConfirm'), T('sessCloseNoSave'), true)) return;
+    stopRest(); clearInterval(clockIv); releaseWake();
+    localStorage.removeItem(SESS_KEY);
+    sess = null;
+    document.getElementById('bn-start').classList.remove('live');
+    document.getElementById('session-overlay').classList.remove('open');
+    refreshViews();
+  }
+
+  // ── טיימר מנוחה (מבוסס זמן אמיתי — לא נעצר כשהמסך כבה) ──
+  let restEnd = 0;
+  function startRest(seconds) {
     stopRest();
-    restLeft = seconds;
-    const bar = document.getElementById('rest-bar');
-    bar.classList.add('on');
+    restEnd = Date.now() + seconds * 1000;
+    document.getElementById('rest-bar').classList.add('on');
     paintRest();
     restIv = setInterval(() => {
-      restLeft--;
-      if (restLeft <= 0) { stopRest(); return; }
+      if (Date.now() >= restEnd) { stopRest(); toast(T('restDone')); buzz([200, 100, 200]); beep(); return; }
       paintRest();
-    }, 1000);
+    }, 250);
   }
   function paintRest() {
-    document.getElementById('rest-time').textContent =
-      `${Math.floor(restLeft / 60)}:${String(restLeft % 60).padStart(2, '0')}`;
+    const left = Math.max(0, Math.ceil((restEnd - Date.now()) / 1000));
+    document.getElementById('rest-time').textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
   }
   function stopRest() {
     clearInterval(restIv); restIv = null;
     document.getElementById('rest-bar').classList.remove('on');
   }
+  const buzz = p => { try { navigator.vibrate && navigator.vibrate(p); } catch {} };
+  let audioCtx = null;
+  function beep() {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      [0, 0.18].forEach(t => {
+        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.frequency.value = 880; o.connect(g); g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0.0001, audioCtx.currentTime + t);
+        g.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + t + 0.14);
+        o.start(audioCtx.currentTime + t); o.stop(audioCtx.currentTime + t + 0.15);
+      });
+    } catch {}
+  }
+
+  // ── המסך נשאר דולק באימון ──
+  async function requestWake() {
+    try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch {}
+  }
+  function releaseWake() { try { wakeLock && wakeLock.release(); } catch {} wakeLock = null; }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && document.getElementById('session-overlay').classList.contains('open') && sess) { requestWake(); paintRest(); }
+  });
 
   function wireSession() {
     document.getElementById('rest-skip').addEventListener('click', stopRest);
-    document.getElementById('rest-add').addEventListener('click', () => { restLeft += 15; paintRest(); });
-    const exit = () => {
-      const { done, total } = sessTotals();
-      if (done > 0 && done < total && !confirm(T('sessExitConfirm'))) return;
-      stopRest(); clearInterval(clockIv);
-      document.getElementById('session-overlay').classList.remove('open');
-      renderWorkouts();
-    };
-    document.getElementById('sess-close').addEventListener('click', exit);
+    document.getElementById('rest-add').addEventListener('click', () => { restEnd += 15000; paintRest(); });
+    document.getElementById('rest-sub').addEventListener('click', () => { restEnd = Math.max(Date.now() + 1000, restEnd - 15000); paintRest(); });
+    document.getElementById('sess-min').addEventListener('click', minimizeSession);
+    document.getElementById('sess-done').addEventListener('click', () => finishSession(false));
+    document.getElementById('sess-close').addEventListener('click', () => discardSession(false));
     document.getElementById('sess-finish-close').addEventListener('click', () => {
-      clearInterval(clockIv);
       document.getElementById('session-overlay').classList.remove('open');
-      renderWorkouts();
+      refreshViews();
     });
+    document.getElementById('bn-start').addEventListener('click', quickStart);
+    if (store.get(SESS_KEY, null)) document.getElementById('bn-start').classList.add('live');
+  }
+
+  function refreshViews() {
+    if (VIEW === 'home') renderHome();
+    else if (VIEW === 'wo') renderWorkouts();
+    else if (VIEW === 'prog') renderProgress();
   }
 
   function closeModal() {
     modalOverlay.classList.remove('open');
     document.body.style.overflow = '';
     modalGif.src = '';
+  }
+
+  // ══════════ מנהל חלונות: קליק רפאים · כפתור חזרה · Escape (חלק ל״א) ══════════
+  const OV_STACK = [];
+  let ghostUntil = 0, ghostOv = null, ovClosingByPop = false, ovSkipPop = 0;
+  const NO_BACK = new Set(['consent-overlay']);
+  function topOverlay() { return OV_STACK[OV_STACK.length - 1] || null; }
+  function closeOverlay(el) {
+    if (!el) return;
+    if (el.id === 'modal-overlay') return closeModal();
+    if (el.id === 'session-overlay') {
+      if (!document.getElementById('sess-finish').hidden) { el.classList.remove('open'); refreshViews(); return; }
+      return minimizeSession();
+    }
+    if (el.id === 'db-overlay') return closeDbSetup();
+    if (el._resolve) return el._resolve();
+    el.classList.remove('open');
+  }
+  function watchOverlays() {
+    const els = document.querySelectorAll('.an-overlay, .modal-overlay, .db-overlay');
+    const mo = new MutationObserver(muts => muts.forEach(m => {
+      const el = m.target, open = el.classList.contains('open'), idx = OV_STACK.indexOf(el);
+      if (open && idx < 0) {
+        OV_STACK.push(el);
+        ghostUntil = Date.now() + 450; ghostOv = el;           // בולע את ה"קליק" המאוחר של המגע
+        if (!NO_BACK.has(el.id)) history.pushState({ an: 'ov', id: el.id }, '');
+      } else if (!open && idx >= 0) {
+        OV_STACK.splice(idx, 1);
+        if (!ovClosingByPop && !NO_BACK.has(el.id) && history.state && history.state.an === 'ov') { ovSkipPop++; history.back(); }
+      }
+    }));
+    els.forEach(el => mo.observe(el, { attributes: true, attributeFilter: ['class'] }));
+    document.addEventListener('click', e => {
+      if (Date.now() < ghostUntil && ghostOv && ghostOv.contains(e.target)) { e.preventDefault(); e.stopPropagation(); }
+    }, true);
+    window.addEventListener('popstate', () => {
+      if (ovSkipPop > 0) { ovSkipPop--; return; }
+      if (navSkipPop) { navSkipPop = false; return; }
+      const top = topOverlay();
+      if (top && !NO_BACK.has(top.id)) { ovClosingByPop = true; closeOverlay(top); ovClosingByPop = false; return; }
+      if (VIEW !== 'home') showView('home', { fromPop: true });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      const top = topOverlay();
+      if (top && !NO_BACK.has(top.id)) { e.preventDefault(); closeOverlay(top); }
+    });
+    // [data-close] וסגירה בלחיצה על הרקע — לכל החלונות החדשים
+    ['plans-overlay', 'swap-overlay', 'hist-overlay', 'wo-picker', 'confirm-overlay'].forEach(id => {
+      const ov = document.getElementById(id);
+      ov.addEventListener('click', e => { if (e.target === ov || e.target.closest('[data-close]')) closeOverlay(ov); });
+    });
+  }
+
+  // ── בקשת אחסון מתמשך (חלק י״ב) ──
+  function askPersist() {
+    try { navigator.storage && navigator.storage.persist && navigator.storage.persisted().then(p => p || navigator.storage.persist()); } catch {}
   }
 
   // ── Events ─────────────────────────────────────────
@@ -3314,7 +4598,9 @@
     // Card click → modal
     gridEl.addEventListener('click', e => {
       const card = e.target.closest('.exercise-card');
-      if (card) openModal(card.dataset.id);
+      if (!card) return;
+      if (e.target.closest('.card-add')) { e.stopPropagation(); openPicker(card.dataset.id); return; }
+      openModal(card.dataset.id);
     });
 
     // Modal close
@@ -3322,13 +4608,7 @@
     modalOverlay.addEventListener('click', e => {
       if (e.target === modalOverlay) closeModal();
     });
-    document.addEventListener('keydown', e => {
-      if (e.key !== 'Escape') return;
-      // סוגרים קודם את החלון העליון ביותר
-      const picker = document.getElementById('wo-picker');
-      if (picker.classList.contains('open')) { picker.classList.remove('open'); return; }
-      closeModal();
-    });
+    // Escape — מטופל במנהל החלונות (watchOverlays)
 
     // Infinite scroll
     const observer = new IntersectionObserver(entries => {
@@ -3535,13 +4815,28 @@
     return lines.join('\n');
   }
 
-  function generateInsertSql() {
+  function loadFullDb() {
+    if (window.EXERCISES_FULL) return Promise.resolve(window.EXERCISES_FULL);
+    return new Promise((resolve, reject) => {
+      const sc = document.createElement('script');
+      sc.src = 'exercises-full.js';
+      sc.onload = () => window.EXERCISES_FULL ? resolve(window.EXERCISES_FULL) : reject(new Error('empty'));
+      sc.onerror = reject;
+      document.head.appendChild(sc);
+    });
+  }
+
+  async function generateInsertSql() {
     generateBtn.disabled = true;
+    generateStatus.textContent = T('dbLoading');
+    let FULL;
+    try { FULL = await loadFullDb(); }
+    catch { generateStatus.textContent = T('dbLoadErr'); generateBtn.disabled = false; return; }
     generateStatus.textContent = T('generating');
 
     setTimeout(() => {
       try {
-        const sql = buildInserts(EXERCISES, currentDb);
+        const sql = buildInserts(FULL, currentDb);
         const blob = new Blob([sql], { type: 'text/plain;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -3562,7 +4857,6 @@
   if (dbOpenBtn) dbOpenBtn.addEventListener('click', openDbSetup);
   dbCloseBtn.addEventListener('click', closeDbSetup);
   dbOverlay.addEventListener('click', e => { if (e.target === dbOverlay) closeDbSetup(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && dbOverlay.classList.contains('open')) closeDbSetup(); });
   dbTabs.forEach(tab => tab.addEventListener('click', () => switchDbTab(tab.dataset.db)));
   copyCreateBtn.addEventListener('click', () => copyToClipboard(DB_SQL[currentDb], copyCreateBtn));
   generateBtn.addEventListener('click', generateInsertSql);
